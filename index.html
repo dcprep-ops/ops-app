@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="DC Prep Ops">
+<meta name="theme-color" content="#1a3a5c">
+<title>DC Prep Operations</title>
+<link rel="manifest" href="data:application/json,{%22name%22:%22DC+Prep+Operations%22,%22short_name%22:%22DC+Prep+Ops%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%231a3a5c%22,%22icons%22:[]}">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a3a5c;
+  --navy-dark:#0f2236;
+  --teal:#0d9488;
+  --teal-lt:#e1f5ee;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --green:#22c55e;
+  --white:#ffffff;
+  --bg:#f5f7fa;
+  --card:#ffffff;
+  --border:#e2e8f0;
+  --text:#1e293b;
+  --muted:#64748b;
+  --light:#f8fafc;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;width:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
+
+/* screens */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden;background:var(--bg)}
+.screen.active{display:flex}
+
+/* scrollable body */
+.scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+/* ── HEADER ── */
+.app-header{background:var(--navy);padding:calc(var(--safe-top) + 16px) 20px 16px;flex-shrink:0}
+.app-header-row{display:flex;align-items:center;justify-content:space-between}
+.back-btn{background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.8);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.back-btn:active{background:rgba(255,255,255,0.18)}
+.header-eyebrow{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px}
+.header-title{font-size:20px;font-weight:500;color:#fff}
+.header-sub{font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px;min-height:15px}
+#drill-timer,#walk-timer{font-size:22px;font-weight:700;color:var(--amber);font-variant-numeric:tabular-nums;display:none}
+#drill-timer.show,#walk-timer.show{display:block}
+
+/* progress */
+.prog-track{height:3px;background:rgba(255,255,255,0.12);flex-shrink:0}
+.prog-fill{height:100%;background:var(--amber);transition:width 0.4s ease}
+
+/* ── HOME ── */
+.home-header{background:var(--navy);padding:calc(var(--safe-top)+20px) 20px 24px;flex-shrink:0}
+.home-brand{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px}
+.home-greeting{font-size:24px;font-weight:500;color:#fff;margin-bottom:3px}
+.home-date{font-size:12px;color:rgba(255,255,255,0.45)}
+.home-body{padding:0 0 calc(32px + var(--safe-bot))}
+
+/* section labels */
+.section-label{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);padding:20px 20px 8px}
+
+/* tool rows */
+.tool-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--card);border-bottom:0.5px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tool-row:active{background:var(--light)}
+.tool-row-left{display:flex;flex-direction:column;gap:2px}
+.tool-row-name{font-size:15px;font-weight:500;color:var(--text)}
+.tool-row-sub{font-size:12px;color:var(--muted)}
+.tool-row-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.badge-live{font-size:10px;font-weight:600;color:#0f6e56;background:var(--teal-lt);padding:3px 8px;border-radius:20px}
+.badge-preview{font-size:10px;font-weight:500;color:var(--muted)}
+.chevron{font-size:14px;color:#cbd5e1}
+
+/* status card */
+.status-card{margin:12px 20px 0;background:var(--card);border-radius:10px;border:0.5px solid var(--border);overflow:hidden}
+.status-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:0.5px solid var(--border)}
+.status-row:last-child{border-bottom:none}
+.status-key{font-size:12px;color:var(--muted)}
+.status-val{font-size:12px;font-weight:500;color:var(--text)}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px}
+.dot-amber{background:var(--amber)}
+.dot-green{background:var(--green)}
+
+/* install */
+#install-banner{position:fixed;bottom:0;left:0;right:0;background:var(--navy);border-top:1px solid rgba(255,255,255,0.1);padding:14px 20px calc(14px + var(--safe-bot));z-index:999;display:none;align-items:center;gap:12px}
+#install-banner.show{display:flex}
+.install-text{flex:1}
+.install-title{font-size:13px;font-weight:600;color:#fff}
+.install-sub{font-size:11px;color:rgba(255,255,255,0.5);margin-top:1px}
+.install-btn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;font-family:inherit}
+.install-x{background:none;border:none;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;padding:4px;flex-shrink:0}
+
+/* ios modal */
+#ios-modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:none;align-items:flex-end}
+#ios-modal.show{display:flex}
+.ios-sheet{background:#1e3a5c;border-radius:20px 20px 0 0;padding:24px 24px calc(32px + var(--safe-bot));width:100%}
+.ios-handle{width:36px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 20px}
+.ios-title{font-size:17px;font-weight:700;color:#fff;margin-bottom:6px}
+.ios-sub{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:18px;line-height:1.6}
+.ios-step{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.07)}
+.ios-step:last-child{border-bottom:none}
+.ios-num{width:26px;height:26px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px}
+.ios-step-text{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5}
+.ios-step-text strong{color:#fff}
+.ios-dismiss{width:100%;margin-top:20px;background:rgba(255,255,255,0.08);border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit}
+
+/* ── SHARED FLOW COMPONENTS ── */
+.flow-body{padding:24px 20px calc(110px + var(--safe-bot))}
+.step-eyebrow{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.step-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:20px;line-height:1.2}
+
+/* cards */
+.card{background:var(--card);border-radius:12px;border:0.5px solid var(--border);overflow:hidden;margin-bottom:12px}
+.card-section{padding:16px}
+.card-section+.card-section{border-top:0.5px solid var(--border)}
+.field-label{font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px;display:block}
+
+/* select buttons */
+.sel-grid{display:grid;gap:8px}
+.sel-grid.c2{grid-template-columns:1fr 1fr}
+.sel-grid.c3{grid-template-columns:1fr 1fr 1fr}
+.sel-btn{background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-weight:500;color:var(--text);cursor:pointer;text-align:center;transition:all 0.12s;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.sel-btn:active{transform:scale(0.97)}
+.sel-btn.on{background:#fff8e6;border-color:var(--amber);color:#92400e;font-weight:600}
+
+/* inputs */
+input[type=text],input[type=number],input[type=time],textarea,select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;color:var(--text);background:#fff;font-family:inherit;appearance:none;-webkit-appearance:none}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber)}
+textarea{resize:none;line-height:1.5}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;cursor:pointer}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* checklist */
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-bottom:0.5px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.1s}
+.check-item:last-child{border-bottom:none}
+.check-item:active{background:var(--light)}
+.check-box{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.12s}
+.check-box.ok{background:var(--teal);border-color:var(--teal)}
+.check-box.ok::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
+.check-box.issue{background:var(--red);border-color:var(--red)}
+.check-box.issue::after{content:'!';color:#fff;font-size:12px;font-weight:800;line-height:1}
+.check-label{font-size:14px;color:var(--text);line-height:1.4;flex:1}
+.check-label.done{color:var(--teal);text-decoration:none}
+
+/* space selector */
+.space-pill{display:inline-flex;align-items:center;padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--light);font-size:13px;font-weight:500;color:var(--text);cursor:pointer;margin:0 6px 6px 0;-webkit-tap-highlight-color:transparent;font-family:inherit}
+.space-pill.on{background:#fff8e6;border-color:var(--amber);color:#92400e}
+
+/* notes */
+.notes-toggle{font-size:12px;color:var(--teal);font-weight:600;padding:8px 16px 12px;display:block;cursor:pointer;background:none;border:none;font-family:inherit;text-align:left;-webkit-tap-highlight-color:transparent}
+.notes-body{padding:0 16px 14px;display:none}
+.notes-body.open{display:block}
+
+/* voice */
+.voice-btn{width:100%;padding:14px 16px;border-radius:12px;border:1.5px dashed var(--border);background:var(--light);display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.15s;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.voice-btn.recording{background:#fef2f2;border-color:var(--red);border-style:solid;animation:pulseBorder 1.2s ease infinite}
+.voice-btn.done{background:var(--teal-lt);border-color:var(--teal);border-style:solid}
+@keyframes pulseBorder{0%,100%{border-color:var(--red)}50%{border-color:#fca5a5}}
+.voice-mic{width:40px;height:40px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background 0.15s}
+.voice-btn.recording .voice-mic{background:var(--red)}
+.voice-btn.done .voice-mic{background:var(--teal)}
+.voice-main{font-size:14px;font-weight:600;color:var(--text)}
+.voice-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.voice-timer{font-size:18px;font-weight:700;color:var(--red);font-variant-numeric:tabular-nums;display:none}
+.voice-timer.show{display:block}
+
+/* toggle rows */
+.tog-row{display:flex;align-items:flex-start;justify-content:space-between;padding:13px 16px;gap:10px;border-bottom:0.5px solid var(--border)}
+.tog-row:last-child{border-bottom:none}
+.tog-label{font-size:14px;color:var(--text);flex:1;line-height:1.4}
+.tog-btns{display:flex;gap:6px;flex-shrink:0}
+.tog{padding:6px 12px;border-radius:7px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--light);color:var(--muted);cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.tog.yes.on{background:#f0fdfa;border-color:var(--teal);color:#134e4a}
+.tog.no.on{background:#fef2f2;border-color:var(--red);color:#991b1b}
+
+.role-row{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:0.5px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.1s}
+.role-row:last-child{border-bottom:none}
+.role-row:active{background:var(--light)}
+.role-name{font-size:16px;font-weight:500;color:var(--text)}
+.role-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s}
+.role-check.on{background:var(--teal);border-color:var(--teal)}
+.role-check.on::after{content:'';display:block;width:4px;height:8px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
+/* submit bar */
+.submit-bar{position:fixed;bottom:0;left:0;right:0;padding:14px 20px calc(14px + var(--safe-bot));background:var(--bg);border-top:0.5px solid var(--border);z-index:100}
+.submit-btn{width:100%;padding:16px;border-radius:12px;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.btn-amber{background:var(--amber);color:#1c1003}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-navy{background:var(--navy);color:#fff}
+.submit-btn:active{opacity:0.88}
+
+/* flow steps */
+.flow-step{display:none}
+.flow-step.active{display:block}
+
+/* success */
+#screen-success{background:var(--bg)}
+.success-inner{display:flex;flex-direction:column;align-items:center;text-align:center;padding:60px 24px calc(40px + var(--safe-bot))}
+.success-ring{width:80px;height:80px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:24px}
+.success-title{font-size:26px;font-weight:700;color:var(--text);margin-bottom:10px}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:32px;max-width:280px}
+.success-card{background:var(--card);border-radius:12px;border:0.5px solid var(--border);padding:16px;width:100%;max-width:340px;margin-bottom:20px;text-align:left}
+.sum-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.sum-row:last-child{border-bottom:none}
+.sum-key{font-size:12px;color:var(--muted)}
+.sum-val{font-size:13px;font-weight:600;color:var(--text);text-align:right;max-width:58%}
+.sum-val.flag{color:var(--red)}
+.again-btn{background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:12px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+
+/* preview screen */
+.preview-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 28px 40px;flex:1}
+.preview-badge{display:inline-block;background:#fff8e6;border:1px solid #fde68a;border-radius:20px;padding:4px 14px;margin-bottom:16px}
+.preview-badge span{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#92400e}
+.preview-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.2}
+.preview-desc{font-size:15px;color:var(--muted);line-height:1.7;max-width:300px}
+.preview-footer{padding:0 20px calc(24px + var(--safe-bot))}
+.preview-note{background:var(--card);border-radius:12px;border:0.5px solid var(--border);padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- install banner -->
+<div id="install-banner">
+  <div class="install-text">
+    <div class="install-title">Add to Home Screen</div>
+    <div class="install-sub">Open this app instantly from your phone</div>
+  </div>
+  <button class="install-btn" onclick="triggerInstall()">Add</button>
+  <button class="install-x" onclick="document.getElementById('install-banner').classList.remove('show')">✕</button>
+</div>
+
+<!-- ios modal -->
+<div id="ios-modal" onclick="this.classList.remove('show')">
+  <div class="ios-sheet" onclick="event.stopPropagation()">
+    <div class="ios-handle"></div>
+    <div class="ios-title">Add to Home Screen</div>
+    <div class="ios-sub">Save DC Prep Operations to your home screen for one-tap access.</div>
+    <div class="ios-step"><div class="ios-num">1</div><div class="ios-step-text">Tap the <strong>Share button</strong> ⬆️ at the bottom of your browser</div></div>
+    <div class="ios-step"><div class="ios-num">2</div><div class="ios-step-text">Scroll and tap <strong>"Add to Home Screen"</strong></div></div>
+    <div class="ios-step"><div class="ios-num">3</div><div class="ios-step-text">Tap <strong>Add</strong> in the top right</div></div>
+    <button class="ios-dismiss" onclick="document.getElementById('ios-modal').classList.remove('show')">Got it</button>
+  </div>
+</div>
+
+<!-- ══ HOME ══ -->
+<div class="screen active" id="screen-home">
+  <div class="home-header">
+    <div class="home-brand">DC Prep Operations</div>
+    <div class="home-greeting">Good <span id="greeting-time">morning</span></div>
+    <div class="home-date" id="home-date"></div>
+  </div>
+  <div class="scroll-body home-body">
+    <div class="section-label">Active</div>
+    <div class="tool-row" onclick="openFlow('drill')">
+      <div class="tool-row-left">
+        <div class="tool-row-name">Evacuation &amp; lockdown drill</div>
+        <div class="tool-row-sub">Log in real time · Compliance record</div>
+      </div>
+      <div class="tool-row-right">
+        <span class="badge-live">Live</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="tool-row" onclick="openFlow('walkthrough')">
+      <div class="tool-row-left">
+        <div class="tool-row-name">Common space walkthrough</div>
+        <div class="tool-row-sub">Operational excellence checklist</div>
+      </div>
+      <div class="tool-row-right">
+        <span class="badge-live">Live</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+
+    <div class="section-label">Preview</div>
+    <div class="tool-row" onclick="openPreview('arrival')">
+      <div class="tool-row-left"><div class="tool-row-name">Arrival &amp; dismissal</div></div>
+      <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
+    </div>
+    <div class="tool-row" onclick="openPreview('walkthroughs')">
+      <div class="tool-row-left"><div class="tool-row-name">Building walkthroughs</div></div>
+      <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
+    </div>
+    <div class="tool-row" onclick="openPreview('patrol')">
+      <div class="tool-row-left"><div class="tool-row-name">Security patrol</div></div>
+      <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
+    </div>
+    <div class="tool-row" onclick="openPreview('attendance')">
+      <div class="tool-row-left"><div class="tool-row-name">Daily attendance check</div></div>
+      <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
+    </div>
+
+    <div class="status-card">
+      <div class="status-row"><span class="status-key">Last drill logged</span><span class="status-val">No drills this month</span></div>
+      <div class="status-row"><span class="status-key">Drills required</span><span class="status-val"><span class="dot dot-amber"></span>1 remaining</span></div>
+    </div>
+
+    <div style="text-align:center;padding:24px 0 8px">
+      <button onclick="showInstallPrompt()" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit">📲 Add to Home Screen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DRILL FLOW ══ -->
+<div class="screen" id="screen-drill">
+  <div class="prog-track"><div class="prog-fill" id="drill-prog" style="width:0%"></div></div>
+  <div class="app-header">
+    <div class="app-header-row">
+      <button class="back-btn" onclick="drillBack()">← Back</button>
+      <span id="drill-timer">0:00</span>
+    </div>
+    <div class="header-sub" id="drill-ctx"></div>
+  </div>
+  <div class="scroll-body flow-body">
+
+    <!-- school -->
+    <div class="flow-step active" id="dd-school">
+      <div class="step-eyebrow">Drill log</div>
+      <div class="step-title">Which campus?</div>
+      <div class="card">
+        <div class="role-row" onclick="drillPickSchool(this,'AMC')"><span class="role-name">Anacostia Middle (AMC)</span><span class="role-check" id="dsc-AMC"></span></div>
+        <div class="role-row" onclick="drillPickSchool(this,'AEC')"><span class="role-name">Anacostia Elementary (AEC)</span><span class="role-check" id="dsc-AEC"></span></div>
+        <div class="role-row" onclick="drillPickSchool(this,'BMC')"><span class="role-name">Benning Middle (BMC)</span><span class="role-check" id="dsc-BMC"></span></div>
+        <div class="role-row" onclick="drillPickSchool(this,'BEC')"><span class="role-name">Benning Elementary (BEC)</span><span class="role-check" id="dsc-BEC"></span></div>
+        <div class="role-row" onclick="drillPickSchool(this,'EMC')"><span class="role-name">Edgewood Middle (EMC)</span><span class="role-check" id="dsc-EMC"></span></div>
+        <div class="role-row" onclick="drillPickSchool(this,'EEC')"><span class="role-name">Edgewood Elementary (EEC)</span><span class="role-check" id="dsc-EEC"></span></div>
+      </div>
+    </div>
+
+    <!-- role -->
+    <div class="flow-step" id="dd-role">
+      <div class="step-eyebrow">Drill log</div>
+      <div class="step-title">What's your role?</div>
+      <div class="card">
+        <div class="role-row" onclick="drillPickRole(this,'OSL')"><span class="role-name">OSL</span><span class="role-check" id="drc-OSL"></span></div>
+        <div class="role-row" onclick="drillPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="drc-Principal"></span></div>
+        <div class="role-row" onclick="drillPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="drc-SDO"></span></div>
+        <div class="role-row" onclick="drillPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="drc-Other"></span></div>
+      </div>
+    </div>
+
+    <!-- osl start -->
+    <div class="flow-step" id="dd-start">
+      <div class="step-eyebrow">OSL · Official record</div>
+      <div class="step-title">Ready to start?</div>
+      <div class="card"><div class="card-section" style="text-align:center;padding:32px 20px">
+        <div style="font-size:48px;margin-bottom:16px">🚨</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px">Tap Start Drill when the alarm sounds</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">This records the official start time and begins the elapsed timer.</div>
+      </div></div>
+    </div>
+
+    <!-- osl form -->
+    <div class="flow-step" id="dd-osl">
+      <div class="step-eyebrow">OSL · Official record</div>
+      <div class="step-title">Drill details</div>
+      <div class="card">
+        <div class="card-section">
+          <label class="field-label">Drill type</label>
+          <div class="sel-grid c2">
+            <button class="sel-btn" onclick="drillPick(this,'drillType','Evacuation');showChecks('evac')">Evacuation</button>
+            <button class="sel-btn" onclick="drillPick(this,'drillType','Lockdown');showChecks('lock')">Lockdown</button>
+          </div>
+        </div>
+        <div class="card-section">
+          <label class="field-label">Weather</label>
+          <div class="sel-grid c3">
+            <button class="sel-btn" onclick="drillPick(this,'weather','Sunny')">Sunny</button>
+            <button class="sel-btn" onclick="drillPick(this,'weather','Cloudy')">Cloudy</button>
+            <button class="sel-btn" onclick="drillPick(this,'weather','Rainy')">Rainy</button>
+            <button class="sel-btn" onclick="drillPick(this,'weather','Cold')">Cold</button>
+            <button class="sel-btn" onclick="drillPick(this,'weather','Hot')">Hot</button>
+            <button class="sel-btn" onclick="drillPick(this,'weather','Windy')">Windy</button>
+          </div>
+        </div>
+        <div class="card-section">
+          <label class="field-label">Times</label>
+          <div class="two-col">
+            <div><label class="field-label" style="margin-bottom:5px">Alarm / start</label><input type="time" id="d-t-alarm"></div>
+            <div><label class="field-label" style="margin-bottom:5px">All clear / end</label><input type="time" id="d-t-clear"></div>
+          </div>
+        </div>
+        <div class="card-section">
+          <label class="field-label">Total occupants</label>
+          <input type="number" id="d-occupants" placeholder="e.g. 420" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="card" id="evac-checks" style="display:none">
+        <div class="card-section" style="padding-bottom:4px"><label class="field-label">Evacuation observations</label></div>
+        <div class="tog-row"><span class="tog-label">All classes exited to correct locations</span><div class="tog-btns"><button class="tog yes" onclick="tog(this,'yes')">Yes</button><button class="tog no" onclick="tog(this,'no')">No</button></div></div>
+        <div class="tog-row"><span class="tog-label">Students were silent during evacuation</span><div class="tog-btns"><button class="tog yes" onclick="tog(this,'yes')">Yes</button><button class="tog no" onclick="tog(this,'no')">No</button></div></div>
+        <div class="tog-row"><span class="tog-label">All exits used appropriately</span><div class="tog-btns"><button class="tog yes" onclick="tog(this,'yes')">Yes</button><button class="tog no" onclick="tog(this,'no')">No</button></div></div>
+        <div class="tog-row"><span class="tog-label">Teachers positioned correctly mid-line</span><div class="tog-btns"><button class="tog yes" onclick="tog(this,'yes')">Yes</button><button class="tog no" onclick="tog(this,'no')">No</button></div></div>
+        <div class="tog-row" style="padding-bottom:14px"><span class="tog-label">Any door / stairwell / alarm issues?</span><div class="tog-btns"><button class="tog yes" onclick="tog(this,'yes')">Yes</button><button class="tog no" onclick="tog(this,'no')">No</button></div></div>
+      </div>
+
+      <div class="card" id="lock-checks" style="display:none">
+        <div class="card-section" style="padding-bottom:4px"><label class="field-label">Lockdown observations</label></div>
+        <div class="tog-row"><span class="tog-label">All classroom doors locked promptly</span><div class="tog-btns"><button class="tog yes" onclick="tog(this,'yes')">Yes</button><button class="tog no" onclick="tog(this,'no')">No</button></div></div>
+        <div class="tog-row"><span class="tog-label">All window blinds / coverings down</span><div class="tog-btns"><button class="tog yes" onclick="tog(this,'yes')">Yes</button><button class="tog no" onclick="tog(this,'no')">No</button></div></div>
+        <div class="tog-row"><span class="tog-label">Hallways clear within 60 seconds</span><div class="tog-btns"><button class="tog yes" onclick="tog(this,'yes')">Yes</button><button class="tog no" onclick="tog(this,'no')">No</button></div></div>
+        <div class="tog-row" style="padding-bottom:14px"><span class="tog-label">Any door / lock / blind issues?</span><div class="tog-btns"><button class="tog yes" onclick="tog(this,'yes')">Yes</button><button class="tog no" onclick="tog(this,'no')">No</button></div></div>
+      </div>
+
+      <div class="card"><div class="card-section">
+        <label class="field-label">Notes</label>
+        <textarea id="d-notes" rows="4" placeholder="What went well? What needs reteaching? Facilities issues to flag?"></textarea>
+      </div></div>
+    </div>
+
+    <!-- observer -->
+    <div class="flow-step" id="dd-observer">
+      <div class="step-eyebrow">Observation</div>
+      <div class="step-title">What did you see?</div>
+      <div class="card"><div class="card-section">
+        <button class="voice-btn" id="d-voice-btn" onclick="toggleVoice('d')">
+          <div class="voice-mic" id="d-voice-mic">🎙️</div>
+          <div style="flex:1"><div class="voice-main" id="d-voice-main">Tap to record</div><div class="voice-sub" id="d-voice-sub">Tap again to stop</div></div>
+          <span class="voice-timer" id="d-voice-timer"></span>
+        </button>
+      </div>
+      <div class="card-section">
+        <label class="field-label">Written observations</label>
+        <textarea id="d-ob-notes" rows="4" placeholder="What did you observe?"></textarea>
+      </div>
+      <div class="card-section" style="padding-bottom:14px">
+        <label class="field-label">Overall assessment</label>
+        <div class="sel-grid c3">
+          <button class="sel-btn" onclick="drillPick(this,'assessment','Strong')">Strong</button>
+          <button class="sel-btn" onclick="drillPick(this,'assessment','OK')">OK</button>
+          <button class="sel-btn" onclick="drillPick(this,'assessment','Needs work')">Needs work</button>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+  <div class="submit-bar"><button class="submit-btn btn-amber" id="drill-btn" onclick="drillNext()">Next →</button></div>
+</div>
+
+<!-- ══ WALKTHROUGH FLOW ══ -->
+<div class="screen" id="screen-walkthrough">
+  <div class="prog-track"><div class="prog-fill" id="walk-prog" style="width:0%"></div></div>
+  <div class="app-header">
+    <div class="app-header-row">
+      <button class="back-btn" onclick="walkBack()">← Back</button>
+
+    </div>
+    <div class="header-sub" id="walk-ctx"></div>
+  </div>
+  <div class="scroll-body flow-body">
+
+    <!-- school -->
+    <div class="flow-step active" id="wd-school">
+      <div class="step-eyebrow">Common space walkthrough</div>
+      <div class="step-title">Which campus?</div>
+      <div class="card">
+        <div class="role-row" onclick="walkPickSchool(this,'AMC')"><span class="role-name">Anacostia Middle (AMC)</span><span class="role-check" id="wsc-AMC"></span></div>
+        <div class="role-row" onclick="walkPickSchool(this,'AEC')"><span class="role-name">Anacostia Elementary (AEC)</span><span class="role-check" id="wsc-AEC"></span></div>
+        <div class="role-row" onclick="walkPickSchool(this,'BMC')"><span class="role-name">Benning Middle (BMC)</span><span class="role-check" id="wsc-BMC"></span></div>
+        <div class="role-row" onclick="walkPickSchool(this,'BEC')"><span class="role-name">Benning Elementary (BEC)</span><span class="role-check" id="wsc-BEC"></span></div>
+        <div class="role-row" onclick="walkPickSchool(this,'EMC')"><span class="role-name">Edgewood Middle (EMC)</span><span class="role-check" id="wsc-EMC"></span></div>
+        <div class="role-row" onclick="walkPickSchool(this,'EEC')"><span class="role-name">Edgewood Elementary (EEC)</span><span class="role-check" id="wsc-EEC"></span></div>
+      </div>
+    </div>
+
+    <!-- role -->
+    <div class="flow-step" id="wd-role">
+      <div class="step-eyebrow">Common space walkthrough</div>
+      <div class="step-title">What's your role?</div>
+      <div class="card">
+        <div class="role-row" onclick="walkPickRole(this,'OSL')"><span class="role-name">OSL</span><span class="role-check" id="wrc-OSL"></span></div>
+        <div class="role-row" onclick="walkPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="wrc-Principal"></span></div>
+        <div class="role-row" onclick="walkPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="wrc-SDO"></span></div>
+        <div class="role-row" onclick="walkPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="wrc-Other"></span></div>
+      </div>
+    </div>
+
+    <!-- checklist -->
+    <div class="flow-step" id="wd-checklist">
+      <div class="step-eyebrow">Common space walkthrough</div>
+      <div class="step-title">Checklist</div>
+      <div style="background:var(--card);border-radius:12px;border:0.5px solid var(--border);padding:14px 16px;margin-bottom:12px;">
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0">Tap once if the item is present ✓ &nbsp;·&nbsp; Tap twice to flag an issue !</p>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:6px 0 0">Each section has an optional notes field.</p>
+      </div>
+
+      <!-- Lobby -->
+      <div class="card" id="w-lobby">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Lobby</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is inviting and in good condition</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lost and Found is clearly identifiable and organized</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Package storage is functional and away from visitor sight</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Front desk and security desk supplies are stocked</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards have neat backing paper, updated monthly</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual bulletin board with school leader "All About Me" and headshot</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual family resources up to date and neat</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Professional student and staff photos hung neatly</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual signage and values hung neatly</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">School awards displayed on floating shelf</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Security desk with clear sign-in process signage</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for lobby…"></textarea></div>
+      </div>
+
+      <!-- Hallways -->
+      <div class="card" id="w-hallways">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Hallways</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways are clean, warm, and welcoming</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Signage and bulletin boards are neat and match branding</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards feature student work</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways are clear of furniture, trash, and other items</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values posters neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Informational posters and flyers neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">"Meet the Teacher" sign holder intact</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Photo canvases on each blank wall, hung neatly</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls are clean without marks</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for hallways…"></textarea></div>
+      </div>
+
+      <!-- Conference Rooms -->
+      <div class="card" id="w-conference">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Conference rooms</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is neat, clean, and free of clutter</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is clean, matching, and functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Dry erase board is intact</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Google Meet box and remote control in holder</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Mounted television and remote control in holder</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for conference rooms…"></textarea></div>
+      </div>
+
+      <!-- Leader Offices -->
+      <div class="card" id="w-offices">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Leader offices</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office is clean, organized, and fully functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Conference table and chairs present where applicable</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Area rug present where applicable</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desk and office chairs functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bookshelf present and organized</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for leader offices…"></textarea></div>
+      </div>
+
+      <!-- Copy/Mail Room -->
+      <div class="card" id="w-copy">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Copy / mail room</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Room is clean, organized, and fully functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper and paper storage system is functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Ink / toner and storage system is functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values posters neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Copier troubleshooting directions hung at eye level</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for copy / mail room…"></textarea></div>
+      </div>
+
+      <!-- Staff Lounge -->
+      <div class="card" id="w-lounge">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Staff lounge / workroom</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is clean, organized, and free of clutter</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Appliances are cleaned regularly</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hospitality items are stocked</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper and ink / toner storage systems are functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">HR compliance posters neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff birthday board is up to date</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards have neat backing paper / border</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for staff lounge…"></textarea></div>
+      </div>
+
+      <!-- Staff Restroom -->
+      <div class="card" id="w-staff-rest">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Staff restroom</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Restroom is clean</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hospitality items are stocked</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Feminine hygiene products poster is hung</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for staff restroom…"></textarea></div>
+      </div>
+
+      <!-- Student Restroom -->
+      <div class="card" id="w-student-rest">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Student restroom</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Restroom is clean</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Toilet paper dispensers stocked</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand soap dispensers stocked</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand dryers functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Feminine hygiene products poster neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stall numbers in place</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Prep Note holder in place</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for student restroom…"></textarea></div>
+      </div>
+
+      <!-- Prepeteria -->
+      <div class="card" id="w-prepeteria">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Prepeteria</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Food menus up to date</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Food compliance posters neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student photo canvases neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Healthy eating posters neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student seating chart neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student chants, First Five, college pennants neatly hung</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student cafeteria tables and chairs neatly organized</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Technology storage with needed items</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">PD supply cabinet stocked</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for prepeteria…"></textarea></div>
+      </div>
+
+      <!-- Central Library -->
+      <div class="card" id="w-library">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Central library</label></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is clean, organized, and fully functional</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Matching, functional tables and chairs for students</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bookshelves stocked with books sorted by level / genre</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Books organized in book bins</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Area rug present where applicable</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Library rules posted</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Reading-encouragement vinyls displayed</span></div>
+        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Comfortable seating available</span></div>
+        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
+        <div class="notes-body"><textarea rows="2" placeholder="Notes for central library…"></textarea></div>
+      </div>
+
+    </div><!-- /wd-checklist -->
+
+  </div>
+  <div class="submit-bar"><button class="submit-btn btn-amber" id="walk-btn" onclick="walkNext()">Next →</button></div>
+</div>
+
+<!-- ══ SUCCESS ══ -->
+<div class="screen" id="screen-success">
+  <div class="scroll-body">
+    <div class="success-inner">
+      <div class="success-ring">✓</div>
+      <div class="success-title" id="s-title">Logged</div>
+      <div class="success-sub" id="s-sub">Your record has been saved.</div>
+      <div class="success-card" id="s-card"></div>
+      <button class="again-btn" onclick="goHome()">← Back to Operations</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PREVIEW ══ -->
+<div class="screen" id="screen-preview">
+  <div class="app-header">
+    <div class="app-header-row">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+    </div>
+  </div>
+  <div class="preview-inner">
+    <div class="preview-badge"><span>Coming soon</span></div>
+    <div class="preview-title" id="prev-title"></div>
+    <div class="preview-desc" id="prev-desc"></div>
+  </div>
+  <div class="preview-footer">
+    <div class="preview-note">This tool is in development. It will appear here when ready — no action needed on your end.</div>
+  </div>
+</div>
+
+<script>
+// ── INIT ────────────────────────────────────
+const h = new Date().getHours();
+document.getElementById('greeting-time').textContent = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
+document.getElementById('home-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+// ── SCREENS ─────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function goHome() {
+  stopTimer('drill'); stopTimer('walk');
+  showScreen('screen-home');
+}
+
+// ── INSTALL ─────────────────────────────────
+let deferredPrompt = null;
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const isStandalone = window.matchMedia('(display-mode:standalone)').matches || navigator.standalone;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt = e;
+  if (!isStandalone) setTimeout(() => document.getElementById('install-banner').classList.add('show'), 2500);
+});
+function triggerInstall() {
+  document.getElementById('install-banner').classList.remove('show');
+  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; }
+}
+function showInstallPrompt() {
+  if (isIOS) document.getElementById('ios-modal').classList.add('show');
+  else if (deferredPrompt) triggerInstall();
+  else document.getElementById('ios-modal').classList.add('show');
+}
+if (isIOS && !isStandalone) {
+  setTimeout(() => {
+    const b = document.getElementById('install-banner');
+    b.innerHTML = `<div class="install-text"><div class="install-title">Add to Home Screen</div><div class="install-sub">Tap Share → Add to Home Screen</div></div><button class="install-btn" onclick="document.getElementById('ios-modal').classList.add('show');this.closest('#install-banner').classList.remove('show')">How?</button><button class="install-x" onclick="this.closest('#install-banner').classList.remove('show')">✕</button>`;
+    b.classList.add('show');
+  }, 3000);
+}
+
+// ── TIMERS ─────────────────────────────────
+const timers = {};
+function startTimer(key) {
+  timers[key] = { start: Date.now(), iv: null };
+  const el = document.getElementById(key + '-timer');
+  el.classList.add('show');
+  timers[key].iv = setInterval(() => {
+    const s = Math.floor((Date.now() - timers[key].start) / 1000);
+    timers[key].secs = s;
+    el.textContent = Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+  }, 500);
+}
+function stopTimer(key) {
+  if (timers[key]?.iv) { clearInterval(timers[key].iv); }
+  const el = document.getElementById(key + '-timer');
+  if (el) { el.classList.remove('show'); el.textContent = '0:00'; }
+}
+function timerSecs(key) { return timers[key]?.secs || 0; }
+function fmtSecs(s) { const m=Math.floor(s/60),r=s%60; return m+'m'+(r?' '+r+'s':''); }
+
+// ── GENERIC HELPERS ─────────────────────────
+function tog(btn, which) {
+  btn.closest('.tog-row').querySelectorAll('.tog').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+}
+function checkTap(item) {
+  const box = item.querySelector('.check-box');
+  const lbl = item.querySelector('.check-label');
+  if (!box.classList.contains('ok') && !box.classList.contains('issue')) {
+    box.classList.add('ok'); lbl.classList.add('done');
+  } else if (box.classList.contains('ok')) {
+    box.classList.remove('ok'); box.classList.add('issue'); lbl.classList.remove('done');
+  } else {
+    box.classList.remove('issue'); lbl.classList.remove('done');
+  }
+}
+function toggleNotes(btn) {
+  const nb = btn.nextElementSibling;
+  nb.classList.toggle('open');
+  btn.textContent = nb.classList.contains('open') ? '− Hide note' : '+ Add note';
+}
+function setProgress(id, pct) { document.getElementById(id).style.width = pct + '%'; }
+
+// ── VOICE ────────────────────────────────────
+let activeRec = null;
+async function toggleVoice(pfx) {
+  const btn=document.getElementById(pfx+'-voice-btn'), mic=document.getElementById(pfx+'-voice-mic');
+  const main=document.getElementById(pfx+'-voice-main'), sub=document.getElementById(pfx+'-voice-sub');
+  const timer=document.getElementById(pfx+'-voice-timer');
+  if (!activeRec) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      const mr = new MediaRecorder(stream);
+      let secs = 0, iv;
+      mr.start();
+      btn.classList.add('recording'); mic.textContent='⏹'; main.textContent='Recording…'; sub.textContent='Tap to stop';
+      timer.classList.add('show'); timer.textContent='0:00';
+      iv = setInterval(()=>{ secs++; timer.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0'); },1000);
+      mr.onstop = () => { stream.getTracks().forEach(t=>t.stop()); clearInterval(iv); btn.classList.remove('recording'); btn.classList.add('done'); mic.textContent='✓'; main.textContent='Voice note saved'; sub.textContent=fmtSecs(secs)+' recorded'; timer.classList.remove('show'); activeRec=null; };
+      activeRec = mr;
+    } catch(e) { main.textContent='Mic unavailable'; sub.textContent='Use notes below'; }
+  } else { activeRec.stop(); }
+}
+
+// ── PREVIEW ─────────────────────────────────
+const PREVIEWS = {
+  arrival: { title:'Arrival & dismissal observation', desc:'A form for OSLs and Principals to record quick evaluations of arrival and dismissal routines as they happen, enabling real-time analysis and issue spotting.' },
+  walkthroughs: { title:'Building walkthroughs', desc:'A digital version of the custodial checklist so that walkthrough results are recorded in real time.' },
+  patrol: { title:'Security patrol', desc:'A checkpoint log for security guards to confirm their patrol route — scanning QR codes around the building to record timestamps and flag anything that needs attention.' },
+  attendance: { title:'Daily attendance check', desc:'A one-tap confirmation that the morning attendance walkthrough happened, with a timestamp — so the ops team has a daily record of process compliance without any extra paperwork.' }
+};
+function openPreview(key) {
+  const p = PREVIEWS[key]; if (!p) return;
+  document.getElementById('prev-title').textContent = p.title;
+  document.getElementById('prev-desc').textContent = p.desc;
+  showScreen('screen-preview');
+}
+
+// ══════════════════════════════════════════════
+// DRILL FLOW
+// ══════════════════════════════════════════════
+const D = { school:null, role:null, drillType:null, weather:null, assessment:null, step:'school' };
+
+function openFlow(type) {
+  if (type === 'drill') { resetDrill(); showScreen('screen-drill'); }
+  if (type === 'walkthrough') { resetWalk(); showScreen('screen-walkthrough'); }
+}
+
+function resetDrill() {
+  Object.assign(D,{school:null,role:null,drillType:null,weather:null,assessment:null,step:'school'});
+  stopTimer('drill');
+  document.querySelectorAll('#screen-drill .sel-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#screen-drill .role-check').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('#screen-drill .tog').forEach(t=>t.classList.remove('on'));
+  ['d-notes','d-ob-notes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('evac-checks').style.display='none';
+  document.getElementById('lock-checks').style.display='none';
+  document.getElementById('drill-ctx').textContent='';
+  setProgress('drill-prog',0);
+  showDrillStep('school');
+}
+
+function showDrillStep(id) {
+  document.querySelectorAll('#screen-drill .flow-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('dd-'+id).classList.add('active');
+  document.querySelector('#screen-drill .scroll-body').scrollTop=0;
+  D.step=id;
+  const pcts={school:10,role:30,start:50,osl:70,observer:65};
+  setProgress('drill-prog', pcts[id]||10);
+  const btn=document.getElementById('drill-btn');
+  const isLast = id==='osl'||id==='observer';
+  const isStart = id==='start';
+  btn.textContent = isStart ? 'Start Drill' : isLast ? 'Submit drill log' : 'Next →';
+  btn.className = 'submit-btn ' + (isLast ? 'btn-teal' : 'btn-amber');
+}
+
+function drillPickSchool(row, val) {
+  document.querySelectorAll('#dd-school .role-check').forEach(c=>c.classList.remove('on'));
+  row.querySelector('.role-check').classList.add('on');
+  D.school = val; updateDrillCtx();
+}
+function walkPickSchool(row, val) {
+  document.querySelectorAll('#wd-school .role-check').forEach(c=>c.classList.remove('on'));
+  row.querySelector('.role-check').classList.add('on');
+  W.school = val;
+  document.getElementById('walk-ctx').textContent = val;
+}
+function drillPickRole(row, val) {
+  document.querySelectorAll('#dd-role .role-check').forEach(c=>c.classList.remove('on'));
+  row.querySelector('.role-check').classList.add('on');
+  D.role = val;
+}
+function walkPickRole(row, val) {
+  document.querySelectorAll('#wd-role .role-check').forEach(c=>c.classList.remove('on'));
+  row.querySelector('.role-check').classList.add('on');
+  W.role = val;
+}
+function drillPick(el, field, val) {
+  el.closest('.sel-grid').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on'); D[field]=val;
+  if (field==='school'||field==='drillType') updateDrillCtx();
+}
+function updateDrillCtx() {
+  const parts=[]; if(D.school)parts.push(D.school); if(D.drillType)parts.push(D.drillType);
+  document.getElementById('drill-ctx').textContent=parts.join(' · ');
+}
+function showChecks(type) {
+  document.getElementById('evac-checks').style.display = type==='evac'?'':'none';
+  document.getElementById('lock-checks').style.display = type==='lock'?'':'none';
+}
+
+function drillNext() {
+  const s = D.step;
+  if (s==='school') { if(!D.school){alert('Select a campus.');return;} showDrillStep('role'); }
+  else if (s==='role') { if(!D.role){alert('Select your role.');return;} D.role==='OSL'?showDrillStep('start'):showDrillStep('observer'); }
+  else if (s==='start') { startTimer('drill'); const now=new Date(); const ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'); document.getElementById('d-t-alarm').value=ts; showDrillStep('osl'); }
+  else if (s==='osl'||s==='observer') { submitDrill(); }
+}
+function drillBack() {
+  const prev={role:'school',start:'role',osl:'start',observer:'role'};
+  if (D.step==='school') { goHome(); return; }
+  showDrillStep(prev[D.step]||'school');
+}
+
+function submitDrill() {
+  stopTimer('drill');
+  const flags=[];
+  document.querySelectorAll('#screen-drill .tog.no.on').forEach(el=>{
+    const lbl=el.closest('.tog-row')?.querySelector('.tog-label')?.textContent;
+    if(lbl) flags.push(lbl);
+  });
+  document.getElementById('s-title').textContent='Drill logged';
+  document.getElementById('s-sub').textContent = D.role==='OSL' ? 'The official record is saved. Campus leaders will receive a summary.' : 'Your observations have been added to the drill record.';
+  let html=`<div class="sum-row"><span class="sum-key">Campus</span><span class="sum-val">${D.school||'—'}</span></div>
+    <div class="sum-row"><span class="sum-key">Role</span><span class="sum-val">${D.role||'—'}</span></div>`;
+  if (D.role==='OSL') {
+    html+=`<div class="sum-row"><span class="sum-key">Type</span><span class="sum-val">${D.drillType||'—'}</span></div>
+      <div class="sum-row"><span class="sum-key">Duration</span><span class="sum-val">${fmtSecs(timerSecs('drill'))}</span></div>`;
+    if(flags.length) html+=`<div class="sum-row"><span class="sum-key">Issues flagged</span><span class="sum-val flag">${flags.length} item${flags.length>1?'s':''}</span></div>`;
+  } else if(D.assessment) {
+    html+=`<div class="sum-row"><span class="sum-key">Assessment</span><span class="sum-val">${D.assessment}</span></div>`;
+  }
+  document.getElementById('s-card').innerHTML=html;
+  setProgress('drill-prog',100);
+  showScreen('screen-success');
+}
+
+// ══════════════════════════════════════════════
+// WALKTHROUGH FLOW
+// ══════════════════════════════════════════════
+const W = { school:null, role:null, step:'school' };
+
+function resetWalk() {
+  Object.assign(W,{school:null,role:null,step:'school'});
+  stopTimer('walk');
+  document.querySelectorAll('#screen-walkthrough .sel-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#screen-walkthrough .role-check').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('#screen-walkthrough .check-box').forEach(b=>{ b.classList.remove('ok','issue'); });
+  document.querySelectorAll('#screen-walkthrough .check-label').forEach(l=>l.classList.remove('done'));
+  document.querySelectorAll('#screen-walkthrough .notes-body').forEach(n=>{ n.classList.remove('open'); });
+  document.querySelectorAll('#screen-walkthrough textarea').forEach(t=>t.value='');
+  document.querySelectorAll('#screen-walkthrough .notes-toggle').forEach(b=>b.textContent='+ Add note');
+  document.getElementById('walk-ctx').textContent='';
+  setProgress('walk-prog',0);
+  showWalkStep('school');
+}
+
+function showWalkStep(id) {
+  document.querySelectorAll('#screen-walkthrough .flow-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('wd-'+id).classList.add('active');
+  document.querySelector('#screen-walkthrough .scroll-body').scrollTop=0;
+  W.step=id;
+  const pcts={school:10,role:30,checklist:55};
+  setProgress('walk-prog',pcts[id]||10);
+  const btn=document.getElementById('walk-btn');
+  const isLast=id==='checklist';
+  btn.textContent=isLast?'Submit walkthrough':'Next →';
+  btn.className='submit-btn '+(isLast?'btn-teal':'btn-amber');
+}
+
+function walkPick(el,field,val) {
+  el.closest('.sel-grid').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on'); W[field]=val;
+  if(field==='school') document.getElementById('walk-ctx').textContent=val;
+}
+
+function walkNext() {
+  const s=W.step;
+  if (s==='school') { if(!W.school){alert('Select a campus.');return;} showWalkStep('role'); }
+  else if (s==='role') { if(!W.role){alert('Select your role.');return;} showWalkStep('checklist'); }
+  else if (s==='checklist') { submitWalk(); }
+}
+function walkBack() {
+  const prev={role:'school',checklist:'role'};
+  if(W.step==='school'){goHome();return;}
+  showWalkStep(prev[W.step]||'school');
+}
+
+function submitWalk() {
+  const total = document.querySelectorAll('#wd-checklist .check-box').length;
+  const checked = document.querySelectorAll('#wd-checklist .check-box.ok').length;
+  const issues = document.querySelectorAll('#wd-checklist .check-box.issue').length;
+  document.getElementById('s-title').textContent='Walkthrough logged';
+  document.getElementById('s-sub').textContent='Your common space walkthrough has been saved.';
+  document.getElementById('s-card').innerHTML=`
+    <div class="sum-row"><span class="sum-key">Campus</span><span class="sum-val">${W.school||'—'}</span></div>
+    <div class="sum-row"><span class="sum-key">Role</span><span class="sum-val">${W.role||'—'}</span></div>
+    <div class="sum-row"><span class="sum-key">Items checked</span><span class="sum-val">${checked} of ${total}</span></div>
+    ${issues?`<div class="sum-row"><span class="sum-key">Issues flagged</span><span class="sum-val flag">${issues} item${issues>1?'s':''}</span></div>`:''}`;
+  setProgress('walk-prog',100);
+  showScreen('screen-success');
+}
+</script>
+</body>
+</html>
