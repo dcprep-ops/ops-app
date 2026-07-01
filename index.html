@@ -1342,6 +1342,8 @@ function submitDrill() {
     const lbl=el.closest('.tog-row')?.querySelector('.tog-label')?.textContent;
     if(lbl) flags.push(lbl);
   });
+  const payload = { flow:'drill', campus:D.school, role:D.role, drillType:D.drillType||'', weather:D.weather||'', alarmStart:document.getElementById('d-t-alarm')?.value||'', allClear:document.getElementById('d-t-clear')?.value||'', occupants:document.getElementById('d-occupants')?.value||'', durationSecs:timerSecs('drill'), flags:flags, notes:document.getElementById('d-notes')?.value||document.getElementById('d-ob-notes')?.value||'' };
+  fetch('https://script.google.com/macros/s/AKfycbwXGUPBUTpd0gRcfRxk0-g5JhUjxn9ZjwK5_M7aUJAvw47UfHGXXIIFJzzPVKk-1n_D1Q/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Drill logged';
   document.getElementById('s-sub').textContent = D.role==='OSL' ? 'The official record is saved. Campus leaders will receive a summary.' : 'Your observations have been added to the drill record.';
   let html=`<div class="sum-row"><span class="sum-key">Campus</span><span class="sum-val">${D.school||'—'}</span></div>
@@ -1413,6 +1415,9 @@ function submitWalk() {
   const total = document.querySelectorAll('#wd-checklist .check-box').length;
   const checked = document.querySelectorAll('#wd-checklist .check-box.ok').length;
   const issues = document.querySelectorAll('#wd-checklist .check-box.issue').length;
+  const notes = Array.from(document.querySelectorAll('#wd-checklist textarea')).map(t=>t.value).filter(Boolean).join(' | ');
+  const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, notes };
+  fetch('https://script.google.com/macros/s/AKfycbwXGUPBUTpd0gRcfRxk0-g5JhUjxn9ZjwK5_M7aUJAvw47UfHGXXIIFJzzPVKk-1n_D1Q/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Your common space walkthrough has been saved.';
   document.getElementById('s-card').innerHTML=`
@@ -1488,6 +1493,8 @@ function submitArr() {
   const total=document.querySelectorAll('#ad-checklist .check-box').length;
   const checked=document.querySelectorAll('#ad-checklist .check-box.ok').length;
   const issues=document.querySelectorAll('#ad-checklist .check-box.issue').length;
+  const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, rating:A.rating||'', notes:document.getElementById('arr-notes')?.value||'' };
+  fetch('https://script.google.com/macros/s/AKfycbwXGUPBUTpd0gRcfRxk0-g5JhUjxn9ZjwK5_M7aUJAvw47UfHGXXIIFJzzPVKk-1n_D1Q/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Observation logged';
   document.getElementById('s-sub').textContent='Your arrival / dismissal observation has been saved.';
   document.getElementById('s-card').innerHTML=`
@@ -1574,6 +1581,9 @@ function submitCust() {
   const checked = container ? container.querySelectorAll('.check-box.ok').length : 0;
   const issues = container ? container.querySelectorAll('.check-box.issue').length : 0;
   const type = C.role==='DoF' ? 'Bi-Weekly (DoF)' : 'Weekly (Facility Team)';
+  const notes = container ? Array.from(container.querySelectorAll('textarea')).map(t=>t.value).filter(Boolean).join(' | ') : '';
+  const payload = { flow:'custodial', campus:C.school, role:C.role, checklistType:type, itemsChecked:checked, itemsFlagged:issues, notes };
+  fetch('https://script.google.com/macros/s/AKfycbwXGUPBUTpd0gRcfRxk0-g5JhUjxn9ZjwK5_M7aUJAvw47UfHGXXIIFJzzPVKk-1n_D1Q/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Your custodial walkthrough has been saved.';
   document.getElementById('s-card').innerHTML=`
