@@ -223,6 +223,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .sum-val{font-size:13px;font-weight:600;color:var(--text);text-align:right;max-width:58%}
 .sum-val.flag{color:var(--red)}
 .again-btn{background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:12px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.email-capture{width:100%;max-width:340px;margin-bottom:12px;text-align:left}
+.email-capture-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block}
+.email-capture-row{display:flex;gap:8px}
+.email-capture-row input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;color:var(--text);background:#fff;font-family:inherit;min-width:0}
+.email-capture-row input:focus{outline:none;border-color:var(--teal)}
+.email-send-btn{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:11px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.email-send-btn:active{opacity:0.85}
+.email-sent{font-size:13px;color:var(--teal);font-weight:600;text-align:center;padding:8px 0;display:none}
 
 /* preview screen */
 .preview-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 28px 40px;flex:1}
@@ -1114,6 +1122,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="success-title" id="s-title">Logged</div>
       <div class="success-sub" id="s-sub">Your record has been saved.</div>
       <div class="success-card" id="s-card"></div>
+      <div class="email-capture">
+        <label class="email-capture-label">Want a copy of what you submitted?</label>
+        <div class="email-capture-row">
+          <input type="email" id="s-email" placeholder="Your email address" inputmode="email" autocomplete="email">
+          <button class="email-send-btn" onclick="sendEmailCopy()">Send</button>
+        </div>
+        <div class="email-sent" id="s-email-sent">✓ Sent — check your inbox</div>
+      </div>
       <button class="again-btn" onclick="goHome()">← Return to Ops App Home Screen</button>
     </div>
   </div>
@@ -1157,6 +1173,40 @@ function serializeChecklist(containerId) {
   });
   return result;
 }
+// ── SCREENS ─────────────────────────────────
+let _lastPayload = {};
+let _lastFlow = '';
+
+function resetEmailCapture() {
+  const inp = document.getElementById('s-email');
+  const btn = document.querySelector('.email-send-btn');
+  const sent = document.getElementById('s-email-sent');
+  if (inp) { inp.value=''; inp.style.display=''; }
+  if (btn) { btn.textContent='Send'; btn.disabled=false; btn.style.display=''; }
+  if (sent) sent.style.display='none';
+}
+
+function sendEmailCopy() {
+  const email = document.getElementById('s-email').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('s-email').focus();
+    return;
+  }
+  const btn = document.querySelector('.email-send-btn');
+  btn.textContent = 'Sending…'; btn.disabled = true;
+
+  const URL = 'https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec';
+  fetch(URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify({ ..._lastPayload, sendCopyTo: email, flow: _lastFlow + '_email' })
+  }).catch(()=>{});
+
+  document.getElementById('s-email-sent').style.display = 'block';
+  document.getElementById('s-email').style.display = 'none';
+  btn.style.display = 'none';
+}
+
 // ── SCREENS ─────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1372,7 +1422,9 @@ function submitDrill() {
     if(lbl) flags.push(lbl);
   });
   const observations = {}; document.querySelectorAll('#screen-drill .tog-row').forEach(row=>{ const lbl=row.querySelector('.tog-label')?.textContent; const on=row.querySelector('.tog.on'); if(lbl&&on) observations[lbl]=on.classList.contains('yes')?'yes':'no'; });
+  _lastFlow='drill';
   const payload = { flow:'drill', campus:D.school, role:D.role, drillType:D.drillType||'', weather:D.weather||'', alarmStart:document.getElementById('d-t-alarm')?.value||'', allClear:document.getElementById('d-t-clear')?.value||'', occupants:document.getElementById('d-occupants')?.value||'', durationSecs:timerSecs('drill'), flags:flags, observations, notes:document.getElementById('d-notes')?.value||document.getElementById('d-ob-notes')?.value||'' };
+  _lastPayload = payload;
   fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Drill logged';
   document.getElementById('s-sub').textContent = D.role==='OSL' ? 'The official record is saved. Campus leaders will receive a summary.' : 'Your observations have been added to the drill record.';
@@ -1387,6 +1439,7 @@ function submitDrill() {
   }
   document.getElementById('s-card').innerHTML=html;
   setProgress('drill-prog',100);
+  resetEmailCapture();
   showScreen('screen-success');
 }
 
@@ -1446,8 +1499,10 @@ function submitWalk() {
   const checked = document.querySelectorAll('#wd-checklist .check-box.ok').length;
   const issues = document.querySelectorAll('#wd-checklist .check-box.issue').length;
   const notes = Array.from(document.querySelectorAll('#wd-checklist textarea')).map(t=>t.value).filter(Boolean).join(' | ');
+  _lastFlow='walkthrough';
   const checklist = serializeChecklist('wd-checklist');
   const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
+  _lastPayload = payload;
   fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Your common space walkthrough has been saved.';
@@ -1457,6 +1512,7 @@ function submitWalk() {
     <div class="sum-row"><span class="sum-key">Items checked</span><span class="sum-val">${checked} of ${total}</span></div>
     ${issues?`<div class="sum-row"><span class="sum-key">Issues flagged</span><span class="sum-val flag">${issues} item${issues>1?'s':''}</span></div>`:''}`;
   setProgress('walk-prog',100);
+  resetEmailCapture();
   showScreen('screen-success');
 }
 // ══════════════════════════════════════════════
@@ -1526,8 +1582,10 @@ function submitArr() {
   const total=document.querySelectorAll('#ad-checklist .check-box').length;
   const checked=document.querySelectorAll('#ad-checklist .check-box.ok').length;
   const issues=document.querySelectorAll('#ad-checklist .check-box.issue').length;
+  _lastFlow='arrival';
   const checklist = serializeChecklist('ad-checklist');
   const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, rating:A.rating||'', checklist, notes:document.getElementById('arr-notes')?.value||'' };
+  _lastPayload = payload;
   fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Observation logged';
   document.getElementById('s-sub').textContent='Your arrival / dismissal observation has been saved.';
@@ -1538,6 +1596,7 @@ function submitArr() {
     ${issues?`<div class="sum-row"><span class="sum-key">Issues flagged</span><span class="sum-val flag">${issues} item${issues>1?'s':''}</span></div>`:''}
     ${A.rating?`<div class="sum-row"><span class="sum-key">Overall rating</span><span class="sum-val">${A.rating}</span></div>`:''}`;
   setProgress('arr-prog',100);
+  resetEmailCapture();
   showScreen('screen-success');
 }
 
@@ -1616,8 +1675,10 @@ function submitCust() {
   const issues = container ? container.querySelectorAll('.check-box.issue').length : 0;
   const type = C.role==='DoF' ? 'Bi-Weekly (DoF)' : 'Weekly (Facility Team)';
   const notes = container ? Array.from(container.querySelectorAll('textarea')).map(t=>t.value).filter(Boolean).join(' | ') : '';
+  _lastFlow='custodial';
   const checklist = serializeChecklist('cd-'+C.step);
   const payload = { flow:'custodial', campus:C.school, role:C.role, checklistType:type, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
+  _lastPayload = payload;
   fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Your custodial walkthrough has been saved.';
@@ -1628,6 +1689,7 @@ function submitCust() {
     <div class="sum-row"><span class="sum-key">Items checked</span><span class="sum-val">${checked} of ${total}</span></div>
     ${issues?`<div class="sum-row"><span class="sum-key">Issues flagged</span><span class="sum-val flag">${issues} item${issues>1?'s':''}</span></div>`:''}`;
   setProgress('cust-prog',100);
+  resetEmailCapture();
   showScreen('screen-success');
 }
 
