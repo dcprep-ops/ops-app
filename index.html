@@ -193,6 +193,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .role-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s}
 .role-check.on{background:var(--teal);border-color:var(--teal)}
 .role-check.on::after{content:'';display:block;width:4px;height:8px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
+.role-other-wrap{border-top:0.5px solid var(--border);margin-top:0}
 .fac-btn-link{display:flex;align-items:center;justify-content:space-between;width:100%;padding:16px 18px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);text-decoration:none;margin-bottom:10px;-webkit-tap-highlight-color:transparent;transition:all 0.12s}
 .fac-btn-link:active{background:var(--light);border-color:var(--teal)}
 .fac-btn-name{font-size:16px;font-weight:500;color:var(--text)}
@@ -371,6 +372,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="role-row" onclick="drillPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="drc-Principal"></span></div>
         <div class="role-row" onclick="drillPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="drc-SDO"></span></div>
         <div class="role-row" onclick="drillPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="drc-Other"></span></div>
+        <div class="role-other-wrap" id="drc-other-input" style="display:none;padding:0 16px 14px;">
+          <input type="text" id="d-other-role" placeholder="Enter your role…" oninput="D.role=this.value||'Other'">
+        </div>
       </div>
     </div>
 
@@ -503,6 +507,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="role-row" onclick="walkPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="wrc-Principal"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="wrc-SDO"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="wrc-Other"></span></div>
+        <div class="role-other-wrap" id="wrc-other-input" style="display:none;padding:0 16px 14px;">
+          <input type="text" id="w-other-role" placeholder="Enter your role…" oninput="W.role=this.value||'Other'">
+        </div>
       </div>
     </div>
 
@@ -517,17 +524,17 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Lobby -->
       <div class="card" id="w-lobby">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Lobby</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is inviting and in good condition</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lost and Found is clearly identifiable and organized</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Package storage is functional and away from visitor sight</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Front desk and security desk supplies are stocked</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards have neat backing paper, updated monthly</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual bulletin board with school leader "All About Me" and headshot</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual family resources up to date and neat</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Professional student and staff photos hung neatly</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual signage and values hung neatly</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">School awards displayed on floating shelf</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Security desk with clear sign-in process signage</span></div>
+        <div class="check-item" data-item="Furniture is inviting and in good condition" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is inviting and in good condition</span></div>
+        <div class="check-item" data-item="Lost and Found is clearly identifiable and organized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lost and Found is clearly identifiable and organized</span></div>
+        <div class="check-item" data-item="Package storage is functional and away from visitor sight" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Package storage is functional and away from visitor sight</span></div>
+        <div class="check-item" data-item="Front desk and security desk supplies are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Front desk and security desk supplies are stocked</span></div>
+        <div class="check-item" data-item="Bulletin boards have neat backing paper, updated monthly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards have neat backing paper, updated monthly</span></div>
+        <div class="check-item" data-item="Bilingual bulletin board with school leader &quot;All About Me&quot; and headshot" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual bulletin board with school leader "All About Me" and headshot</span></div>
+        <div class="check-item" data-item="Bilingual family resources up to date and neat" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual family resources up to date and neat</span></div>
+        <div class="check-item" data-item="Professional student and staff photos hung neatly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Professional student and staff photos hung neatly</span></div>
+        <div class="check-item" data-item="Bilingual signage and values hung neatly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual signage and values hung neatly</span></div>
+        <div class="check-item" data-item="School awards displayed on floating shelf" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">School awards displayed on floating shelf</span></div>
+        <div class="check-item" data-item="Security desk with clear sign-in process signage" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Security desk with clear sign-in process signage</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for lobby…"></textarea></div>
       </div>
@@ -535,15 +542,15 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Hallways -->
       <div class="card" id="w-hallways">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Hallways</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways are clean, warm, and welcoming</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Signage and bulletin boards are neat and match branding</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards feature student work</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways are clear of furniture, trash, and other items</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values posters neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Informational posters and flyers neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">"Meet the Teacher" sign holder intact</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Photo canvases on each blank wall, hung neatly</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls are clean without marks</span></div>
+        <div class="check-item" data-item="Hallways are clean, warm, and welcoming" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways are clean, warm, and welcoming</span></div>
+        <div class="check-item" data-item="Signage and bulletin boards are neat and match branding" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Signage and bulletin boards are neat and match branding</span></div>
+        <div class="check-item" data-item="Bulletin boards feature student work" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards feature student work</span></div>
+        <div class="check-item" data-item="Hallways are clear of furniture, trash, and other items" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways are clear of furniture, trash, and other items</span></div>
+        <div class="check-item" data-item="Values posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values posters neatly hung</span></div>
+        <div class="check-item" data-item="Informational posters and flyers neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Informational posters and flyers neatly hung</span></div>
+        <div class="check-item" data-item="&quot;Meet the Teacher&quot; sign holder intact" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">"Meet the Teacher" sign holder intact</span></div>
+        <div class="check-item" data-item="Photo canvases on each blank wall, hung neatly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Photo canvases on each blank wall, hung neatly</span></div>
+        <div class="check-item" data-item="Walls are clean without marks" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls are clean without marks</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for hallways…"></textarea></div>
       </div>
@@ -551,12 +558,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Conference Rooms -->
       <div class="card" id="w-conference">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Conference rooms</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is neat, clean, and free of clutter</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is clean, matching, and functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Dry erase board is intact</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Google Meet box and remote control in holder</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Mounted television and remote control in holder</span></div>
+        <div class="check-item" data-item="Space is neat, clean, and free of clutter" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is neat, clean, and free of clutter</span></div>
+        <div class="check-item" data-item="Office supplies are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
+        <div class="check-item" data-item="Furniture is clean, matching, and functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is clean, matching, and functional</span></div>
+        <div class="check-item" data-item="Dry erase board is intact" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Dry erase board is intact</span></div>
+        <div class="check-item" data-item="Google Meet box and remote control in holder" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Google Meet box and remote control in holder</span></div>
+        <div class="check-item" data-item="Mounted television and remote control in holder" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Mounted television and remote control in holder</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for conference rooms…"></textarea></div>
       </div>
@@ -564,11 +571,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Leader Offices -->
       <div class="card" id="w-offices">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Leader offices</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office is clean, organized, and fully functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Conference table and chairs present where applicable</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Area rug present where applicable</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desk and office chairs functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bookshelf present and organized</span></div>
+        <div class="check-item" data-item="Office is clean, organized, and fully functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office is clean, organized, and fully functional</span></div>
+        <div class="check-item" data-item="Conference table and chairs present where applicable" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Conference table and chairs present where applicable</span></div>
+        <div class="check-item" data-item="Area rug present where applicable" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Area rug present where applicable</span></div>
+        <div class="check-item" data-item="Desk and office chairs functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desk and office chairs functional</span></div>
+        <div class="check-item" data-item="Bookshelf present and organized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bookshelf present and organized</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for leader offices…"></textarea></div>
       </div>
@@ -576,12 +583,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Copy/Mail Room -->
       <div class="card" id="w-copy">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Copy / mail room</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Room is clean, organized, and fully functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper and paper storage system is functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Ink / toner and storage system is functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values posters neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Copier troubleshooting directions hung at eye level</span></div>
+        <div class="check-item" data-item="Room is clean, organized, and fully functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Room is clean, organized, and fully functional</span></div>
+        <div class="check-item" data-item="Office supplies are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
+        <div class="check-item" data-item="Paper and paper storage system is functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper and paper storage system is functional</span></div>
+        <div class="check-item" data-item="Ink / toner and storage system is functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Ink / toner and storage system is functional</span></div>
+        <div class="check-item" data-item="Values posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values posters neatly hung</span></div>
+        <div class="check-item" data-item="Copier troubleshooting directions hung at eye level" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Copier troubleshooting directions hung at eye level</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for copy / mail room…"></textarea></div>
       </div>
@@ -589,16 +596,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Staff Lounge -->
       <div class="card" id="w-lounge">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Staff lounge / workroom</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is clean, organized, and free of clutter</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Appliances are cleaned regularly</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hospitality items are stocked</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper and ink / toner storage systems are functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">HR compliance posters neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff birthday board is up to date</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards have neat backing paper / border</span></div>
+        <div class="check-item" data-item="Space is clean, organized, and free of clutter" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is clean, organized, and free of clutter</span></div>
+        <div class="check-item" data-item="Appliances are cleaned regularly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Appliances are cleaned regularly</span></div>
+        <div class="check-item" data-item="Hospitality items are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hospitality items are stocked</span></div>
+        <div class="check-item" data-item="Office supplies are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
+        <div class="check-item" data-item="Paper and ink / toner storage systems are functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper and ink / toner storage systems are functional</span></div>
+        <div class="check-item" data-item="Furniture is functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is functional</span></div>
+        <div class="check-item" data-item="Values signage: &quot;At DC Prep We Keep Spaces&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
+        <div class="check-item" data-item="HR compliance posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">HR compliance posters neatly hung</span></div>
+        <div class="check-item" data-item="Staff birthday board is up to date" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff birthday board is up to date</span></div>
+        <div class="check-item" data-item="Bulletin boards have neat backing paper / border" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards have neat backing paper / border</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for staff lounge…"></textarea></div>
       </div>
@@ -606,10 +613,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Staff Restroom -->
       <div class="card" id="w-staff-rest">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Staff restroom</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Restroom is clean</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hospitality items are stocked</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Feminine hygiene products poster is hung</span></div>
+        <div class="check-item" data-item="Restroom is clean" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Restroom is clean</span></div>
+        <div class="check-item" data-item="Hospitality items are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hospitality items are stocked</span></div>
+        <div class="check-item" data-item="Values signage: &quot;At DC Prep We Keep Spaces&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
+        <div class="check-item" data-item="Feminine hygiene products poster is hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Feminine hygiene products poster is hung</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for staff restroom…"></textarea></div>
       </div>
@@ -617,14 +624,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Student Restroom -->
       <div class="card" id="w-student-rest">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Student restroom</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Restroom is clean</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Toilet paper dispensers stocked</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand soap dispensers stocked</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand dryers functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Feminine hygiene products poster neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stall numbers in place</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Prep Note holder in place</span></div>
+        <div class="check-item" data-item="Restroom is clean" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Restroom is clean</span></div>
+        <div class="check-item" data-item="Toilet paper dispensers stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Toilet paper dispensers stocked</span></div>
+        <div class="check-item" data-item="Hand soap dispensers stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand soap dispensers stocked</span></div>
+        <div class="check-item" data-item="Hand dryers functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand dryers functional</span></div>
+        <div class="check-item" data-item="Values signage: &quot;At DC Prep We Keep Spaces&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
+        <div class="check-item" data-item="Feminine hygiene products poster neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Feminine hygiene products poster neatly hung</span></div>
+        <div class="check-item" data-item="Stall numbers in place" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stall numbers in place</span></div>
+        <div class="check-item" data-item="Prep Note holder in place" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Prep Note holder in place</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for student restroom…"></textarea></div>
       </div>
@@ -632,16 +639,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Prepeteria -->
       <div class="card" id="w-prepeteria">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Prepeteria</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Food menus up to date</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Food compliance posters neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student photo canvases neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Healthy eating posters neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student seating chart neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student chants, First Five, college pennants neatly hung</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student cafeteria tables and chairs neatly organized</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Technology storage with needed items</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">PD supply cabinet stocked</span></div>
+        <div class="check-item" data-item="Food menus up to date" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Food menus up to date</span></div>
+        <div class="check-item" data-item="Food compliance posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Food compliance posters neatly hung</span></div>
+        <div class="check-item" data-item="Student photo canvases neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student photo canvases neatly hung</span></div>
+        <div class="check-item" data-item="Healthy eating posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Healthy eating posters neatly hung</span></div>
+        <div class="check-item" data-item="Values signage: &quot;At DC Prep We Keep Spaces&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
+        <div class="check-item" data-item="Student seating chart neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student seating chart neatly hung</span></div>
+        <div class="check-item" data-item="Student chants, First Five, college pennants neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student chants, First Five, college pennants neatly hung</span></div>
+        <div class="check-item" data-item="Student cafeteria tables and chairs neatly organized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student cafeteria tables and chairs neatly organized</span></div>
+        <div class="check-item" data-item="Technology storage with needed items" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Technology storage with needed items</span></div>
+        <div class="check-item" data-item="PD supply cabinet stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">PD supply cabinet stocked</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for prepeteria…"></textarea></div>
       </div>
@@ -649,14 +656,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Central Library -->
       <div class="card" id="w-library">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Central library</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is clean, organized, and fully functional</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Matching, functional tables and chairs for students</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bookshelves stocked with books sorted by level / genre</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Books organized in book bins</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Area rug present where applicable</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Library rules posted</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Reading-encouragement vinyls displayed</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Comfortable seating available</span></div>
+        <div class="check-item" data-item="Space is clean, organized, and fully functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is clean, organized, and fully functional</span></div>
+        <div class="check-item" data-item="Matching, functional tables and chairs for students" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Matching, functional tables and chairs for students</span></div>
+        <div class="check-item" data-item="Bookshelves stocked with books sorted by level / genre" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bookshelves stocked with books sorted by level / genre</span></div>
+        <div class="check-item" data-item="Books organized in book bins" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Books organized in book bins</span></div>
+        <div class="check-item" data-item="Area rug present where applicable" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Area rug present where applicable</span></div>
+        <div class="check-item" data-item="Library rules posted" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Library rules posted</span></div>
+        <div class="check-item" data-item="Reading-encouragement vinyls displayed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Reading-encouragement vinyls displayed</span></div>
+        <div class="check-item" data-item="Comfortable seating available" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Comfortable seating available</span></div>
         <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
         <div class="notes-body"><textarea rows="2" placeholder="Notes for central library…"></textarea></div>
       </div>
@@ -700,6 +707,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="role-row" onclick="arrPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="arc-Principal"></span></div>
         <div class="role-row" onclick="arrPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="arc-SDO"></span></div>
         <div class="role-row" onclick="arrPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="arc-Other"></span></div>
+        <div class="role-other-wrap" id="arc-other-input" style="display:none;padding:0 16px 14px;">
+          <input type="text" id="a-other-role" placeholder="Enter your role…" oninput="A.role=this.value||'Other'">
+        </div>
       </div>
     </div>
 
@@ -716,26 +726,26 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <!-- Safety -->
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Safety</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Crossing guard present</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Arrival / dismissal zones free of obstructions</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">No unauthorized vehicles in student loading zones</span></div>
+        <div class="check-item" data-item="Crossing guard present" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Crossing guard present</span></div>
+        <div class="check-item" data-item="Arrival / dismissal zones free of obstructions" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Arrival / dismissal zones free of obstructions</span></div>
+        <div class="check-item" data-item="No unauthorized vehicles in student loading zones" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">No unauthorized vehicles in student loading zones</span></div>
       </div>
 
       <!-- Staff execution -->
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Staff execution</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All staff members at duty posts</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff members attentive — not on phones</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff behaviors support positive student behaviors and transitions</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff positioned to maximize visibility of students</span></div>
+        <div class="check-item" data-item="All staff members at duty posts" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All staff members at duty posts</span></div>
+        <div class="check-item" data-item="Staff members attentive — not on phones" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff members attentive — not on phones</span></div>
+        <div class="check-item" data-item="Staff behaviors support positive student behaviors and transitions" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff behaviors support positive student behaviors and transitions</span></div>
+        <div class="check-item" data-item="Staff positioned to maximize visibility of students" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff positioned to maximize visibility of students</span></div>
       </div>
 
       <!-- Student behavior & flow -->
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Student behavior &amp; flow</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Students moving with purpose, minimal crowding</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drop-off / pick-up line moving efficiently</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Students needing support identified and assisted promptly</span></div>
+        <div class="check-item" data-item="Students moving with purpose, minimal crowding" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Students moving with purpose, minimal crowding</span></div>
+        <div class="check-item" data-item="Drop-off / pick-up line moving efficiently" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drop-off / pick-up line moving efficiently</span></div>
+        <div class="check-item" data-item="Students needing support identified and assisted promptly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Students needing support identified and assisted promptly</span></div>
       </div>
 
       <!-- Overall rating -->
@@ -806,15 +816,15 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0">Tap once if complete ✓ &nbsp;·&nbsp; Tap twice to flag an issue !</p>
       </div>
       <div class="card">
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All trash emptied and placed in designated area</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Entry doors cleaned and polished (interior and exterior)</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desks and tables cleaned and cleared (offices and classrooms)</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Offices and high-traffic classroom floors vacuumed</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lunchroom / cafeteria surfaces cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stairways cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and sanitized</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hard floor surfaces mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gymnasium mopped and free of scuff marks</span></div>
+        <div class="check-item" data-item="All trash emptied and placed in designated area" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All trash emptied and placed in designated area</span></div>
+        <div class="check-item" data-item="Entry doors cleaned and polished (interior and exterior)" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Entry doors cleaned and polished (interior and exterior)</span></div>
+        <div class="check-item" data-item="Desks and tables cleaned and cleared (offices and classrooms)" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desks and tables cleaned and cleared (offices and classrooms)</span></div>
+        <div class="check-item" data-item="Offices and high-traffic classroom floors vacuumed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Offices and high-traffic classroom floors vacuumed</span></div>
+        <div class="check-item" data-item="Lunchroom / cafeteria surfaces cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lunchroom / cafeteria surfaces cleaned</span></div>
+        <div class="check-item" data-item="Stairways cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stairways cleaned</span></div>
+        <div class="check-item" data-item="Drinking fountains cleaned and sanitized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and sanitized</span></div>
+        <div class="check-item" data-item="Hard floor surfaces mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hard floor surfaces mopped</span></div>
+        <div class="check-item" data-item="Gymnasium mopped and free of scuff marks" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gymnasium mopped and free of scuff marks</span></div>
       </div>
       <div class="card"><div class="card-section">
         <label class="field-label">Notes</label>
@@ -829,15 +839,15 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0">Tap once if complete ✓ &nbsp;·&nbsp; Tap twice to flag an issue !</p>
       </div>
       <div class="card">
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All trash emptied and placed in designated area</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Entry doors cleaned and polished (interior and exterior)</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desks and tables cleaned and cleared (offices and classrooms)</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Offices and high-traffic classroom floors vacuumed</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lunchroom / cafeteria surfaces cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stairways cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and sanitized</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hard floor surfaces mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gymnasium damp mopped and free of scuff marks</span></div>
+        <div class="check-item" data-item="All trash emptied and placed in designated area" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All trash emptied and placed in designated area</span></div>
+        <div class="check-item" data-item="Entry doors cleaned and polished (interior and exterior)" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Entry doors cleaned and polished (interior and exterior)</span></div>
+        <div class="check-item" data-item="Desks and tables cleaned and cleared (offices and classrooms)" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desks and tables cleaned and cleared (offices and classrooms)</span></div>
+        <div class="check-item" data-item="Offices and high-traffic classroom floors vacuumed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Offices and high-traffic classroom floors vacuumed</span></div>
+        <div class="check-item" data-item="Lunchroom / cafeteria surfaces cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lunchroom / cafeteria surfaces cleaned</span></div>
+        <div class="check-item" data-item="Stairways cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stairways cleaned</span></div>
+        <div class="check-item" data-item="Drinking fountains cleaned and sanitized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and sanitized</span></div>
+        <div class="check-item" data-item="Hard floor surfaces mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hard floor surfaces mopped</span></div>
+        <div class="check-item" data-item="Gymnasium damp mopped and free of scuff marks" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gymnasium damp mopped and free of scuff marks</span></div>
       </div>
       <div class="card"><div class="card-section">
         <label class="field-label">Notes</label>
@@ -852,13 +862,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0">Tap once if complete ✓ &nbsp;·&nbsp; Tap twice to flag an issue !</p>
       </div>
       <div class="card">
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All trash emptied and placed in designated area</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Entry doors cleaned and polished (interior and exterior)</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desks and tables cleaned and cleared (offices and classrooms)</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lunchroom / cafeteria surfaces cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stairways cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and sanitized</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gymnasium mopped and free of scuff marks</span></div>
+        <div class="check-item" data-item="All trash emptied and placed in designated area" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All trash emptied and placed in designated area</span></div>
+        <div class="check-item" data-item="Entry doors cleaned and polished (interior and exterior)" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Entry doors cleaned and polished (interior and exterior)</span></div>
+        <div class="check-item" data-item="Desks and tables cleaned and cleared (offices and classrooms)" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desks and tables cleaned and cleared (offices and classrooms)</span></div>
+        <div class="check-item" data-item="Lunchroom / cafeteria surfaces cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lunchroom / cafeteria surfaces cleaned</span></div>
+        <div class="check-item" data-item="Stairways cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stairways cleaned</span></div>
+        <div class="check-item" data-item="Drinking fountains cleaned and sanitized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and sanitized</span></div>
+        <div class="check-item" data-item="Gymnasium mopped and free of scuff marks" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gymnasium mopped and free of scuff marks</span></div>
       </div>
       <div class="card"><div class="card-section">
         <label class="field-label">Notes</label>
@@ -874,63 +884,63 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Entrance lobby</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lobby floor damp mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lobby glass up to 72" cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Push plates, bars, door thresholds, and frames wiped down</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Directory boards wiped down and streak-free</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture, pictures, and horizontal surfaces dusted to 72"</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Wastepaper baskets emptied and liners replaced</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and streak-free</span></div>
+        <div class="check-item" data-item="Lobby floor damp mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lobby floor damp mopped</span></div>
+        <div class="check-item" data-item="Lobby glass up to 72&quot; cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lobby glass up to 72" cleaned</span></div>
+        <div class="check-item" data-item="Push plates, bars, door thresholds, and frames wiped down" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Push plates, bars, door thresholds, and frames wiped down</span></div>
+        <div class="check-item" data-item="Directory boards wiped down and streak-free" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Directory boards wiped down and streak-free</span></div>
+        <div class="check-item" data-item="Furniture, pictures, and horizontal surfaces dusted to 72&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture, pictures, and horizontal surfaces dusted to 72"</span></div>
+        <div class="check-item" data-item="Wastepaper baskets emptied and liners replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Wastepaper baskets emptied and liners replaced</span></div>
+        <div class="check-item" data-item="Drinking fountains cleaned and streak-free" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and streak-free</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Classrooms, offices, library &amp; common areas</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Horizontal surfaces dusted to 72" (furniture, equipment, appliances)</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Pre-K tables wiped down and disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Blackboard / dry-erase board railings wiped clean</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Conference room chairs positioned neatly</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Wastepaper baskets emptied and liners replaced</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Pre-K / K rooms: hard floors mopped, carpets vacuumed</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Other classrooms: floors dust mopped in high-traffic pathways</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Carpeted areas inspected for spots and stains</span></div>
+        <div class="check-item" data-item="Horizontal surfaces dusted to 72&quot; (furniture, equipment, appliances)" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Horizontal surfaces dusted to 72" (furniture, equipment, appliances)</span></div>
+        <div class="check-item" data-item="Pre-K tables wiped down and disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Pre-K tables wiped down and disinfected</span></div>
+        <div class="check-item" data-item="Blackboard / dry-erase board railings wiped clean" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Blackboard / dry-erase board railings wiped clean</span></div>
+        <div class="check-item" data-item="Conference room chairs positioned neatly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Conference room chairs positioned neatly</span></div>
+        <div class="check-item" data-item="Wastepaper baskets emptied and liners replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Wastepaper baskets emptied and liners replaced</span></div>
+        <div class="check-item" data-item="Pre-K / K rooms: hard floors mopped, carpets vacuumed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Pre-K / K rooms: hard floors mopped, carpets vacuumed</span></div>
+        <div class="check-item" data-item="Other classrooms: floors dust mopped in high-traffic pathways" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Other classrooms: floors dust mopped in high-traffic pathways</span></div>
+        <div class="check-item" data-item="Carpeted areas inspected for spots and stains" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Carpeted areas inspected for spots and stains</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Restrooms</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Mirrors, hand basins, and bright work cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Counter tops cleaned and sanitized</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Urinals, toilets, seats, and sanitary napkin receptacles cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls and partitions damp wiped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Consumable items replenished</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Sanitary napkin disposal bags replaced</span></div>
+        <div class="check-item" data-item="Mirrors, hand basins, and bright work cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Mirrors, hand basins, and bright work cleaned</span></div>
+        <div class="check-item" data-item="Counter tops cleaned and sanitized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Counter tops cleaned and sanitized</span></div>
+        <div class="check-item" data-item="Urinals, toilets, seats, and sanitary napkin receptacles cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Urinals, toilets, seats, and sanitary napkin receptacles cleaned</span></div>
+        <div class="check-item" data-item="Walls and partitions damp wiped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls and partitions damp wiped</span></div>
+        <div class="check-item" data-item="Consumable items replenished" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Consumable items replenished</span></div>
+        <div class="check-item" data-item="Floor damp mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
+        <div class="check-item" data-item="Trash emptied" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied</span></div>
+        <div class="check-item" data-item="Sanitary napkin disposal bags replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Sanitary napkin disposal bags replaced</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Cafeteria</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Tables and chairs cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Waste receptacles emptied</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
+        <div class="check-item" data-item="Tables and chairs cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Tables and chairs cleaned</span></div>
+        <div class="check-item" data-item="Waste receptacles emptied" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Waste receptacles emptied</span></div>
+        <div class="check-item" data-item="Floor damp mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Gymnasium</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor dust mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied</span></div>
+        <div class="check-item" data-item="Floor dust mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor dust mopped</span></div>
+        <div class="check-item" data-item="Floor damp mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
+        <div class="check-item" data-item="Trash emptied" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Stairs &amp; landings</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Large trash and debris removed</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Handrails, ledges, grills, and hardware cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls, woodwork, and doors spot cleaned</span></div>
+        <div class="check-item" data-item="Large trash and debris removed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Large trash and debris removed</span></div>
+        <div class="check-item" data-item="Handrails, ledges, grills, and hardware cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Handrails, ledges, grills, and hardware cleaned</span></div>
+        <div class="check-item" data-item="Walls, woodwork, and doors spot cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls, woodwork, and doors spot cleaned</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Elevator</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Carpet vacuumed and spots removed</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Baseboard dusted and cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Doors and walls wiped — spots and fingerprints removed</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gum, stains, and debris removed from handrails and tracks</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Emergency phone and security compartments dusted and disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Call buttons and call plates cleaned and disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Elevator tracks vacuumed</span></div>
+        <div class="check-item" data-item="Carpet vacuumed and spots removed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Carpet vacuumed and spots removed</span></div>
+        <div class="check-item" data-item="Baseboard dusted and cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Baseboard dusted and cleaned</span></div>
+        <div class="check-item" data-item="Doors and walls wiped — spots and fingerprints removed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Doors and walls wiped — spots and fingerprints removed</span></div>
+        <div class="check-item" data-item="Gum, stains, and debris removed from handrails and tracks" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gum, stains, and debris removed from handrails and tracks</span></div>
+        <div class="check-item" data-item="Emergency phone and security compartments dusted and disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Emergency phone and security compartments dusted and disinfected</span></div>
+        <div class="check-item" data-item="Call buttons and call plates cleaned and disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Call buttons and call plates cleaned and disinfected</span></div>
+        <div class="check-item" data-item="Elevator tracks vacuumed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Elevator tracks vacuumed</span></div>
       </div>
       <div class="card"><div class="card-section">
         <label class="field-label">Notes</label>
@@ -946,53 +956,53 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Entrance lobby</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lobby floor damp mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lobby glass up to 72" cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Push plates, bars, door thresholds, and frames wiped down</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Directory boards wiped down and streak-free</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture, pictures, and horizontal surfaces dusted to 72"</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Wastepaper baskets emptied and liners replaced</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and streak-free</span></div>
+        <div class="check-item" data-item="Lobby floor damp mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lobby floor damp mopped</span></div>
+        <div class="check-item" data-item="Lobby glass up to 72&quot; cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lobby glass up to 72" cleaned</span></div>
+        <div class="check-item" data-item="Push plates, bars, door thresholds, and frames wiped down" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Push plates, bars, door thresholds, and frames wiped down</span></div>
+        <div class="check-item" data-item="Directory boards wiped down and streak-free" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Directory boards wiped down and streak-free</span></div>
+        <div class="check-item" data-item="Furniture, pictures, and horizontal surfaces dusted to 72&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture, pictures, and horizontal surfaces dusted to 72"</span></div>
+        <div class="check-item" data-item="Wastepaper baskets emptied and liners replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Wastepaper baskets emptied and liners replaced</span></div>
+        <div class="check-item" data-item="Drinking fountains cleaned and streak-free" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Drinking fountains cleaned and streak-free</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Classrooms, offices, library &amp; common areas</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Horizontal surfaces dusted to 72"</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Pre-K tables wiped down and disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Blackboard / dry-erase board railings wiped clean</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Conference room chairs positioned neatly</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Wastepaper baskets emptied</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Pre-K / K rooms: hard floors mopped, carpets vacuumed</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Other classrooms: floors dust mopped in high-traffic pathways</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Carpeted areas inspected for spots and stains</span></div>
+        <div class="check-item" data-item="Horizontal surfaces dusted to 72&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Horizontal surfaces dusted to 72"</span></div>
+        <div class="check-item" data-item="Pre-K tables wiped down and disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Pre-K tables wiped down and disinfected</span></div>
+        <div class="check-item" data-item="Blackboard / dry-erase board railings wiped clean" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Blackboard / dry-erase board railings wiped clean</span></div>
+        <div class="check-item" data-item="Conference room chairs positioned neatly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Conference room chairs positioned neatly</span></div>
+        <div class="check-item" data-item="Wastepaper baskets emptied" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Wastepaper baskets emptied</span></div>
+        <div class="check-item" data-item="Pre-K / K rooms: hard floors mopped, carpets vacuumed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Pre-K / K rooms: hard floors mopped, carpets vacuumed</span></div>
+        <div class="check-item" data-item="Other classrooms: floors dust mopped in high-traffic pathways" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Other classrooms: floors dust mopped in high-traffic pathways</span></div>
+        <div class="check-item" data-item="Carpeted areas inspected for spots and stains" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Carpeted areas inspected for spots and stains</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Restrooms</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Mirrors, hand basins, and bright work cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Counter tops cleaned and sanitized</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Urinals, toilets, seats, and sanitary napkin receptacles cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls and partitions damp wiped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Consumable items replenished</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Sanitary napkin disposal bags replaced</span></div>
+        <div class="check-item" data-item="Mirrors, hand basins, and bright work cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Mirrors, hand basins, and bright work cleaned</span></div>
+        <div class="check-item" data-item="Counter tops cleaned and sanitized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Counter tops cleaned and sanitized</span></div>
+        <div class="check-item" data-item="Urinals, toilets, seats, and sanitary napkin receptacles cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Urinals, toilets, seats, and sanitary napkin receptacles cleaned</span></div>
+        <div class="check-item" data-item="Walls and partitions damp wiped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls and partitions damp wiped</span></div>
+        <div class="check-item" data-item="Consumable items replenished" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Consumable items replenished</span></div>
+        <div class="check-item" data-item="Floor damp mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
+        <div class="check-item" data-item="Trash emptied" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied</span></div>
+        <div class="check-item" data-item="Sanitary napkin disposal bags replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Sanitary napkin disposal bags replaced</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Cafeteria</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Tables and chairs cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Waste receptacles emptied and liners replaced</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
+        <div class="check-item" data-item="Tables and chairs cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Tables and chairs cleaned</span></div>
+        <div class="check-item" data-item="Waste receptacles emptied and liners replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Waste receptacles emptied and liners replaced</span></div>
+        <div class="check-item" data-item="Floor damp mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Gymnasium</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor dust mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied</span></div>
+        <div class="check-item" data-item="Floor dust mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor dust mopped</span></div>
+        <div class="check-item" data-item="Floor damp mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Floor damp mopped</span></div>
+        <div class="check-item" data-item="Trash emptied" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Stairs &amp; landings</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Large trash and debris removed</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Handrails, ledges, grills, and hardware cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls, woodwork, and doors spot cleaned</span></div>
+        <div class="check-item" data-item="Large trash and debris removed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Large trash and debris removed</span></div>
+        <div class="check-item" data-item="Handrails, ledges, grills, and hardware cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Handrails, ledges, grills, and hardware cleaned</span></div>
+        <div class="check-item" data-item="Walls, woodwork, and doors spot cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls, woodwork, and doors spot cleaned</span></div>
       </div>
       <div class="card"><div class="card-section">
         <label class="field-label">Notes</label>
@@ -1008,52 +1018,52 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Entrances, hallways &amp; stairwells</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Glass and doors cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash and recycling bins emptied and liners replaced</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All horizontal surfaces dusted</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Baseboards, kick plates, door thresholds, pulls, and frames wiped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Handrails in stairs cleaned and disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways swept</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stairwells swept / dust mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Water fountains cleaned — free of marks, streaks, and water spots</span></div>
+        <div class="check-item" data-item="Glass and doors cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Glass and doors cleaned</span></div>
+        <div class="check-item" data-item="Trash and recycling bins emptied and liners replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash and recycling bins emptied and liners replaced</span></div>
+        <div class="check-item" data-item="All horizontal surfaces dusted" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All horizontal surfaces dusted</span></div>
+        <div class="check-item" data-item="Baseboards, kick plates, door thresholds, pulls, and frames wiped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Baseboards, kick plates, door thresholds, pulls, and frames wiped</span></div>
+        <div class="check-item" data-item="Handrails in stairs cleaned and disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Handrails in stairs cleaned and disinfected</span></div>
+        <div class="check-item" data-item="Hallways swept" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways swept</span></div>
+        <div class="check-item" data-item="Stairwells swept / dust mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stairwells swept / dust mopped</span></div>
+        <div class="check-item" data-item="Water fountains cleaned — free of marks, streaks, and water spots" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Water fountains cleaned — free of marks, streaks, and water spots</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Cafeteria</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Tables and chairs cleaned and disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash and recycling liners emptied and replaced</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Doors spot cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Cafeteria floor swept</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All horizontal surfaces dusted</span></div>
+        <div class="check-item" data-item="Tables and chairs cleaned and disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Tables and chairs cleaned and disinfected</span></div>
+        <div class="check-item" data-item="Trash and recycling liners emptied and replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash and recycling liners emptied and replaced</span></div>
+        <div class="check-item" data-item="Doors spot cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Doors spot cleaned</span></div>
+        <div class="check-item" data-item="Cafeteria floor swept" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Cafeteria floor swept</span></div>
+        <div class="check-item" data-item="All horizontal surfaces dusted" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All horizontal surfaces dusted</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Gymnasium</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gym floors mopped</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Doors spot cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All horizontal surfaces dusted</span></div>
+        <div class="check-item" data-item="Gym floors mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Gym floors mopped</span></div>
+        <div class="check-item" data-item="Doors spot cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Doors spot cleaned</span></div>
+        <div class="check-item" data-item="All horizontal surfaces dusted" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All horizontal surfaces dusted</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Nurse's suite</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Nurse suite cleaned and swept</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Horizontal surfaces, door knobs, phone, and keyboard disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper towels, toilet paper, and hand soap replenished</span></div>
+        <div class="check-item" data-item="Nurse suite cleaned and swept" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Nurse suite cleaned and swept</span></div>
+        <div class="check-item" data-item="Horizontal surfaces, door knobs, phone, and keyboard disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Horizontal surfaces, door knobs, phone, and keyboard disinfected</span></div>
+        <div class="check-item" data-item="Paper towels, toilet paper, and hand soap replenished" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper towels, toilet paper, and hand soap replenished</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Restrooms</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper towel dispensers, knobs, and faucets cleaned and sanitized</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Sanitary napkin disposal bags replaced</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls, doors, and partitions disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied and liners replaced</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Urinals, toilets, and toilet seats cleaned and disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Toilet bowls cleaned</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand soap, toilet paper, seat covers, and paper towels replenished</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bathroom floor swept and wet mopped</span></div>
+        <div class="check-item" data-item="Paper towel dispensers, knobs, and faucets cleaned and sanitized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper towel dispensers, knobs, and faucets cleaned and sanitized</span></div>
+        <div class="check-item" data-item="Sanitary napkin disposal bags replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Sanitary napkin disposal bags replaced</span></div>
+        <div class="check-item" data-item="Walls, doors, and partitions disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls, doors, and partitions disinfected</span></div>
+        <div class="check-item" data-item="Trash emptied and liners replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash emptied and liners replaced</span></div>
+        <div class="check-item" data-item="Urinals, toilets, and toilet seats cleaned and disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Urinals, toilets, and toilet seats cleaned and disinfected</span></div>
+        <div class="check-item" data-item="Toilet bowls cleaned" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Toilet bowls cleaned</span></div>
+        <div class="check-item" data-item="Hand soap, toilet paper, seat covers, and paper towels replenished" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand soap, toilet paper, seat covers, and paper towels replenished</span></div>
+        <div class="check-item" data-item="Bathroom floor swept and wet mopped" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bathroom floor swept and wet mopped</span></div>
       </div>
       <div class="card">
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Classrooms &amp; offices</label></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Rugs and carpets inspected and spot treated</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Door knobs and telephone handles disinfected</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash cans emptied and liners replaced</span></div>
-        <div class="check-item" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All horizontal surfaces dusted</span></div>
+        <div class="check-item" data-item="Rugs and carpets inspected and spot treated" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Rugs and carpets inspected and spot treated</span></div>
+        <div class="check-item" data-item="Door knobs and telephone handles disinfected" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Door knobs and telephone handles disinfected</span></div>
+        <div class="check-item" data-item="Trash cans emptied and liners replaced" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Trash cans emptied and liners replaced</span></div>
+        <div class="check-item" data-item="All horizontal surfaces dusted" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All horizontal surfaces dusted</span></div>
       </div>
       <div class="card"><div class="card-section">
         <label class="field-label">Notes</label>
@@ -1132,6 +1142,21 @@ const h = new Date().getHours();
 document.getElementById('greeting-time').textContent = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
 document.getElementById('home-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
 
+
+// Serialize all check items in a container into an object {label: 'checked'|'flagged'|'no input'}
+function serializeChecklist(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return {};
+  const result = {};
+  container.querySelectorAll('.check-item[data-item]').forEach(item => {
+    const label = item.getAttribute('data-item');
+    const box = item.querySelector('.check-box');
+    if (box.classList.contains('ok')) result[label] = 'checked';
+    else if (box.classList.contains('issue')) result[label] = 'flagged';
+    else result[label] = 'no input';
+  });
+  return result;
+}
 // ── SCREENS ─────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1302,11 +1327,15 @@ function drillPickRole(row, val) {
   document.querySelectorAll('#dd-role .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   D.role = val;
+  const inp = document.getElementById('drc-other-input');
+  if (inp) { inp.style.display = val==='Other' ? '' : 'none'; if(val!=='Other') document.getElementById('d-other-role').value=''; }
 }
 function walkPickRole(row, val) {
   document.querySelectorAll('#wd-role .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   W.role = val;
+  const inp = document.getElementById('wrc-other-input');
+  if (inp) { inp.style.display = val==='Other' ? '' : 'none'; if(val!=='Other') document.getElementById('w-other-role').value=''; }
 }
 function drillPick(el, field, val) {
   el.closest('.sel-grid').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
@@ -1342,8 +1371,9 @@ function submitDrill() {
     const lbl=el.closest('.tog-row')?.querySelector('.tog-label')?.textContent;
     if(lbl) flags.push(lbl);
   });
-  const payload = { flow:'drill', campus:D.school, role:D.role, drillType:D.drillType||'', weather:D.weather||'', alarmStart:document.getElementById('d-t-alarm')?.value||'', allClear:document.getElementById('d-t-clear')?.value||'', occupants:document.getElementById('d-occupants')?.value||'', durationSecs:timerSecs('drill'), flags:flags, notes:document.getElementById('d-notes')?.value||document.getElementById('d-ob-notes')?.value||'' };
-  fetch('https://script.google.com/macros/s/AKfycbwXGUPBUTpd0gRcfRxk0-g5JhUjxn9ZjwK5_M7aUJAvw47UfHGXXIIFJzzPVKk-1n_D1Q/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  const observations = {}; document.querySelectorAll('#screen-drill .tog-row').forEach(row=>{ const lbl=row.querySelector('.tog-label')?.textContent; const on=row.querySelector('.tog.on'); if(lbl&&on) observations[lbl]=on.classList.contains('yes')?'yes':'no'; });
+  const payload = { flow:'drill', campus:D.school, role:D.role, drillType:D.drillType||'', weather:D.weather||'', alarmStart:document.getElementById('d-t-alarm')?.value||'', allClear:document.getElementById('d-t-clear')?.value||'', occupants:document.getElementById('d-occupants')?.value||'', durationSecs:timerSecs('drill'), flags:flags, observations, notes:document.getElementById('d-notes')?.value||document.getElementById('d-ob-notes')?.value||'' };
+  fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Drill logged';
   document.getElementById('s-sub').textContent = D.role==='OSL' ? 'The official record is saved. Campus leaders will receive a summary.' : 'Your observations have been added to the drill record.';
   let html=`<div class="sum-row"><span class="sum-key">Campus</span><span class="sum-val">${D.school||'—'}</span></div>
@@ -1416,8 +1446,9 @@ function submitWalk() {
   const checked = document.querySelectorAll('#wd-checklist .check-box.ok').length;
   const issues = document.querySelectorAll('#wd-checklist .check-box.issue').length;
   const notes = Array.from(document.querySelectorAll('#wd-checklist textarea')).map(t=>t.value).filter(Boolean).join(' | ');
-  const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, notes };
-  fetch('https://script.google.com/macros/s/AKfycbwXGUPBUTpd0gRcfRxk0-g5JhUjxn9ZjwK5_M7aUJAvw47UfHGXXIIFJzzPVKk-1n_D1Q/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  const checklist = serializeChecklist('wd-checklist');
+  const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
+  fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Your common space walkthrough has been saved.';
   document.getElementById('s-card').innerHTML=`
@@ -1467,6 +1498,8 @@ function arrPickRole(row,val) {
   document.querySelectorAll('#ad-role .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   A.role=val;
+  const inp = document.getElementById('arc-other-input');
+  if (inp) { inp.style.display = val==='Other' ? '' : 'none'; if(val!=='Other') document.getElementById('a-other-role').value=''; }
 }
 function arrPick(el,field,val) {
   el.closest('.sel-grid').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
@@ -1493,8 +1526,9 @@ function submitArr() {
   const total=document.querySelectorAll('#ad-checklist .check-box').length;
   const checked=document.querySelectorAll('#ad-checklist .check-box.ok').length;
   const issues=document.querySelectorAll('#ad-checklist .check-box.issue').length;
-  const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, rating:A.rating||'', notes:document.getElementById('arr-notes')?.value||'' };
-  fetch('https://script.google.com/macros/s/AKfycbwXGUPBUTpd0gRcfRxk0-g5JhUjxn9ZjwK5_M7aUJAvw47UfHGXXIIFJzzPVKk-1n_D1Q/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  const checklist = serializeChecklist('ad-checklist');
+  const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, rating:A.rating||'', checklist, notes:document.getElementById('arr-notes')?.value||'' };
+  fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Observation logged';
   document.getElementById('s-sub').textContent='Your arrival / dismissal observation has been saved.';
   document.getElementById('s-card').innerHTML=`
@@ -1582,8 +1616,9 @@ function submitCust() {
   const issues = container ? container.querySelectorAll('.check-box.issue').length : 0;
   const type = C.role==='DoF' ? 'Bi-Weekly (DoF)' : 'Weekly (Facility Team)';
   const notes = container ? Array.from(container.querySelectorAll('textarea')).map(t=>t.value).filter(Boolean).join(' | ') : '';
-  const payload = { flow:'custodial', campus:C.school, role:C.role, checklistType:type, itemsChecked:checked, itemsFlagged:issues, notes };
-  fetch('https://script.google.com/macros/s/AKfycbwXGUPBUTpd0gRcfRxk0-g5JhUjxn9ZjwK5_M7aUJAvw47UfHGXXIIFJzzPVKk-1n_D1Q/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  const checklist = serializeChecklist('cd-'+C.step);
+  const payload = { flow:'custodial', campus:C.school, role:C.role, checklistType:type, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
+  fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Your custodial walkthrough has been saved.';
   document.getElementById('s-card').innerHTML=`
