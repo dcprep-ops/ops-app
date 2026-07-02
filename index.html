@@ -313,14 +313,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <span class="cell-label">Create Facilities Request</span>
       </div>
 
-      <div class="icon-cell" onclick="openFlow('techsupport')">
-        <div class="cell-icon teal-icon"><i class="ti ti-headset" aria-hidden="true"></i></div>
-        <span class="cell-label">Request Tech Support</span>
-      </div>
-
     </div>
 
     <div class="section-label">Coming Later</div>
+    <div class="tool-row" onclick="openPreview('techsupport')">
+      <div class="tool-row-left"><div class="tool-row-name">Request Tech Support</div></div>
+      <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
+    </div>
     <div class="tool-row" onclick="openPreview('walkthroughs')">
       <div class="tool-row-left"><div class="tool-row-name">Facility Needs Walkthrough</div></div>
       <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
@@ -1115,8 +1114,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="app-header">
     <div class="app-header-row">
       <button class="back-btn" onclick="goHome()">← Back</button>
+      <span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--amber);background:rgba(245,158,11,0.15);padding:4px 10px;border-radius:20px;">Preview</span>
     </div>
     <div class="header-flow-title">Request Tech Support</div>
+    <div class="header-sub">Share your feedback on how this should work</div>
   </div>
   <div class="scroll-body flow-body">
 
@@ -1159,7 +1160,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
   </div>
   <div class="submit-bar">
-    <button class="submit-btn btn-teal" onclick="submitTechSupport()">Open email to send →</button>
+    <div style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px 16px;text-align:center;">
+      <div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:4px;">This flow is in preview</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;">For now, email <strong style="color:var(--text)">helpdesk@dcprep.org</strong> directly. Your feedback on this form will shape the final version.</div>
+    </div>
   </div>
 </div>
 
@@ -1365,6 +1369,7 @@ const PREVIEWS = {
   techsupport: { title:'Request Tech Support', desc:'Submit a tech support request directly from the app — either by email to the support inbox or through a short survey. Coming soon.' }
 };
 function openPreview(key) {
+  if (key === 'techsupport') { showScreen('screen-techsupport'); return; }
   const p = PREVIEWS[key]; if (!p) return;
   document.getElementById('prev-title').textContent = p.title;
   document.getElementById('prev-desc').textContent = p.desc;
@@ -1763,17 +1768,6 @@ function facBack() {
   goHome();
 }
 
-// ── TECH SUPPORT ────────────────────────────────
-function submitTechSupport() {
-  const email    = document.getElementById('ts-email').value.trim();
-  const school   = document.getElementById('ts-school').value;
-  const category = document.getElementById('ts-category').value;
-  const desc     = document.getElementById('ts-description').value.trim();
-
-  if (!school || !category) {
-    alert('Please select your school and a category.');
-    return;
-  }
 
   const subject = encodeURIComponent('Tech Support Request — ' + school + ' — ' + category);
   const body = encodeURIComponent(
