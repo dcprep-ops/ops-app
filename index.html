@@ -299,18 +299,23 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
 
       <div class="icon-cell" onclick="openFlow('arrival')">
-        <div class="cell-icon"><i class="ti ti-car" aria-hidden="true"></i></div>
+        <div class="cell-icon teal-icon"><i class="ti ti-car" aria-hidden="true"></i></div>
         <span class="cell-label">Arrival &amp; Dismissal Observation</span>
       </div>
 
       <div class="icon-cell" onclick="openFlow('custodial')">
-        <div class="cell-icon teal-icon"><i class="ti ti-spray" aria-hidden="true"></i></div>
+        <div class="cell-icon"><i class="ti ti-spray" aria-hidden="true"></i></div>
         <span class="cell-label">Custodial Walkthrough</span>
       </div>
 
       <div class="icon-cell" onclick="openFlow('facilities')">
         <div class="cell-icon"><i class="ti ti-clipboard-text" aria-hidden="true"></i></div>
         <span class="cell-label">Create Facilities Request</span>
+      </div>
+
+      <div class="icon-cell" onclick="openFlow('techsupport')">
+        <div class="cell-icon teal-icon"><i class="ti ti-headset" aria-hidden="true"></i></div>
+        <span class="cell-label">Request Tech Support</span>
       </div>
 
     </div>
@@ -328,10 +333,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="tool-row-left"><div class="tool-row-name">Log Daily Attendance Check</div></div>
       <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
     </div>
-    <div class="tool-row" onclick="openPreview('techsupport')">
-      <div class="tool-row-left"><div class="tool-row-name">Request Tech Support</div></div>
-      <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
-    </div>
+
 
     <div style="text-align:center;padding:24px 0 8px">
       <button onclick="showInstallPrompt()" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit">📲 Add to Home Screen</button>
@@ -1107,6 +1109,61 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 </div>
 
 
+<!-- ══ TECH SUPPORT FLOW ══ -->
+<div class="screen" id="screen-techsupport">
+  <div class="prog-track"><div class="prog-fill" style="width:100%"></div></div>
+  <div class="app-header">
+    <div class="app-header-row">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+    </div>
+    <div class="header-flow-title">Request Tech Support</div>
+  </div>
+  <div class="scroll-body flow-body">
+
+    <div class="card">
+      <div class="card-section">
+        <label class="field-label">Your email address</label>
+        <input type="email" id="ts-email" placeholder="name@dcprep.org" inputmode="email" autocomplete="email">
+      </div>
+      <div class="card-section">
+        <label class="field-label">Location</label>
+        <select id="ts-school">
+          <option value="" disabled selected>Select a location…</option>
+          <option>Anacostia Elementary (AEC)</option>
+          <option>Anacostia Middle (AMC)</option>
+          <option>Benning Elementary (BEC)</option>
+          <option>Benning Middle (BMC)</option>
+          <option>Edgewood Elementary (EEC)</option>
+          <option>Edgewood Middle (EMC)</option>
+          <option>Home Office</option>
+        </select>
+      </div>
+      <div class="card-section">
+        <label class="field-label">What's this about?</label>
+        <select id="ts-category">
+          <option value="" disabled selected>Select a category…</option>
+          <option>Chromebook</option>
+          <option>Staff laptop</option>
+          <option>Projector or display</option>
+          <option>Internet / Wi-Fi</option>
+          <option>Printer</option>
+          <option>Software or account access</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="card-section">
+        <label class="field-label">Description</label>
+        <textarea id="ts-description" rows="5" placeholder="Describe the issue — what happened, where you are, and what you've already tried."></textarea>
+      </div>
+    </div>
+
+  </div>
+  <div class="submit-bar">
+    <button class="submit-btn btn-teal" onclick="submitTechSupport()">Open email to send →</button>
+  </div>
+</div>
+
+
 <!-- ══ SUCCESS ══ -->
 <div class="screen" id="screen-success">
   <div class="scroll-body">
@@ -1325,6 +1382,7 @@ function openFlow(type) {
   if (type === 'arrival') { resetArr(); showScreen('screen-arrival'); }
   if (type === 'custodial') { resetCust(); showScreen('screen-custodial'); }
   if (type === 'facilities') { resetFac(); showScreen('screen-facilities'); }
+  if (type === 'techsupport') { showScreen('screen-techsupport'); }
 }
 
 function resetDrill() {
@@ -1703,6 +1761,29 @@ function resetFac() {
 
 function facBack() {
   goHome();
+}
+
+// ── TECH SUPPORT ────────────────────────────────
+function submitTechSupport() {
+  const email    = document.getElementById('ts-email').value.trim();
+  const school   = document.getElementById('ts-school').value;
+  const category = document.getElementById('ts-category').value;
+  const desc     = document.getElementById('ts-description').value.trim();
+
+  if (!school || !category) {
+    alert('Please select your school and a category.');
+    return;
+  }
+
+  const subject = encodeURIComponent('Tech Support Request — ' + school + ' — ' + category);
+  const body = encodeURIComponent(
+    'From: ' + (email || 'not provided') + '\n' +
+    'School: ' + school + '\n' +
+    'Category: ' + category + '\n\n' +
+    'Description:\n' + (desc || 'No description provided.')
+  );
+
+  window.location.href = 'mailto:helpdesk@dcprep.org?subject=' + subject + '&body=' + body;
 }
 
 </script>
