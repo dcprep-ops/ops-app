@@ -366,10 +366,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <!-- role -->
-    <div class="flow-step" id="dd-role">
-      <div class="step-title">What's your role?</div>
+    <!-- type + role combined -->
+    <div class="flow-step" id="dd-type">
+      <div class="step-title">Drill details</div>
       <div class="card">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Drill type</label></div>
+        <div class="role-row" onclick="drillPickType(this,'Evacuation')"><span class="role-name">Evacuation</span><span class="role-check" id="dtc-Evacuation"></span></div>
+        <div class="role-row" onclick="drillPickType(this,'Lockdown')"><span class="role-name">Lockdown</span><span class="role-check" id="dtc-Lockdown"></span></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Your role</label></div>
         <div class="role-row" onclick="drillPickRole(this,'OSL')"><span class="role-name">OSL</span><span class="role-check" id="drc-OSL"></span></div>
         <div class="role-row" onclick="drillPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="drc-Principal"></span></div>
         <div class="role-row" onclick="drillPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="drc-SDO"></span></div>
@@ -380,27 +386,34 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <!-- osl start -->
+    <!-- start — button is the action, no submit bar -->
     <div class="flow-step" id="dd-start">
-      <div class="step-title">Ready to start?</div>
-      <div class="card"><div class="card-section" style="text-align:center;padding:32px 20px">
-        <div style="font-size:48px;margin-bottom:16px">🚨</div>
-        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px">Tap Start Drill when the alarm sounds</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.6">This records the official start time and begins the elapsed timer.</div>
-      </div></div>
+      <div class="step-title">Ready?</div>
+      <div class="card">
+        <div class="card-section" style="text-align:center;padding:28px 20px 24px">
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px">Tap the button below when the alarm sounds. This records the official start time.</div>
+          <button onclick="drillStart()" style="width:100%;padding:20px;background:var(--red);color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">🚨 Start Drill</button>
+        </div>
+      </div>
     </div>
 
     <!-- osl form -->
+    <!-- stop drill -->
+    <div class="flow-step" id="dd-stop">
+      <div class="step-title">Drill in progress</div>
+      <div class="card">
+        <div class="card-section" style="text-align:center;padding:28px 20px 24px">
+          <div id="drill-elapsed" style="font-size:48px;font-weight:800;color:var(--amber);font-variant-numeric:tabular-nums;margin-bottom:8px">0:00</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Elapsed time</div>
+          <button onclick="drillStop()" style="width:100%;padding:20px;background:var(--navy);color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">⏹ Stop Drill</button>
+        </div>
+      </div>
+    </div>
+
     <div class="flow-step" id="dd-osl">
       <div class="step-title">Drill details</div>
       <div class="card">
-        <div class="card-section">
-          <label class="field-label">Drill type</label>
-          <div class="sel-grid c2">
-            <button class="sel-btn" onclick="drillPick(this,'drillType','Evacuation');showChecks('evac')">Evacuation</button>
-            <button class="sel-btn" onclick="drillPick(this,'drillType','Lockdown');showChecks('lock')">Lockdown</button>
-          </div>
-        </div>
+
         <div class="card-section">
           <label class="field-label">Weather</label>
           <div class="sel-grid c3">
@@ -451,30 +464,21 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <!-- observer -->
     <div class="flow-step" id="dd-observer">
       <div class="step-title">What did you see?</div>
-      <div class="card"><div class="card-section">
-        <button class="voice-btn" id="d-voice-btn" onclick="toggleVoice('d')">
-          <div class="voice-mic" id="d-voice-mic">🎙️</div>
-          <div style="flex:1"><div class="voice-main" id="d-voice-main">Tap to record</div><div class="voice-sub" id="d-voice-sub">Tap again to stop</div></div>
-          <span class="voice-timer" id="d-voice-timer"></span>
-        </button>
-      </div>
-      <div class="card-section">
-        <label class="field-label">Written observations</label>
-        <textarea id="d-ob-notes" rows="4" placeholder="What did you observe?"></textarea>
-      </div>
-      <div class="card-section" style="padding-bottom:14px">
-        <label class="field-label">Overall assessment</label>
-        <div class="sel-grid c3">
-          <button class="sel-btn" onclick="drillPick(this,'assessment','Strong')">Strong</button>
-          <button class="sel-btn" onclick="drillPick(this,'assessment','OK')">OK</button>
-          <button class="sel-btn" onclick="drillPick(this,'assessment','Needs work')">Needs work</button>
+      <div class="card">
+        <div class="card-section">
+          <label class="field-label">Observations</label>
+          <textarea id="d-ob-notes" rows="6" placeholder="What did you observe? Any highlights, concerns, or follow-ups for the OSL?"></textarea>
         </div>
-      </div></div>
+        <div class="card-section" style="padding-bottom:14px">
+          <label class="field-label">Overall assessment</label>
+          <div class="sel-grid c3">
+            <button class="sel-btn" onclick="drillPick(this,'assessment','Strong')">Strong</button>
+            <button class="sel-btn" onclick="drillPick(this,'assessment','OK')">OK</button>
+            <button class="sel-btn" onclick="drillPick(this,'assessment','Needs work')">Needs work</button>
+          </div>
+        </div>
+      </div>
     </div>
-
-  </div>
-  <div class="submit-bar"><button class="submit-btn btn-amber" id="drill-btn" onclick="drillNext()">Next →</button></div>
-</div>
 
 <!-- ══ WALKTHROUGH FLOW ══ -->
 <div class="screen" id="screen-walkthrough">
@@ -1272,7 +1276,8 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 function goHome() {
-  stopTimer('drill'); stopTimer('walk');
+  stopTimer('drill');
+  if(D.elapsedIv){clearInterval(D.elapsedIv);D.elapsedIv=null;} stopTimer('walk');
   showScreen('screen-home');
 }
 
@@ -1386,7 +1391,7 @@ function openPreview(key) {
 // ══════════════════════════════════════════════
 // DRILL FLOW
 // ══════════════════════════════════════════════
-const D = { school:null, role:null, drillType:null, weather:null, assessment:null, step:'school' };
+const D = { school:null, role:null, drillType:null, weather:null, assessment:null, step:'school', elapsedIv:null };
 
 function openFlow(type) {
   if (type === 'drill') { resetDrill(); showScreen('screen-drill'); }
@@ -1402,6 +1407,7 @@ function resetDrill() {
   stopTimer('drill');
   document.querySelectorAll('#screen-drill .sel-btn').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('#screen-drill .role-check').forEach(c=>c.classList.remove('on'));
+  D.drillType=null;
   document.querySelectorAll('#screen-drill .tog').forEach(t=>t.classList.remove('on'));
   ['d-notes','d-ob-notes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   document.getElementById('evac-checks').style.display='none';
@@ -1416,12 +1422,13 @@ function showDrillStep(id) {
   document.getElementById('dd-'+id).classList.add('active');
   document.querySelector('#screen-drill .scroll-body').scrollTop=0;
   D.step=id;
-  const pcts={school:10,role:30,start:50,osl:70,observer:65};
+  const pcts={school:10,type:35,start:55,stop:65,osl:80,observer:60};
   setProgress('drill-prog', pcts[id]||10);
   const btn=document.getElementById('drill-btn');
   const isLast = id==='osl'||id==='observer';
-  const isStart = id==='start';
-  btn.textContent = isStart ? 'Start Drill' : isLast ? 'Submit drill log' : 'Next →';
+  const isHidden = id==='start'||id==='stop';
+  btn.style.display = isHidden ? 'none' : '';
+  btn.textContent = isLast ? 'Submit drill log' : 'Next →';
   btn.className = 'submit-btn ' + (isLast ? 'btn-teal' : 'btn-amber');
 }
 
@@ -1435,6 +1442,13 @@ function walkPickSchool(row, val) {
   row.querySelector('.role-check').classList.add('on');
   W.school = val;
   document.getElementById('walk-ctx').textContent = val;
+}
+function drillPickType(row, val) {
+  document.querySelectorAll('#dd-type .role-check').forEach(c=>{if(c.id.startsWith('dtc-'))c.classList.remove('on')});
+  row.querySelector('.role-check').classList.add('on');
+  D.drillType = val;
+  updateDrillCtx();
+  showChecks(val==='Evacuation'?'evac':'lock');
 }
 function drillPickRole(row, val) {
   document.querySelectorAll('#dd-role .role-check').forEach(c=>c.classList.remove('on'));
@@ -1466,13 +1480,37 @@ function showChecks(type) {
 
 function drillNext() {
   const s = D.step;
-  if (s==='school') { if(!D.school){alert('Select a campus.');return;} showDrillStep('role'); }
-  else if (s==='role') { if(!D.role){alert('Select your role.');return;} D.role==='OSL'?showDrillStep('start'):showDrillStep('observer'); }
-  else if (s==='start') { startTimer('drill'); const now=new Date(); const ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'); document.getElementById('d-t-alarm').value=ts; showDrillStep('osl'); }
-  else if (s==='osl'||s==='observer') { submitDrill(); }
+  if (s==='school') { if(!D.school){alert('Select a campus.');return;} showDrillStep('type'); }
+  else if (s==='type') {
+    if(!D.drillType){alert('Select a drill type.');return;}
+    if(!D.role){alert('Select your role.');return;}
+    D.role==='OSL'?showDrillStep('start'):showDrillStep('observer');
+  }
+  else if (s==='observer'||s==='osl') { submitDrill(); }
+}
+function drillStart() {
+  startTimer('drill');
+  const now=new Date();
+  const ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('d-t-alarm').value=ts;
+  // Update elapsed display on stop screen
+  D.elapsedIv = setInterval(()=>{
+    const s=Math.floor((Date.now()-timers['drill'].start)/1000);
+    const m=Math.floor(s/60), sec=String(s%60).padStart(2,'0');
+    const el=document.getElementById('drill-elapsed');
+    if(el) el.textContent=m+':'+sec;
+  }, 500);
+  showDrillStep('stop');
+}
+function drillStop() {
+  if(D.elapsedIv){ clearInterval(D.elapsedIv); D.elapsedIv=null; }
+  const now=new Date();
+  const ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('d-t-clear').value=ts;
+  showDrillStep('osl');
 }
 function drillBack() {
-  const prev={role:'school',start:'role',osl:'start',observer:'role'};
+  const prev={type:'school',start:'type',stop:'start',osl:'stop',observer:'type'};
   if (D.step==='school') { goHome(); return; }
   showDrillStep(prev[D.step]||'school');
 }
