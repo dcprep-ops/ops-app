@@ -1603,23 +1603,13 @@ function drillBack() {
 
 function postToScript(payload) {
   try {
-    const url = 'https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec';
-    const data = JSON.stringify(payload);
-    // Try fetch first
-    if (typeof fetch !== 'undefined') {
-      fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: data
-      }).catch(function(e) { console.log('fetch error', e); });
-    }
-    // Also try XHR as fallback
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', url, true);
-    xhr.setRequestHeader('Content-Type', 'text/plain');
-    xhr.send(data);
-  } catch(e) { console.log('postToScript error', e); }
+    fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    }).catch(function(e) {});
+  } catch(e) {}
 }
 
 function submitDrill() {
