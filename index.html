@@ -1339,7 +1339,7 @@ function sendEmailCopy() {
   const btn = document.querySelector('.email-send-btn');
   btn.textContent = 'Sending…'; btn.disabled = true;
 
-  const URL = 'https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec';
+  const URL = 'https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec';
   fetch(URL, {
     method: 'POST',
     mode: 'no-cors',
@@ -1612,7 +1612,7 @@ function submitDrill() {
   _lastFlow='drill';
   const payload = { flow:'drill', campus:D.school, role:D.role, drillType:D.drillType||'', weather:D.weather||'', alarmStart:document.getElementById('d-t-alarm')?.value||'', allClear:document.getElementById('d-t-clear')?.value||'', occupants:document.getElementById('d-occupants')?.value||'', durationSecs:timerSecs('drill'), flags:flags, observations, notes:document.getElementById('d-notes')?.value||document.getElementById('d-ob-notes')?.value||'' };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Drill logged';
   document.getElementById('s-sub').textContent = D.role==='OSL' ? 'The official record is saved. Campus leaders will receive a summary.' : 'Your observations have been added to the drill record.';
   let html=`<div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${D.school||'—'}<\/span><\/div>
@@ -1692,7 +1692,7 @@ function submitWalk() {
   const checklist = serializeChecklist('wd-checklist');
   const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Thanks — we\'ll consolidate all observations into a report and email you shortly.';
   document.getElementById('s-card').innerHTML=`
@@ -1779,7 +1779,7 @@ function submitArr() {
   const checklist = serializeChecklist('ad-checklist');
   const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, rating:A.rating||'', checklist, notes:document.getElementById('arr-notes')?.value||'' };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Observation logged';
   document.getElementById('s-sub').textContent='Your arrival / dismissal observation has been saved.';
   document.getElementById('s-card').innerHTML=`
@@ -1877,7 +1877,7 @@ function submitCust() {
   const checklist = serializeChecklist('cd-'+C.step);
   const payload = { flow:'custodial', campus:C.school, role:C.role, checklistType:type, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Your custodial walkthrough has been saved.';
   document.getElementById('s-card').innerHTML=`
