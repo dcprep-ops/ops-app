@@ -2314,7 +2314,7 @@ function submitReadiness(){
   resetEmailCapture();
   setEmailLabel('Want a copy of what you submitted?');
   showScreen('screen-success');
-  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)}).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(payload)}).catch(()=>{});
 }
 
 </script>
