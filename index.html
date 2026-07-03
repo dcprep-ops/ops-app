@@ -1601,6 +1601,24 @@ function drillBack() {
   showDrillStep(prev[D.step]||'school');
 }
 
+function postToScript(payload) {
+  try {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec';
+    form.target = 'hidden-post-frame';
+    form.style.display = 'none';
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'payload';
+    input.value = JSON.stringify(payload);
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(() => document.body.removeChild(form), 2000);
+  } catch(e) {}
+}
+
 function submitDrill() {
   stopTimer('drill');
   const flags=[];
@@ -1612,7 +1630,7 @@ function submitDrill() {
   _lastFlow='drill';
   const payload = { flow:'drill', campus:D.school, role:D.role, drillType:D.drillType||'', weather:D.weather||'', alarmStart:document.getElementById('d-t-alarm')?.value||'', allClear:document.getElementById('d-t-clear')?.value||'', occupants:document.getElementById('d-occupants')?.value||'', durationSecs:timerSecs('drill'), flags:flags, observations, notes:document.getElementById('d-notes')?.value||document.getElementById('d-ob-notes')?.value||'' };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  postToScript(payload);
   document.getElementById('s-title').textContent='Drill logged';
   document.getElementById('s-sub').textContent = D.role==='OSL' ? 'The official record is saved. Campus leaders will receive a summary.' : 'Your observations have been added to the drill record.';
   let html=`<div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${D.school||'—'}<\/span><\/div>
@@ -1692,7 +1710,7 @@ function submitWalk() {
   const checklist = serializeChecklist('wd-checklist');
   const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  postToScript(payload);
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Thanks — we\'ll consolidate all observations into a report and email you shortly.';
   document.getElementById('s-card').innerHTML=`
@@ -1779,7 +1797,7 @@ function submitArr() {
   const checklist = serializeChecklist('ad-checklist');
   const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, rating:A.rating||'', checklist, notes:document.getElementById('arr-notes')?.value||'' };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  postToScript(payload);
   document.getElementById('s-title').textContent='Observation logged';
   document.getElementById('s-sub').textContent='Your arrival / dismissal observation has been saved.';
   document.getElementById('s-card').innerHTML=`
@@ -1877,7 +1895,7 @@ function submitCust() {
   const checklist = serializeChecklist('cd-'+C.step);
   const payload = { flow:'custodial', campus:C.school, role:C.role, checklistType:type, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  postToScript(payload);
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Your custodial walkthrough has been saved.';
   document.getElementById('s-card').innerHTML=`
@@ -2314,7 +2332,7 @@ function submitReadiness(){
   resetEmailCapture();
   setEmailLabel('Want a copy of what you submitted?');
   showScreen('screen-success');
-  fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(payload)}).catch(()=>{});
+  postToScript(payload);
 }
 
 </script>
