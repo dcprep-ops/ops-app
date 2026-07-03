@@ -313,6 +313,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <span class="cell-label">Create Facilities Request</span>
       </div>
 
+      <div class="icon-cell" onclick="openFlow('readiness')">
+        <div class="cell-icon teal-icon"><i class="ti ti-chalkboard" aria-hidden="true"></i></div>
+        <span class="cell-label">Classroom Readiness</span>
+      </div>
+
     </div>
 
     <div class="section-label">Coming Later</div>
@@ -1176,6 +1181,78 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 </div>
 
 
+<!-- ══ CLASSROOM READINESS FLOW ══ -->
+<div class="screen" id="screen-readiness">
+  <div class="prog-track"><div class="prog-fill" id="read-prog" style="width:10%"></div></div>
+  <div class="app-header">
+    <div class="app-header-row">
+      <button class="back-btn" onclick="readBack()">← Back</button>
+      <div id="read-ctx" style="font-size:11px;color:rgba(255,255,255,.6);text-align:right;line-height:1.4"></div>
+    </div>
+    <div class="header-flow-title">Classroom Readiness</div>
+  </div>
+  <div class="scroll-body flow-body">
+
+    <!-- school -->
+    <div class="flow-step active" id="rd-school">
+      <div class="step-title">Which campus?</div>
+      <div class="card">
+        <div class="role-row" onclick="readPickSchool(this,'Anacostia Elementary')"><span class="role-name">Anacostia Elementary (AEC)</span><span class="role-check" id="rsc-AEC"></span></div>
+        <div class="role-row" onclick="readPickSchool(this,'Anacostia Middle')"><span class="role-name">Anacostia Middle (AMC)</span><span class="role-check" id="rsc-AMC"></span></div>
+        <div class="role-row" onclick="readPickSchool(this,'Benning Elementary')"><span class="role-name">Benning Elementary (BEC)</span><span class="role-check" id="rsc-BEC"></span></div>
+        <div class="role-row" onclick="readPickSchool(this,'Benning Middle')"><span class="role-name">Benning Middle (BMC)</span><span class="role-check" id="rsc-BMC"></span></div>
+        <div class="role-row" onclick="readPickSchool(this,'Edgewood Elementary')"><span class="role-name">Edgewood Elementary (EEC)</span><span class="role-check" id="rsc-EEC"></span></div>
+        <div class="role-row" onclick="readPickSchool(this,'Edgewood Middle')"><span class="role-name">Edgewood Middle (EMC)</span><span class="role-check" id="rsc-EMC"></span></div>
+      </div>
+    </div>
+
+    <!-- classroom -->
+    <div class="flow-step" id="rd-classroom">
+      <div class="step-title">Which classroom?</div>
+      <div class="card" id="rd-classroom-list"></div>
+    </div>
+
+    <!-- role -->
+    <div class="flow-step" id="rd-role">
+      <div class="step-title">What's your role?</div>
+      <div class="card">
+        <div class="role-row" onclick="readPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="rrc-Principal"></span></div>
+        <div class="role-row" onclick="readPickRole(this,'OSL')"><span class="role-name">OSL</span><span class="role-check" id="rrc-OSL"></span></div>
+        <div class="role-row" onclick="readPickRole(this,'MD of Schools')"><span class="role-name">MD of Schools</span><span class="role-check" id="rrc-MDS"></span></div>
+        <div class="role-row" onclick="readPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="rrc-SDO"></span></div>
+        <div class="role-row" onclick="readPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="rrc-Other"></span></div>
+      </div>
+    </div>
+
+    <!-- checklist -->
+    <div class="flow-step" id="rd-checklist">
+      <div class="step-title">Checklist</div>
+      <div class="card" id="rd-checklist-items"></div>
+    </div>
+
+    <!-- assessment -->
+    <div class="flow-step" id="rd-assessment">
+      <div class="step-title">Overall assessment</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:0 2px">Based on your walkthrough, how would you assess this classroom's readiness?</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+        <button id="rab-1" onclick="readPickAssessment('Fully ready')" style="width:100%;padding:16px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);font-size:15px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;text-align:left;-webkit-tap-highlight-color:transparent;transition:all .15s">✅ Fully ready</button>
+        <button id="rab-2" onclick="readPickAssessment('Ready — minor items remain')" style="width:100%;padding:16px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);font-size:15px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;text-align:left;-webkit-tap-highlight-color:transparent;transition:all .15s">🟡 Ready — minor items remain</button>
+        <button id="rab-3" onclick="readPickAssessment('Not ready — return visit needed')" style="width:100%;padding:16px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);font-size:15px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;text-align:left;-webkit-tap-highlight-color:transparent;transition:all .15s">🔴 Not ready — return visit needed</button>
+      </div>
+      <div class="card">
+        <div class="card-section" style="padding-bottom:14px">
+          <label class="field-label">Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</span></label>
+          <textarea id="rd-notes" rows="4" placeholder="Any items to flag or context for the teacher or team…"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="submit-bar">
+    <button class="submit-btn btn-amber" id="read-btn" onclick="readNext()">Next →</button>
+  </div>
+</div>
+
 <!-- ══ SUCCESS ══ -->
 <div class="screen" id="screen-success">
   <div class="scroll-body">
@@ -1404,6 +1481,7 @@ function openFlow(type) {
   if (type === 'custodial') { resetCust(); showScreen('screen-custodial'); }
   if (type === 'facilities') { resetFac(); showScreen('screen-facilities'); }
   if (type === 'techsupport') { showScreen('screen-techsupport'); }
+  if (type === 'readiness') { resetReadiness(); showScreen('screen-readiness'); }
 }
 
 function resetDrill() {
@@ -1430,9 +1508,10 @@ function showDrillStep(id) {
   setProgress('drill-prog', pcts[id]||10);
   const btn=document.getElementById('drill-btn');
   const isLast = id==='osl'||id==='observer';
-  const isHidden = id==='start'||id==='stop';
-  btn.style.display = isHidden ? 'none' : '';
-  btn.textContent = isLast ? 'Submit drill log' : 'Next →';
+  const isHidden = id==='start'||id==='stop'||id==='school';
+  const drillBar=btn?btn.closest('.submit-bar'):null;
+  if(isHidden){if(drillBar)drillBar.style.display='none';btn.style.display='none';}
+  else{if(drillBar)drillBar.style.display='';btn.style.display='';btn.textContent=isLast?'Submit drill log':'Next →';btn.className='submit-btn '+(isLast?'btn-teal':'btn-amber');}
   btn.className = 'submit-btn ' + (isLast ? 'btn-teal' : 'btn-amber');
 }
 
@@ -1440,12 +1519,14 @@ function drillPickSchool(row, val) {
   document.querySelectorAll('#dd-school .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   D.school = val; updateDrillCtx();
+  setTimeout(()=>showDrillStep('type'),120);
 }
 function walkPickSchool(row, val) {
   document.querySelectorAll('#wd-school .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   W.school = val;
   document.getElementById('walk-ctx').textContent = val;
+  setTimeout(()=>showWalkStep('role'),120);
 }
 function drillPickType(row, val) {
   document.querySelectorAll('#dd-type .role-check').forEach(c=>{if(c.id.startsWith('dtc-'))c.classList.remove('on')});
@@ -1467,6 +1548,7 @@ function walkPickRole(row, val) {
   W.role = val;
   const inp = document.getElementById('wrc-other-input');
   if (inp) { inp.style.display = val==='Other' ? '' : 'none'; if(val!=='Other') document.getElementById('w-other-role').value=''; }
+  if(val!=='Other') setTimeout(()=>showWalkStep('checklist'),120);
 }
 function drillPick(el, field, val) {
   el.closest('.sel-grid').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
@@ -1578,8 +1660,9 @@ function showWalkStep(id) {
   setProgress('walk-prog',pcts[id]||10);
   const btn=document.getElementById('walk-btn');
   const isLast=id==='checklist';
-  btn.textContent=isLast?'Submit walkthrough':'Next →';
-  btn.className='submit-btn '+(isLast?'btn-teal':'btn-amber');
+  const walkBar=btn?btn.closest('.submit-bar'):null;
+  if(isLast){if(walkBar)walkBar.style.display='';btn.textContent='Submit walkthrough';btn.className='submit-btn btn-teal';}
+  else{if(walkBar)walkBar.style.display='none';}
 }
 
 function walkPick(el,field,val) {
@@ -1648,14 +1731,16 @@ function showArrStep(id) {
   setProgress('arr-prog',pcts[id]||10);
   const btn=document.getElementById('arr-btn');
   const isLast=id==='checklist';
-  btn.textContent=isLast?'Submit observation':'Next →';
-  btn.className='submit-btn '+(isLast?'btn-teal':'btn-amber');
+  const arrBar=btn?btn.closest('.submit-bar'):null;
+  if(isLast){if(arrBar)arrBar.style.display='';btn.textContent='Submit observation';btn.className='submit-btn btn-teal';}
+  else{if(arrBar)arrBar.style.display='none';}
 }
 
 function arrPickSchool(row,val) {
   document.querySelectorAll('#ad-school .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   A.school=val; updateArrCtx();
+  setTimeout(()=>showArrStep('role'),120);
 }
 function arrPickRole(row,val) {
   document.querySelectorAll('#ad-role .role-check').forEach(c=>c.classList.remove('on'));
@@ -1663,6 +1748,7 @@ function arrPickRole(row,val) {
   A.role=val;
   const inp = document.getElementById('arc-other-input');
   if (inp) { inp.style.display = val==='Other' ? '' : 'none'; if(val!=='Other') document.getElementById('a-other-role').value=''; }
+  if(val!=='Other') setTimeout(()=>showArrStep('checklist'),120);
 }
 function arrPick(el,field,val) {
   el.closest('.sel-grid').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
@@ -1740,8 +1826,9 @@ function showCustStep(id) {
   const pcts = {school:10, role:35};
   setProgress('cust-prog', isLast ? 65 : (pcts[id]||10));
   const btn=document.getElementById('cust-btn');
-  btn.textContent = isLast ? 'Submit walkthrough' : 'Next →';
-  btn.className = 'submit-btn ' + (isLast ? 'btn-teal' : 'btn-amber');
+  const custBar=btn?btn.closest('.submit-bar'):null;
+  if(isLast){if(custBar)custBar.style.display='';btn.textContent='Submit walkthrough';btn.className='submit-btn btn-teal';}
+  else{if(custBar)custBar.style.display='none';}
 }
 
 function custPickSchool(row, code, group) {
@@ -1749,11 +1836,14 @@ function custPickSchool(row, code, group) {
   row.querySelector('.role-check').classList.add('on');
   C.school=code; C.campusGroup=CAMPUS_GROUP[code];
   document.getElementById('cust-ctx').textContent=code;
+  setTimeout(()=>showCustStep('role'),120);
 }
 function custPickRole(row, val) {
   document.querySelectorAll('#cd-role .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   C.role=val;
+  const _ct=val==='DoF'?'dof':'weekly';
+  setTimeout(()=>showCustStep(_ct+'-'+C.campusGroup),120);
 }
 
 function custNext() {
@@ -1822,6 +1912,403 @@ function facBack() {
 }
 
 
+
+// ── CLASSROOM READINESS ──────────────────────────────────────────────────────
+
+const CLASSROOM_MAP = {
+  'Anacostia Elementary': [
+    {band:'EC',rooms:['American','Gallaudet','George Mason','Johns Hopkins','Syracuse','Williams']},
+    {band:'KINDERGARTEN',rooms:['Northwestern','UChicago','UMichigan']},
+    {band:'1ST GRADE',rooms:['Gonzaga','UOregon','Pepperdine']},
+    {band:'2ND GRADE',rooms:['Morehouse','Spelman','Xavier']},
+    {band:'3RD GRADE',rooms:['Cornell','Dartmouth','UPenn']},
+  ],
+  'Anacostia Middle': [
+    {band:'4TH GRADE',rooms:['GWU','Georgetown','Howard']},
+    {band:'5TH GRADE',rooms:['UMD','UNC','UVA']},
+    {band:'6TH GRADE',rooms:['FAMU','Hampton','Tuskegee']},
+    {band:'7TH GRADE',rooms:['Princeton','Stanford']},
+    {band:'8TH GRADE',rooms:['Harvard','Yale']},
+  ],
+  'Benning Elementary': [
+    {band:'EC',rooms:['American','Gallaudet','George Mason','Johns Hopkins','Syracuse','Williams']},
+    {band:'KINDERGARTEN',rooms:['Northwestern','UChicago','UMichigan']},
+    {band:'1ST GRADE',rooms:['Gonzaga','UOregon','Pepperdine']},
+    {band:'2ND GRADE',rooms:['Morehouse','Spelman','Xavier']},
+    {band:'3RD GRADE',rooms:['Cornell','Dartmouth','UPenn']},
+  ],
+  'Benning Middle': [
+    {band:'4TH GRADE',rooms:['GWU','Georgetown','Howard']},
+    {band:'5TH GRADE',rooms:['UMD','UNC','UVA']},
+    {band:'6TH GRADE',rooms:['FAMU','Hampton','Tuskegee']},
+    {band:'7TH GRADE',rooms:['Princeton','Stanford']},
+    {band:'8TH GRADE',rooms:['Harvard','Yale']},
+  ],
+  'Edgewood Elementary': [
+    {band:'EC',rooms:['American','Gallaudet','George Mason','Johns Hopkins','Syracuse']},
+    {band:'KINDERGARTEN',rooms:['Northwestern','UChicago','UMichigan']},
+    {band:'1ST GRADE',rooms:['Gonzaga','UOregon','Pepperdine']},
+    {band:'2ND GRADE',rooms:['Morehouse','Spelman','Xavier']},
+    {band:'3RD GRADE',rooms:['Cornell','Dartmouth','UPenn']},
+  ],
+  'Edgewood Middle': [
+    {band:'4TH GRADE',rooms:['GWU','Georgetown','Howard']},
+    {band:'5TH GRADE',rooms:['UMD','UNC','UVA']},
+    {band:'6TH GRADE',rooms:['FAMU','Hampton','Tuskegee']},
+    {band:'7TH GRADE',rooms:['Princeton','Stanford']},
+    {band:'8TH GRADE',rooms:['Harvard','Yale']},
+  ]
+};
+
+const CHECKLISTS = {
+  'EC': [
+    ['ELA Wall','Displays current unit name/theme, essential questions, vocabulary, and space for relevant unit Anchor Charts'],
+    ['Math Wall','Displays current unit name/theme, essential questions, vocabulary, and space for relevant unit Anchor Charts — contains Math Meeting Materials'],
+    ['Student Work Board','Shows high quality work from the past 30 days'],
+    ['Student Goals and Data Board','Displays key goals — assessment results or progress updated in the past quarter'],
+    ['EC Word Wall','Student names, content vocabulary, sight words, and PPVT vocabulary — updated each unit/week'],
+    ['EC Centers','Clearly labeled with words and images — pocket chart for center selection — pictorial directions — objectives and CLASS-y questions posted — vocabulary at student level — furniture separating centers'],
+    ['Emergency Exit Folder & Fire Drill Map','Posted near classroom door and clearly visible'],
+    ['Homeroom Incentives Board','Number of Golden Clock & Brawny Brain Wins'],
+    ['Homeroom Family Communication Board','Teacher names, photos, contact info, and fun facts — newsletter, announcements, upcoming events, and calendar displayed outside classroom'],
+    ['Homeroom College Board','Classroom college name, pennant, photos, and fun facts displayed outside classroom'],
+    ['Student Personal Materials','Book bags, lunch boxes, and coats have a place — organized neatly in lockers or cubbies'],
+    ['Cleanliness Supplies','Hand sanitizer dispenser on wall — cleaning spray + paper towel — disinfecting wipes — trash can'],
+    ['Line Spots','Line spots present, preferably numbers or letters to support BOY at-bats'],
+    ['Hand Signals and Voice Levels Poster','Hand signals and voice levels displayed'],
+    ['HALL Poster','HALL poster displayed'],
+    ['Student Identity Display','Honors student identity — artifacts from Advisory, family or student photos, etc.'],
+    ['Student Instructional Materials','Accessible consumable student materials: pencils, paper, Prep Notes, tissues, crayons, glue, etc.'],
+    ['Clean and Organized','Free of unnecessary papers and clutter — students can enter/exit/move without obstruction — food stored in sealed containers'],
+    ['Desks','Labeled with student name plates'],
+    ['Cubbies','Cubbies labeled with student name plates'],
+    ['Daily Schedule','Schedule visible including M/T/TH/F and W — does not cover full windows'],
+    ['Teacher Workspace Organized','Teacher desk or workspace is organized'],
+    ['Curriculum Storage','Student and teacher materials for Amplify ELA organized and accessible'],
+    ['EC Student Materials','Materials accessible to students are organized and clearly labeled with words and images'],
+    ['EC Morning Meeting Board','Calendar, schedule, classroom jobs, morning message, SHINE goal and incentive, visual for carpet sitting, volume meter — large carpet below board'],
+    ['Carpet Seating','Carpet spots clearly defined'],
+    ['EC Bathroom','Labeled with age-appropriate visuals for how to use the bathroom and wash hands'],
+    ['EC Library','Books organized by level and interest — bin labels adhering to bins — visual guidance on book selection posted — expectations for independent reading posted — pocket chart for story sequencing'],
+    ['DC Prep Values','Posted and visible'],
+    ['DC Prep Community Commitments','Posted and visible'],
+    ['SEL Competencies','Posted and visible'],
+    ['EC Small Deal Square','Taped out on carpet or taped square off carpet, with carpet expectation visuals'],
+    ['EC Prep Skills Display','All 5 Prep Skills and 16 Social Skill Indicators displayed'],
+    ['EC SHINE Display','Displayed and utilized regularly — SHINE goal and incentive listed — located near whole group meeting area'],
+    ['Timeout','Desk/side class area away from other students but visible to teacher — sand timer — timeout directions with emotional management strategies'],
+    ['Small Group Table and Seating','2 small group tables, organized and free of clutter — seating for up to 6 students'],
+    ['Small Group Student Materials','Mini whiteboard + markers — pencils + blank paper'],
+    ['Small Group Instructional Materials','Accessible storage for teacher instructional materials for small group']
+  ],
+  'K\/1': [
+    ['ELA Wall','Displays current unit name/theme, essential questions, vocabulary, and space for relevant unit Anchor Charts'],
+    ['Math Wall','Displays current unit name/theme, essential questions, vocabulary, and space for relevant unit Anchor Charts — contains Math Meeting Materials'],
+    ['Student Work Board','Shows high quality work from the past 30 days'],
+    ['Student Goals and Data Board','Displays key goals — assessment results or progress updated in the past quarter'],
+    ['Elem Word Wall','Displays common words and supports ELA content from the unit'],
+    ['Emergency Exit Folder & Fire Drill Map','Posted near classroom door and clearly visible'],
+    ['Homeroom Incentives Board',"Number of Golden Clock & Brawny Brain Wins — Principal\'s Cabinet List — Honor Roll List"],
+    ['Homeroom Family Communication Board','Teacher names, photos, contact info, and fun facts — newsletter, announcements, upcoming events, and calendar displayed outside classroom'],
+    ['Homeroom College Board','Classroom college name, pennant, photos, and fun facts displayed outside classroom'],
+    ['Student Personal Materials','Book bags, lunch boxes, and coats have a place — organized neatly — cell phones in cell phone lockers or backpack'],
+    ['Cleanliness Supplies','Hand sanitizer dispenser on wall — cleaning spray + paper towel — disinfecting wipes — trash can'],
+    ['Line Spots','Line spots present, preferably numbers or letters to support BOY at-bats'],
+    ['Hand Signals and Voice Levels Poster','Hand signals and voice levels displayed'],
+    ['HALL Poster','HALL poster displayed'],
+    ['Student Identity Display','Honors student identity — artifacts from Advisory, family or student photos, etc.'],
+    ['Student Instructional Materials','Space for tech cart (plugged in and locked) — headphones labeled with numbers — student whiteboards/markers — accessible consumable materials'],
+    ['Clean and Organized','Free of unnecessary papers and clutter — students can enter/exit/move without obstruction — food stored in sealed containers'],
+    ['Desks','Labeled with student name plates — mini anchor charts — arranged in groups of 4'],
+    ['Cubbies','Cubbies labeled with student name plates'],
+    ['Classroom Front Whiteboard Configuration','Date, objectives, team goal, and team points — Prep Check Display: daily attendance, homework, uniform'],
+    ['Daily Schedule','Schedule visible including M/T/TH/F and W — does not cover full windows'],
+    ['Teacher Workspace Organized','Teacher desk or workspace is organized'],
+    ['Curriculum Storage','Student and teacher materials for Amplify ELA organized and accessible'],
+    ['Carpet Seating','Carpet spots clearly defined'],
+    ['Classroom Jobs Board','Student jobs displayed and assigned'],
+    ['Elem and Middle Library','Clean rug — beanbags or chairs in good condition — bookshelves under 4 feet — signage marking library area — books by genre/topic with clear labels — no damaged books — book shopping schedule posted'],
+    ['DC Prep Values','Posted and visible'],
+    ['DC Prep Community Commitments','Posted and visible'],
+    ['SEL Competencies','Posted and visible'],
+    ['Fresh Start','Desk in back/side area away from students but visible to teacher — directions on sign — emotional management strategies displayed'],
+    ['Reflection Space','Reflection desk separate from instruction area'],
+    ['Timeout','Desk/side class area away from other students but visible to teacher — sand timer — timeout directions with emotional management strategies'],
+    ['Small Group Table and Seating','2 small group tables, organized and free of clutter — seating for up to 6 students'],
+    ['Small Group Student Materials','Mini whiteboard + markers — pencils + blank paper'],
+    ['Small Group Instructional Materials','Accessible storage for teacher instructional materials for small group']
+  ],
+  '2\/3': [
+    ['ELA Wall','Displays current unit name/theme, essential questions, vocabulary, and space for relevant unit Anchor Charts'],
+    ['Math Wall','Displays current unit name/theme, essential questions, vocabulary, and space for relevant unit Anchor Charts'],
+    ['Student Work Board','Shows high quality work from the past 30 days'],
+    ['Student Goals and Data Board','Displays key goals — assessment results or progress updated in the past quarter'],
+    ['Elem Word Wall','Displays common words and supports ELA content from the unit'],
+    ['Emergency Exit Folder & Fire Drill Map','Posted near classroom door and clearly visible'],
+    ['Homeroom Incentives Board',"Number of Golden Clock & Brawny Brain Wins — Principal\'s Cabinet List — Honor Roll List"],
+    ['Homeroom Family Communication Board','Teacher names, photos, contact info, and fun facts — newsletter, announcements, upcoming events, and calendar displayed outside classroom'],
+    ['Homeroom College Board','Classroom college name, pennant, photos, and fun facts displayed outside classroom'],
+    ['Student Personal Materials','Book bags, lunch boxes, and coats have a place — organized neatly — cell phones in cell phone lockers or backpack'],
+    ['Cleanliness Supplies','Hand sanitizer dispenser on wall — cleaning spray + paper towel — disinfecting wipes — trash can'],
+    ['Hand Signals and Voice Levels Poster','Hand signals and voice levels displayed'],
+    ['HALL Poster','HALL poster displayed'],
+    ['Student Identity Display','Honors student identity — artifacts from Advisory, family or student photos, etc.'],
+    ['Student Instructional Materials','Space for tech cart (plugged in and locked) — headphones labeled with numbers — student whiteboards/markers — accessible consumable materials'],
+    ['Clean and Organized','Free of unnecessary papers and clutter — students can enter/exit/move without obstruction — food stored in sealed containers'],
+    ['Desks','Labeled with student name plates — mini anchor charts — arranged in groups of 4'],
+    ['Cubbies','Cubbies labeled with student name plates'],
+    ['Classroom Front Whiteboard Configuration','Date, objectives, team goal, and team points — Prep Check Display: daily attendance, homework, uniform'],
+    ['Daily Schedule','Schedule visible including M/T/TH/F and W — does not cover full windows'],
+    ['Teacher Workspace Organized','Teacher desk or workspace is organized'],
+    ['Curriculum Storage','Student and teacher materials for Amplify ELA organized and accessible'],
+    ['Classroom Jobs Board','Student jobs displayed and assigned'],
+    ['Elem and Middle Library','Clean rug — beanbags or chairs in good condition — bookshelves under 4 feet — signage marking library area — books by genre/topic with clear labels — no damaged books — book shopping schedule posted'],
+    ['DC Prep Values','Posted and visible'],
+    ['DC Prep Community Commitments','Posted and visible'],
+    ['SEL Competencies','Posted and visible'],
+    ['Fresh Start','Desk in back/side area away from students but visible to teacher — directions on sign — emotional management strategies displayed'],
+    ['Reflection Space','Reflection desk separate from instruction area'],
+    ['Small Group Table and Seating','2 small group tables, organized and free of clutter — seating for up to 6 students'],
+    ['Small Group Student Materials','Mini whiteboard + markers — pencils + blank paper'],
+    ['Small Group Instructional Materials','Accessible storage for teacher instructional materials for small group']
+  ],
+  'Middle': [
+    ['ELA Wall','Displays current unit name/theme, essential questions, vocabulary, and space for relevant unit Anchor Charts'],
+    ['Math Wall','Displays current unit name/theme, essential questions, vocabulary, and space for relevant unit Anchor Charts'],
+    ['Student Work Board','Shows high quality work from the past 30 days'],
+    ['Student Goals and Data Board','Displays key goals — assessment results or progress updated in the past quarter'],
+    ['Emergency Exit Folder & Fire Drill Map','Posted near classroom door and clearly visible'],
+    ['Homeroom Incentives Board',"Number of Golden Clock & Brawny Brain Wins — Principal\'s Cabinet List — Honor Roll / Prep Squad List"],
+    ['Homeroom Family Communication Board','Teacher names, photos, contact info, and fun facts — newsletter, announcements, upcoming events, and calendar displayed outside classroom'],
+    ['Homeroom College Board','Classroom college name, pennant, photos, and fun facts displayed outside classroom'],
+    ['Student Personal Materials','Book bags, lunch boxes, and coats have a place — organized neatly — cell phones in cell phone lockers or backpack'],
+    ['Cleanliness Supplies','Hand sanitizer dispenser on wall — cleaning spray + paper towel — disinfecting wipes — trash can'],
+    ['Hand Signals and Voice Levels Poster','Hand signals and voice levels displayed'],
+    ['HALL Poster','HALL poster displayed'],
+    ['Student Identity Display','Honors student identity — artifacts from Advisory, family or student photos, etc.'],
+    ['Student Instructional Materials','Space for tech cart (plugged in and locked) — headphones labeled with numbers — student whiteboards/markers — accessible consumable materials'],
+    ['Clean and Organized','Free of unnecessary papers and clutter — students can enter/exit/move without obstruction — food stored in sealed containers'],
+    ['Desks','Labeled with student name plates — arranged in rows (Middle)'],
+    ['Cubbies and Lockers','Cubbies/lockers labeled with student name plates'],
+    ['Classroom Front Whiteboard Configuration','Date, objectives, team goal, and team points — Prep Check Display: daily attendance, homework, uniform'],
+    ['Daily Schedule','Schedule visible including M/T/TH/F and W — does not cover full windows'],
+    ['Teacher Workspace Organized','Teacher desk or workspace is organized'],
+    ['Curriculum Storage','Student and teacher materials for Amplify ELA organized and accessible'],
+    ['Elem and Middle Library','Clean rug — beanbags or chairs in good condition — bookshelves under 4 feet — signage marking library area — books by genre/topic with clear labels — no damaged books'],
+    ['DC Prep Values','Posted and visible'],
+    ['DC Prep Community Commitments','Posted and visible'],
+    ['SEL Competencies','Posted and visible'],
+    ['Fresh Start','Desk in back/side area away from students but visible to teacher — directions on sign — emotional management strategies displayed'],
+    ['Reflection Space','Reflection desk separate from instruction area'],
+    ['Small Group Table and Seating','2 small group tables, organized and free of clutter — seating for up to 6 students'],
+    ['Small Group Student Materials','Mini whiteboard + markers — pencils + blank paper'],
+    ['Small Group Instructional Materials','Accessible storage for teacher instructional materials for small group']
+  ]
+};
+
+const RD = { school:null, classroom:null, band:null, role:null, assessment:null, checks:{}, step:'school' };
+
+function resetReadiness() {
+  RD.school=null; RD.classroom=null; RD.band=null; RD.role=null; RD.assessment=null; RD.checks={}; RD.step='school';
+  document.querySelectorAll('#screen-readiness .role-check').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('#screen-readiness .flow-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('rd-school').classList.add('active');
+  document.getElementById('rd-notes').value='';
+  document.getElementById('read-ctx').textContent='';
+  setProgress('read-prog',10);
+  const btn=document.getElementById('read-btn');
+  const bar=btn?btn.closest('.submit-bar'):null;
+  if(bar) bar.style.display='none';
+  if(btn){ btn.style.display='none'; btn.textContent='Next →'; btn.className='submit-btn btn-amber'; }
+}
+
+function showReadStep(id) {
+  document.querySelectorAll('#screen-readiness .flow-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('rd-'+id).classList.add('active');
+  document.querySelector('#screen-readiness .scroll-body').scrollTop=0;
+  RD.step=id;
+  const pcts={school:10,classroom:30,role:50,checklist:70,assessment:90};
+  setProgress('read-prog', pcts[id]||10);
+  const btn=document.getElementById('read-btn');
+  const isLast=(id==='assessment');
+  const isChecklist=(id==='checklist');
+  const bar=btn.closest('.submit-bar');
+  if(isLast||!isChecklist){
+    if(bar) bar.style.display='none';
+    btn.style.display='none';
+  } else {
+    if(bar) bar.style.display='';
+    btn.style.display='';
+    btn.textContent='Next →';
+    btn.className='submit-btn btn-amber';
+  }
+  // Context line
+  const parts=[];
+  if(RD.school){
+    const codeMap={'Anacostia Elementary':'AEC','Anacostia Middle':'AMC','Benning Elementary':'BEC','Benning Middle':'BMC','Edgewood Elementary':'EEC','Edgewood Middle':'EMC'};
+    parts.push(codeMap[RD.school]||RD.school);
+  }
+  if(RD.classroom) parts.push(RD.classroom.split(' ')[0]);
+  document.getElementById('read-ctx').textContent=parts.join(' · ');
+}
+
+function readBack() {
+  const prev={classroom:'school',role:'classroom',checklist:'role',assessment:'checklist'};
+  if(RD.step==='school'){goHome();return;}
+  showReadStep(prev[RD.step]||'school');
+}
+
+function readPickSchool(row,val){
+  document.querySelectorAll('#rd-school .role-check').forEach(c=>c.classList.remove('on'));
+  row.querySelector('.role-check').classList.add('on');
+  RD.school=val;
+  // Build classroom list
+  const list=document.getElementById('rd-classroom-list');
+  list.innerHTML='';
+  const schoolData=CLASSROOM_MAP[val]||[];
+  schoolData.forEach(({band,rooms})=>{
+    const lbl=document.createElement('div');
+    lbl.style.cssText='padding:20px 16px 4px;font-size:11px;font-weight:400;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)';
+    lbl.textContent=band;
+    list.appendChild(lbl);
+    const ckBand=band==='EC'?'EC':
+                 band==='KINDERGARTEN'||band==='1ST GRADE'?'K\/1':
+                 band==='2ND GRADE'||band==='3RD GRADE'?'2\/3':'Middle';
+    rooms.forEach(room=>{
+      const row=document.createElement('div');
+      row.className='role-row';
+      row.innerHTML='<span class="role-name">'+room+'<\/span><span class="role-check" id="rcl-'+room.replace(/[^a-zA-Z]/g,'_')+'"><\/span>';
+      row.onclick=()=>readPickClassroom(row,room,ckBand);
+      list.appendChild(row);
+    });
+  });
+  setTimeout(()=>showReadStep('classroom'),120);
+}
+
+function readPickClassroom(row,val,band){
+  document.querySelectorAll('#rd-classroom-list .role-check').forEach(c=>c.classList.remove('on'));
+  row.querySelector('.role-check').classList.add('on');
+  RD.classroom=val;
+  RD.band=band;
+  setTimeout(()=>showReadStep('role'),120);
+}
+
+function readPickRole(row,val){
+  document.querySelectorAll('#rd-role .role-check').forEach(c=>c.classList.remove('on'));
+  row.querySelector('.role-check').classList.add('on');
+  RD.role=val;
+  // Build checklist
+  const bandKey=RD.band;
+  const items=CHECKLISTS[bandKey]||[];
+  const container=document.getElementById('rd-checklist-items');
+  container.innerHTML='';
+  items.forEach(([name,guidance],i)=>{
+    const wrap=document.createElement('div');
+    wrap.style.cssText='padding:16px 16px;border-bottom:0.5px solid var(--border)';
+    if(i===items.length-1) wrap.style.borderBottom='none';
+    // Label + guidance
+    const label=document.createElement('div');
+    label.style.cssText='font-size:14px;color:var(--text);font-weight:500;line-height:1.4';
+    label.textContent=name;
+    const guide=document.createElement('div');
+    guide.style.cssText='font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;margin-bottom:8px';
+    guide.textContent=guidance;
+    // Check / Flag buttons
+    const togRow=document.createElement('div');
+    togRow.style.cssText='display:flex;gap:8px';
+    RD.checks[name]='unchecked';
+    const btnC=document.createElement('button');
+    btnC.style.cssText='flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent';
+    btnC.textContent='\u2713 Ready';
+    const btnF=document.createElement('button');
+    btnF.style.cssText='flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent';
+    btnF.textContent='\u26a0 Flag';
+    function upd(){
+      const v=RD.checks[name];
+      btnC.style.background=v==='checked'?'var(--teal)':'var(--card)';
+      btnC.style.borderColor=v==='checked'?'var(--teal)':'var(--border)';
+      btnC.style.color=v==='checked'?'#fff':'var(--muted)';
+      btnF.style.background=v==='flagged'?'var(--red)':'var(--card)';
+      btnF.style.borderColor=v==='flagged'?'var(--red)':'var(--border)';
+      btnF.style.color=v==='flagged'?'#fff':'var(--muted)';
+    }
+    btnC.onclick=(e)=>{e.stopPropagation();RD.checks[name]=RD.checks[name]==='checked'?'unchecked':'checked';upd();};
+    btnF.onclick=(e)=>{e.stopPropagation();RD.checks[name]=RD.checks[name]==='flagged'?'unchecked':'flagged';upd();};
+    togRow.appendChild(btnC);
+    togRow.appendChild(btnF);
+    wrap.appendChild(label);
+    wrap.appendChild(guide);
+    wrap.appendChild(togRow);
+    container.appendChild(wrap);
+  });
+  setTimeout(()=>showReadStep('checklist'),120);
+}
+
+function readPickAssessment(val){
+  RD.assessment=val;
+  const map={'Fully ready':'rab-1','Ready — minor items remain':'rab-2','Not ready — return visit needed':'rab-3'};
+  const colors={'Fully ready':['var(--teal)','#fff'],'Ready — minor items remain':['#f59e0b','#fff'],'Not ready — return visit needed':['var(--red)','#fff']};
+  ['rab-1','rab-2','rab-3'].forEach(id=>{
+    const btn=document.getElementById(id);
+    if(!btn) return;
+    btn.style.background='var(--card)';
+    btn.style.borderColor='var(--border)';
+    btn.style.color='var(--muted)';
+  });
+  const sel=document.getElementById(map[val]);
+  if(sel){
+    sel.style.background=colors[val][0];
+    sel.style.borderColor=colors[val][0];
+    sel.style.color=colors[val][1];
+  }
+  // Show submit bar
+  const btn=document.getElementById('read-btn');
+  if(btn){
+    const bar=btn.closest('.submit-bar');
+    if(bar) bar.style.display='';
+    btn.style.display='';
+    btn.textContent='Submit →';
+    btn.className='submit-btn btn-teal';
+  }
+}
+
+function readNext(){
+  const s=RD.step;
+  if(s==='school'){alert('Select a campus.');return;}
+  if(s==='classroom'){if(!RD.classroom){alert('Select a classroom.');return;} showReadStep('role');}
+  else if(s==='role'){if(!RD.role){alert('Select your role.');return;} showReadStep('checklist');}
+  else if(s==='checklist'){showReadStep('assessment');}
+  else if(s==='assessment'){
+    if(!RD.assessment){alert('Select an assessment.');return;}
+    submitReadiness();
+  }
+}
+
+function submitReadiness(){
+  const checkedItems=Object.entries(RD.checks).filter(([k,v])=>v==='checked').map(([k])=>k);
+  const flaggedItems=Object.entries(RD.checks).filter(([k,v])=>v==='flagged').map(([k])=>k);
+  const totalItems=Object.keys(RD.checks).length;
+  const payload={
+    flow:'readiness',
+    school:RD.school,
+    classroom:RD.classroom,
+    gradeBand:RD.band==='K\/1'?'K/1':RD.band==='2\/3'?'2/3':RD.band,
+    role:RD.role,
+    assessment:RD.assessment,
+    itemsChecked:checkedItems.length,
+    itemsTotal:totalItems,
+    checkedItems:checkedItems.join(', '),
+    flaggedItems:flaggedItems.join(', '),
+    notes:document.getElementById('rd-notes').value.trim()
+  };
+  setProgress('read-prog',100);
+  document.getElementById('s-title').textContent='Submitted!';
+  document.getElementById('s-sub').textContent='The readiness assessment for '+RD.classroom+' has been saved.';
+  resetEmailCapture();
+  setEmailLabel('Want a copy of what you submitted?');
+  showScreen('screen-success');
+  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)}).catch(()=>{});
+}
 
 </script>
 </body>
