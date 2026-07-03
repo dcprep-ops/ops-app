@@ -1339,7 +1339,7 @@ function sendEmailCopy() {
   const btn = document.querySelector('.email-send-btn');
   btn.textContent = 'Sending…'; btn.disabled = true;
 
-  const URL = 'https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec';
+  const URL = 'https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec';
   fetch(URL, {
     method: 'POST',
     mode: 'no-cors',
@@ -1612,7 +1612,7 @@ function submitDrill() {
   _lastFlow='drill';
   const payload = { flow:'drill', campus:D.school, role:D.role, drillType:D.drillType||'', weather:D.weather||'', alarmStart:document.getElementById('d-t-alarm')?.value||'', allClear:document.getElementById('d-t-clear')?.value||'', occupants:document.getElementById('d-occupants')?.value||'', durationSecs:timerSecs('drill'), flags:flags, observations, notes:document.getElementById('d-notes')?.value||document.getElementById('d-ob-notes')?.value||'' };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Drill logged';
   document.getElementById('s-sub').textContent = D.role==='OSL' ? 'The official record is saved. Campus leaders will receive a summary.' : 'Your observations have been added to the drill record.';
   let html=`<div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${D.school||'—'}<\/span><\/div>
@@ -1692,7 +1692,7 @@ function submitWalk() {
   const checklist = serializeChecklist('wd-checklist');
   const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Thanks — we\'ll consolidate all observations into a report and email you shortly.';
   document.getElementById('s-card').innerHTML=`
@@ -1779,7 +1779,7 @@ function submitArr() {
   const checklist = serializeChecklist('ad-checklist');
   const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, rating:A.rating||'', checklist, notes:document.getElementById('arr-notes')?.value||'' };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Observation logged';
   document.getElementById('s-sub').textContent='Your arrival / dismissal observation has been saved.';
   document.getElementById('s-card').innerHTML=`
@@ -1877,7 +1877,7 @@ function submitCust() {
   const checklist = serializeChecklist('cd-'+C.step);
   const payload = { flow:'custodial', campus:C.school, role:C.role, checklistType:type, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
   _lastPayload = payload;
-  fetch('https://script.google.com/macros/s/AKfycbxRNHcXXyq_kluZnDedJgCZdqknkRQqu60wafH0zmbJcpPvWo8YXVGffxObnZKgOdVQkg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
+  fetch('https://script.google.com/macros/s/AKfycbwYCvfXVlO0HCthw2Yk07UVnOwx8i60UI_c8UekOxzsXiJsUvxYGgEhmuHTR9u6RtwvTg/exec', { method:'POST', mode:'no-cors', body: JSON.stringify(payload) }).catch(()=>{});
   document.getElementById('s-title').textContent='Walkthrough logged';
   document.getElementById('s-sub').textContent='Your custodial walkthrough has been saved.';
   document.getElementById('s-card').innerHTML=`
@@ -2304,6 +2304,13 @@ function submitReadiness(){
   setProgress('read-prog',100);
   document.getElementById('s-title').textContent='Submitted!';
   document.getElementById('s-sub').textContent='The readiness assessment for '+RD.classroom+' has been saved.';
+  const assessIcon={'Fully ready':'✅','Ready — minor items remain':'🟡','Not ready — return visit needed':'🔴'}[RD.assessment]||'';
+  document.getElementById('s-card').innerHTML=
+    '<div style="padding:4px 0 8px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#94a3b8">Summary<\/div>'+
+    '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">School<\/span><span style="font-weight:500">'+RD.school+'<\/span><\/div>'+
+    '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Classroom<\/span><span style="font-weight:500">'+RD.classroom+'<\/span><\/div>'+
+    '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Assessment<\/span><span style="font-weight:500">'+assessIcon+' '+RD.assessment+'<\/span><\/div>'+
+    '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span style="color:#64748b">Items checked<\/span><span style="font-weight:500">'+checkedItems.length+' of '+totalItems+'<\/span><\/div>';
   resetEmailCapture();
   setEmailLabel('Want a copy of what you submitted?');
   showScreen('screen-success');
