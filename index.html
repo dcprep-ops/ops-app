@@ -1710,11 +1710,11 @@ function submitWalk() {
   const notes = Array.from(document.querySelectorAll('#wd-checklist textarea')).map(t=>t.value).filter(Boolean).join(' | ');
   _lastFlow='walkthrough';
   const checklist = serializeChecklist('wd-checklist');
-  const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, checklist, notes };
+  const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, observations:checklist, notes };
   _lastPayload = payload;
   postToScript(payload);
-  document.getElementById('s-title').textContent='Walkthrough logged';
-  document.getElementById('s-sub').textContent='Thanks — we\'ll consolidate all observations into a report and email you shortly.';
+  document.getElementById('s-title').textContent='Submitted';
+  document.getElementById('s-sub').textContent='Your observations have been saved. We\'ll incorporate this into the walkthrough report along with the other observations from today.';
   document.getElementById('s-card').innerHTML=`
     <div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${W.school||'—'}<\/span><\/div>
     <div class="sum-row"><span class="sum-key">Role<\/span><span class="sum-val">${W.role||'—'}<\/span><\/div>
