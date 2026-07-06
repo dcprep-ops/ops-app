@@ -383,6 +383,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="card-section" style="padding-bottom:6px"><label class="field-label">Your role</label></div>
         <div class="role-row" onclick="drillPickRole(this,'OSL')"><span class="role-name">OSL</span><span class="role-check" id="drc-OSL"></span></div>
         <div class="role-row" onclick="drillPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="drc-Principal"></span></div>
+        <div class="role-row" onclick="drillPickRole(this,'COO')"><span class="role-name">COO</span><span class="role-check" id="drc-COO"></span></div>
         <div class="role-row" onclick="drillPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="drc-SDO"></span></div>
         <div class="role-row" onclick="drillPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="drc-Other"></span></div>
         <div class="role-other-wrap" id="drc-other-input" style="display:none;padding:0 16px 14px;">
@@ -520,6 +521,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="card">
         <div class="role-row" onclick="walkPickRole(this,'OSL')"><span class="role-name">OSL</span><span class="role-check" id="wrc-OSL"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="wrc-Principal"></span></div>
+        <div class="role-row" onclick="walkPickRole(this,'COO')"><span class="role-name">COO</span><span class="role-check" id="wrc-COO"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="wrc-SDO"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="wrc-Other"></span></div>
         <div class="role-other-wrap" id="wrc-other-input" style="display:none;padding:0 16px 14px;">
@@ -720,6 +722,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="card">
         <div class="role-row" onclick="arrPickRole(this,'OSL')"><span class="role-name">OSL</span><span class="role-check" id="arc-OSL"></span></div>
         <div class="role-row" onclick="arrPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="arc-Principal"></span></div>
+        <div class="role-row" onclick="arrPickRole(this,'COO')"><span class="role-name">COO</span><span class="role-check" id="arc-COO"></span></div>
         <div class="role-row" onclick="arrPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="arc-SDO"></span></div>
         <div class="role-row" onclick="arrPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="arc-Other"></span></div>
         <div class="role-other-wrap" id="arc-other-input" style="display:none;padding:0 16px 14px;">
@@ -1218,6 +1221,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="card">
         <div class="role-row" onclick="readPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="rrc-Principal"></span></div>
         <div class="role-row" onclick="readPickRole(this,'OSL')"><span class="role-name">OSL</span><span class="role-check" id="rrc-OSL"></span></div>
+        <div class="role-row" onclick="readPickRole(this,'COO')"><span class="role-name">COO</span><span class="role-check" id="rrc-COO"></span></div>
         <div class="role-row" onclick="readPickRole(this,'MD of Schools')"><span class="role-name">MD of Schools</span><span class="role-check" id="rrc-MDS"></span></div>
         <div class="role-row" onclick="readPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="rrc-SDO"></span></div>
         <div class="role-row" onclick="readPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="rrc-Other"></span></div>
@@ -1541,6 +1545,7 @@ function drillPickRole(row, val) {
   D.role = val;
   const inp = document.getElementById('drc-other-input');
   if (inp) { inp.style.display = val==='Other' ? '' : 'none'; if(val!=='Other') document.getElementById('d-other-role').value=''; }
+  if(val!=='Other') setTimeout(()=>{ D.role==='OSL'?showDrillStep('start'):showDrillStep('observer'); },120);
 }
 function walkPickRole(row, val) {
   document.querySelectorAll('#wd-role .role-check').forEach(c=>c.classList.remove('on'));
@@ -1601,7 +1606,11 @@ function drillBack() {
   showDrillStep(prev[D.step]||'school');
 }
 
+let _submitting = false;
 function postToScript(payload) {
+  if (_submitting) return;
+  _submitting = true;
+  setTimeout(function() { _submitting = false; }, 5000);
   try {
     fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', {
       method: 'POST',
@@ -1788,7 +1797,7 @@ function submitArr() {
   const issues=document.querySelectorAll('#ad-checklist .check-box.issue').length;
   _lastFlow='arrival';
   const checklist = serializeChecklist('ad-checklist');
-  const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, rating:A.rating||'', checklist, notes:document.getElementById('arr-notes')?.value||'' };
+  const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, overallRating:A.rating||'', observations:checklist, notes:document.getElementById('arr-notes')?.value||'' };
   _lastPayload = payload;
   postToScript(payload);
   document.getElementById('s-title').textContent='Observation logged';
@@ -2252,7 +2261,7 @@ function readPickRole(row,val){
     wrap.appendChild(togRow);
     container.appendChild(wrap);
   });
-  setTimeout(()=>showReadStep('checklist'),120);
+  if(val!=='Other') setTimeout(()=>showReadStep('checklist'),120);
 }
 
 function readPickAssessment(val){
