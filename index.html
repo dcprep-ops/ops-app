@@ -496,13 +496,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="app-header">
     <div class="app-header-row">
       <button class="back-btn" onclick="walkBack()">← Back</button>
-
     </div>
     <div class="header-sub" id="walk-ctx"></div>
   </div>
   <div class="scroll-body flow-body">
 
-    <!-- school -->
+    <!-- STEP: school -->
     <div class="flow-step active" id="wd-school">
       <div class="step-title">Which campus?</div>
       <div class="card">
@@ -515,7 +514,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <!-- role -->
+    <!-- STEP: role -->
     <div class="flow-step" id="wd-role">
       <div class="step-title">What's your role?</div>
       <div class="card">
@@ -523,172 +522,36 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="role-row" onclick="walkPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="wrc-Principal"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'COO')"><span class="role-name">COO</span><span class="role-check" id="wrc-COO"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="wrc-SDO"></span></div>
+        <div class="role-row" onclick="walkPickRole(this,'MD of Schools')"><span class="role-name">MD of Schools</span><span class="role-check" id="wrc-MD"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="wrc-Other"></span></div>
         <div class="role-other-wrap" id="wrc-other-input" style="display:none;padding:0 16px 14px;">
           <input type="text" id="w-other-role" placeholder="Enter your role…" oninput="W.role=this.value||'Other'">
         </div>
       </div>
+      <div class="submit-bar" id="walk-role-next" style="display:none">
+        <button class="submit-btn btn-amber" onclick="showWalkStep('spaces')">Next →</button>
+      </div>
     </div>
 
-    <!-- checklist -->
-    <div class="flow-step" id="wd-checklist">
-      <div class="step-title">Checklist</div>
-      <div style="background:var(--card);border-radius:12px;border:0.5px solid var(--border);padding:14px 16px;margin-bottom:12px;">
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0">Tap once if the item is present ✓ &nbsp;·&nbsp; Tap twice to flag an issue !</p>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:6px 0 0">Each section has an optional notes field.</p>
+    <!-- STEP: space selector -->
+    <div class="flow-step" id="wd-spaces">
+      <div class="step-title">Choose a space</div>
+      <div id="walk-space-list" class="card" style="padding:0;overflow:hidden"></div>
+      <div style="margin-top:12px">
+        <button class="submit-btn btn-navy" style="width:100%" onclick="walkFinish()">Finish walkthrough →</button>
+        <button class="submit-btn btn-ghost" style="width:100%;margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--muted)" onclick="walkSkipRemaining()">Skip remaining spaces</button>
       </div>
+    </div>
 
-      <!-- Lobby -->
-      <div class="card" id="w-lobby">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Lobby</label></div>
-        <div class="check-item" data-item="Furniture is inviting and in good condition" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is inviting and in good condition</span></div>
-        <div class="check-item" data-item="Lost and Found is clearly identifiable and organized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Lost and Found is clearly identifiable and organized</span></div>
-        <div class="check-item" data-item="Package storage is functional and away from visitor sight" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Package storage is functional and away from visitor sight</span></div>
-        <div class="check-item" data-item="Front desk and security desk supplies are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Front desk and security desk supplies are stocked</span></div>
-        <div class="check-item" data-item="Bulletin boards have neat backing paper, updated monthly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards have neat backing paper, updated monthly</span></div>
-        <div class="check-item" data-item="Bilingual bulletin board with school leader &quot;All About Me&quot; and headshot" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual bulletin board with school leader "All About Me" and headshot</span></div>
-        <div class="check-item" data-item="Bilingual family resources up to date and neat" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual family resources up to date and neat</span></div>
-        <div class="check-item" data-item="Professional student and staff photos hung neatly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Professional student and staff photos hung neatly</span></div>
-        <div class="check-item" data-item="Bilingual signage and values hung neatly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bilingual signage and values hung neatly</span></div>
-        <div class="check-item" data-item="School awards displayed on floating shelf" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">School awards displayed on floating shelf</span></div>
-        <div class="check-item" data-item="Security desk with clear sign-in process signage" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Security desk with clear sign-in process signage</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for lobby…"></textarea></div>
-      </div>
-
-      <!-- Hallways -->
-      <div class="card" id="w-hallways">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Hallways</label></div>
-        <div class="check-item" data-item="Hallways are clean, warm, and welcoming" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways are clean, warm, and welcoming</span></div>
-        <div class="check-item" data-item="Signage and bulletin boards are neat and match branding" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Signage and bulletin boards are neat and match branding</span></div>
-        <div class="check-item" data-item="Bulletin boards feature student work" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards feature student work</span></div>
-        <div class="check-item" data-item="Hallways are clear of furniture, trash, and other items" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hallways are clear of furniture, trash, and other items</span></div>
-        <div class="check-item" data-item="Values posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values posters neatly hung</span></div>
-        <div class="check-item" data-item="Informational posters and flyers neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Informational posters and flyers neatly hung</span></div>
-        <div class="check-item" data-item="&quot;Meet the Teacher&quot; sign holder intact" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">"Meet the Teacher" sign holder intact</span></div>
-        <div class="check-item" data-item="Photo canvases on each blank wall, hung neatly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Photo canvases on each blank wall, hung neatly</span></div>
-        <div class="check-item" data-item="Walls are clean without marks" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Walls are clean without marks</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for hallways…"></textarea></div>
-      </div>
-
-      <!-- Conference Rooms -->
-      <div class="card" id="w-conference">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Conference rooms</label></div>
-        <div class="check-item" data-item="Space is neat, clean, and free of clutter" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is neat, clean, and free of clutter</span></div>
-        <div class="check-item" data-item="Office supplies are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
-        <div class="check-item" data-item="Furniture is clean, matching, and functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is clean, matching, and functional</span></div>
-        <div class="check-item" data-item="Dry erase board is intact" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Dry erase board is intact</span></div>
-        <div class="check-item" data-item="Google Meet box and remote control in holder" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Google Meet box and remote control in holder</span></div>
-        <div class="check-item" data-item="Mounted television and remote control in holder" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Mounted television and remote control in holder</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for conference rooms…"></textarea></div>
-      </div>
-
-      <!-- Leader Offices -->
-      <div class="card" id="w-offices">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Leader offices</label></div>
-        <div class="check-item" data-item="Office is clean, organized, and fully functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office is clean, organized, and fully functional</span></div>
-        <div class="check-item" data-item="Conference table and chairs present where applicable" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Conference table and chairs present where applicable</span></div>
-        <div class="check-item" data-item="Area rug present where applicable" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Area rug present where applicable</span></div>
-        <div class="check-item" data-item="Desk and office chairs functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Desk and office chairs functional</span></div>
-        <div class="check-item" data-item="Bookshelf present and organized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bookshelf present and organized</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for leader offices…"></textarea></div>
-      </div>
-
-      <!-- Copy/Mail Room -->
-      <div class="card" id="w-copy">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Copy / mail room</label></div>
-        <div class="check-item" data-item="Room is clean, organized, and fully functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Room is clean, organized, and fully functional</span></div>
-        <div class="check-item" data-item="Office supplies are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
-        <div class="check-item" data-item="Paper and paper storage system is functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper and paper storage system is functional</span></div>
-        <div class="check-item" data-item="Ink / toner and storage system is functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Ink / toner and storage system is functional</span></div>
-        <div class="check-item" data-item="Values posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values posters neatly hung</span></div>
-        <div class="check-item" data-item="Copier troubleshooting directions hung at eye level" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Copier troubleshooting directions hung at eye level</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for copy / mail room…"></textarea></div>
-      </div>
-
-      <!-- Staff Lounge -->
-      <div class="card" id="w-lounge">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Staff lounge / workroom</label></div>
-        <div class="check-item" data-item="Space is clean, organized, and free of clutter" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is clean, organized, and free of clutter</span></div>
-        <div class="check-item" data-item="Appliances are cleaned regularly" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Appliances are cleaned regularly</span></div>
-        <div class="check-item" data-item="Hospitality items are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hospitality items are stocked</span></div>
-        <div class="check-item" data-item="Office supplies are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Office supplies are stocked</span></div>
-        <div class="check-item" data-item="Paper and ink / toner storage systems are functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Paper and ink / toner storage systems are functional</span></div>
-        <div class="check-item" data-item="Furniture is functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Furniture is functional</span></div>
-        <div class="check-item" data-item="Values signage: &quot;At DC Prep We Keep Spaces&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
-        <div class="check-item" data-item="HR compliance posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">HR compliance posters neatly hung</span></div>
-        <div class="check-item" data-item="Staff birthday board is up to date" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Staff birthday board is up to date</span></div>
-        <div class="check-item" data-item="Bulletin boards have neat backing paper / border" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bulletin boards have neat backing paper / border</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for staff lounge…"></textarea></div>
-      </div>
-
-      <!-- Staff Restroom -->
-      <div class="card" id="w-staff-rest">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Staff restroom</label></div>
-        <div class="check-item" data-item="Restroom is clean" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Restroom is clean</span></div>
-        <div class="check-item" data-item="Hospitality items are stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hospitality items are stocked</span></div>
-        <div class="check-item" data-item="Values signage: &quot;At DC Prep We Keep Spaces&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
-        <div class="check-item" data-item="Feminine hygiene products poster is hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Feminine hygiene products poster is hung</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for staff restroom…"></textarea></div>
-      </div>
-
-      <!-- Student Restroom -->
-      <div class="card" id="w-student-rest">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Student restroom</label></div>
-        <div class="check-item" data-item="Restroom is clean" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Restroom is clean</span></div>
-        <div class="check-item" data-item="Toilet paper dispensers stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Toilet paper dispensers stocked</span></div>
-        <div class="check-item" data-item="Hand soap dispensers stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand soap dispensers stocked</span></div>
-        <div class="check-item" data-item="Hand dryers functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Hand dryers functional</span></div>
-        <div class="check-item" data-item="Values signage: &quot;At DC Prep We Keep Spaces&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
-        <div class="check-item" data-item="Feminine hygiene products poster neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Feminine hygiene products poster neatly hung</span></div>
-        <div class="check-item" data-item="Stall numbers in place" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Stall numbers in place</span></div>
-        <div class="check-item" data-item="Prep Note holder in place" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Prep Note holder in place</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for student restroom…"></textarea></div>
-      </div>
-
-      <!-- Prepeteria -->
-      <div class="card" id="w-prepeteria">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Prepeteria</label></div>
-        <div class="check-item" data-item="Food menus up to date" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Food menus up to date</span></div>
-        <div class="check-item" data-item="Food compliance posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Food compliance posters neatly hung</span></div>
-        <div class="check-item" data-item="Student photo canvases neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student photo canvases neatly hung</span></div>
-        <div class="check-item" data-item="Healthy eating posters neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Healthy eating posters neatly hung</span></div>
-        <div class="check-item" data-item="Values signage: &quot;At DC Prep We Keep Spaces&quot;" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Values signage: "At DC Prep We Keep Spaces"</span></div>
-        <div class="check-item" data-item="Student seating chart neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student seating chart neatly hung</span></div>
-        <div class="check-item" data-item="Student chants, First Five, college pennants neatly hung" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student chants, First Five, college pennants neatly hung</span></div>
-        <div class="check-item" data-item="Student cafeteria tables and chairs neatly organized" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Student cafeteria tables and chairs neatly organized</span></div>
-        <div class="check-item" data-item="Technology storage with needed items" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Technology storage with needed items</span></div>
-        <div class="check-item" data-item="PD supply cabinet stocked" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">PD supply cabinet stocked</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for prepeteria…"></textarea></div>
-      </div>
-
-      <!-- Central Library -->
-      <div class="card" id="w-library">
-        <div class="card-section" style="padding-bottom:6px"><label class="field-label">Central library</label></div>
-        <div class="check-item" data-item="Space is clean, organized, and fully functional" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Space is clean, organized, and fully functional</span></div>
-        <div class="check-item" data-item="Matching, functional tables and chairs for students" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Matching, functional tables and chairs for students</span></div>
-        <div class="check-item" data-item="Bookshelves stocked with books sorted by level / genre" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Bookshelves stocked with books sorted by level / genre</span></div>
-        <div class="check-item" data-item="Books organized in book bins" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Books organized in book bins</span></div>
-        <div class="check-item" data-item="Area rug present where applicable" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Area rug present where applicable</span></div>
-        <div class="check-item" data-item="Library rules posted" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Library rules posted</span></div>
-        <div class="check-item" data-item="Reading-encouragement vinyls displayed" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Reading-encouragement vinyls displayed</span></div>
-        <div class="check-item" data-item="Comfortable seating available" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">Comfortable seating available</span></div>
-        <button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>
-        <div class="notes-body"><textarea rows="2" placeholder="Notes for central library…"></textarea></div>
-      </div>
-
-    </div><!-- /wd-checklist -->
+    <!-- STEP: single space checklist (dynamically populated) -->
+    <div class="flow-step" id="wd-space-checklist">
+      <div id="walk-space-checklist-inner"></div>
+    </div>
 
   </div>
-  <div class="submit-bar"><button class="submit-btn btn-amber" id="walk-btn" onclick="walkNext()">Next →</button></div>
+  <div class="submit-bar" id="walk-submit-bar" style="display:none">
+    <button class="submit-btn btn-amber" id="walk-btn" onclick="walkNext()">Next →</button>
+  </div>
 </div>
 
 <!-- ══ ARRIVAL/DISMISSAL FLOW ══ -->
@@ -1477,6 +1340,7 @@ function openPreview(key) {
 // DRILL FLOW
 // ══════════════════════════════════════════════
 const D = { school:null, role:null, drillType:null, weather:null, assessment:null, step:'school', elapsedIv:null };
+const W = { school:null, role:null, step:'school', currentSpace:null, spaceState:{} };
 
 function openFlow(type) {
   if (type === 'drill') { resetDrill(); showScreen('screen-drill'); }
@@ -1652,80 +1516,326 @@ function submitDrill() {
 }
 
 // ══════════════════════════════════════════════
-// WALKTHROUGH FLOW
+// WALKTHROUGH FLOW — space-by-space
 // ══════════════════════════════════════════════
-const W = { school:null, role:null, step:'school' };
 
-function resetWalk() {
-  Object.assign(W,{school:null,role:null,step:'school'});
-  stopTimer('walk');
-  document.querySelectorAll('#screen-walkthrough .sel-btn').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('#screen-walkthrough .role-check').forEach(c=>c.classList.remove('on'));
-  document.querySelectorAll('#screen-walkthrough .check-box').forEach(b=>{ b.classList.remove('ok','issue'); });
-  document.querySelectorAll('#screen-walkthrough .check-label').forEach(l=>l.classList.remove('done'));
-  document.querySelectorAll('#screen-walkthrough .notes-body').forEach(n=>{ n.classList.remove('open'); });
-  document.querySelectorAll('#screen-walkthrough textarea').forEach(t=>t.value='');
-  document.querySelectorAll('#screen-walkthrough .notes-toggle').forEach(b=>b.textContent='+ Add note');
-  document.getElementById('walk-ctx').textContent='';
-  setProgress('walk-prog',0);
-  showWalkStep('school');
+const WALK_SPACES = [
+  { id:'lobby',       label:'Lobby',               items:[
+    'Furniture is inviting and in good condition',
+    'Lost and Found is clearly identifiable and organized',
+    'Package storage is functional and away from visitor sight',
+    'Front desk and security desk supplies are stocked',
+    'Bulletin boards have neat backing paper, updated monthly',
+    'Bilingual bulletin board with school leader "All About Me" and headshot',
+    'Bilingual family resources up to date and neat',
+    'Professional student and staff photos hung neatly',
+    'Bilingual signage and values hung neatly',
+    'School awards displayed on floating shelf',
+    'Security desk with clear sign-in process signage',
+  ]},
+  { id:'hallways',    label:'Hallways',             items:[
+    'Hallways are clean, warm, and welcoming',
+    'Signage and bulletin boards are neat and match branding',
+    'Bulletin boards feature student work',
+    'Hallways are clear of furniture, trash, and other items',
+    'Values posters neatly hung',
+    'Informational posters and flyers neatly hung',
+    '"Meet the Teacher" sign holder intact',
+    'Photo canvases on each blank wall, hung neatly',
+    'Walls are clean without marks',
+  ]},
+  { id:'conference',  label:'Conference rooms',     items:[
+    'Space is neat, clean, and free of clutter',
+    'Office supplies are stocked',
+    'Furniture is clean, matching, and functional',
+    'Dry erase board is intact',
+    'Google Meet box and remote control in holder',
+    'Mounted television and remote control in holder',
+  ]},
+  { id:'offices',     label:'Leader offices',       items:[
+    'Office is clean, organized, and fully functional',
+    'Conference table and chairs present where applicable',
+    'Area rug present where applicable',
+    'Desk and office chairs functional',
+    'Bookshelf present and organized',
+  ]},
+  { id:'copy',        label:'Copy / mail room',     items:[
+    'Room is clean, organized, and fully functional',
+    'Office supplies are stocked',
+    'Paper and paper storage system is functional',
+    'Ink / toner and storage system is functional',
+    'Values posters neatly hung',
+    'Copier troubleshooting directions hung at eye level',
+  ]},
+  { id:'lounge',      label:'Staff lounge / workroom', items:[
+    'Space is clean, organized, and free of clutter',
+    'Appliances are cleaned regularly',
+    'Hospitality items are stocked',
+    'Office supplies are stocked',
+    'Paper and ink / toner storage systems are functional',
+    'Furniture is functional',
+    'Values signage: "At DC Prep We Keep Spaces"',
+    'HR compliance posters neatly hung',
+    'Staff birthday board is up to date',
+    'Bulletin boards have neat backing paper / border',
+  ]},
+  { id:'staff-rest',  label:'Staff restroom',        items:[
+    'Restroom is clean',
+    'Hospitality items are stocked',
+    'Values signage: "At DC Prep We Keep Spaces"',
+    'Feminine hygiene products poster is hung',
+  ]},
+  { id:'student-rest',label:'Student restrooms',     items:[
+    'Restroom is clean',
+    'Toilet paper dispensers stocked',
+    'Hand soap dispensers stocked',
+    'Hand dryers functional',
+    'Values signage: "At DC Prep We Keep Spaces"',
+    'Feminine hygiene products poster neatly hung',
+    'Stall numbers in place',
+    'Prep Note holder in place',
+  ]},
+  { id:'prepeteria',  label:'Prepeteria',            items:[
+    'Food menus up to date',
+    'Food compliance posters neatly hung',
+    'Student photo canvases neatly hung',
+    'Healthy eating posters neatly hung',
+    'Values signage: "At DC Prep We Keep Spaces"',
+    'Student seating chart neatly hung',
+    'Student chants, First Five, college pennants neatly hung',
+    'Student cafeteria tables and chairs neatly organized',
+    'Technology storage with needed items',
+    'PD supply cabinet stocked',
+  ]},
+  { id:'library',     label:'Central library',       items:[
+    'Space is clean, organized, and fully functional',
+    'Matching, functional tables and chairs for students',
+    'Bookshelves stocked with books sorted by level / genre',
+    'Books organized in book bins',
+    'Area rug present where applicable',
+    'Library rules posted',
+    'Reading-encouragement vinyls displayed',
+    'Comfortable seating available',
+  ]},
+];
+
+function walkSpaceState() {
+  const s = {};
+  WALK_SPACES.forEach(sp => { s[sp.id] = { status:'not-started', checks:{}, notes:'' }; });
+  return s;
 }
 
-function showWalkStep(id) {
-  document.querySelectorAll('#screen-walkthrough .flow-step').forEach(s=>s.classList.remove('active'));
-  document.getElementById('wd-'+id).classList.add('active');
-  document.querySelector('#screen-walkthrough .scroll-body').scrollTop=0;
-  W.step=id;
-  const pcts={school:10,role:30,checklist:55};
-  setProgress('walk-prog',pcts[id]||10);
-  const btn=document.getElementById('walk-btn');
-  const isLast=id==='checklist';
-  const walkBar=btn?btn.closest('.submit-bar'):null;
-  if(isLast){if(walkBar)walkBar.style.display='';btn.textContent='Submit walkthrough';btn.className='submit-btn btn-teal';}
-  else{if(walkBar)walkBar.style.display='none';}
+function walkPickSchool(el, val) {
+  document.querySelectorAll('#wd-school .role-check').forEach(c=>c.classList.remove('on'));
+  el.querySelector('.role-check').classList.add('on');
+  W.school = val;
+  document.getElementById('walk-ctx').textContent = val;
+  setTimeout(()=>showWalkStep('role'), 120);
 }
 
-function walkPick(el,field,val) {
-  el.closest('.sel-grid').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on'); W[field]=val;
-  if(field==='school') document.getElementById('walk-ctx').textContent=val;
+function walkPickRole(el, val) {
+  document.querySelectorAll('#wd-role .role-check').forEach(c=>c.classList.remove('on'));
+  el.querySelector('.role-check').classList.add('on');
+  W.role = val;
+  const inp = document.getElementById('wrc-other-input');
+  const nextBtn = document.getElementById('walk-role-next');
+  if (inp) inp.style.display = val==='Other' ? '' : 'none';
+  if (val !== 'Other') {
+    if (nextBtn) nextBtn.style.display = 'none';
+    setTimeout(()=>{ showWalkStep('spaces'); renderSpaceSelector(); }, 120);
+  } else {
+    if (nextBtn) nextBtn.style.display = '';
+  }
 }
 
-function walkNext() {
-  const s=W.step;
-  if (s==='school') { if(!W.school){alert('Select a campus.');return;} showWalkStep('role'); }
-  else if (s==='role') { if(!W.role){alert('Select your role.');return;} showWalkStep('checklist'); }
-  else if (s==='checklist') { submitWalk(); }
+function renderSpaceSelector() {
+  const list = document.getElementById('walk-space-list');
+  if (!list) return;
+  list.innerHTML = '';
+  const notStarted = WALK_SPACES.filter(sp => W.spaceState[sp.id].status === 'not-started');
+  const done = WALK_SPACES.filter(sp => ['clear','flagged','skipped'].includes(W.spaceState[sp.id].status));
+  notStarted.forEach(sp => {
+    const row = document.createElement('div');
+    row.className = 'role-row';
+    row.style.cssText = 'cursor:pointer';
+    row.innerHTML = `<span class="role-name" style="flex:1">${sp.label}</span>`
+      + `<span style="font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;background:var(--bg);border:0.5px solid var(--border);color:var(--muted)">not started</span>`;
+    row.onclick = () => openSpace(sp.id);
+    list.appendChild(row);
+  });
+  if (done.length > 0) {
+    const divider = document.createElement('div');
+    divider.style.cssText = 'font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:8px 16px 4px;background:var(--lt)';
+    divider.textContent = 'Completed';
+    list.appendChild(divider);
+    done.forEach(sp => {
+      const st = W.spaceState[sp.id].status;
+      const flagCount = Object.values(W.spaceState[sp.id].checks).filter(v=>v==='flagged').length;
+      const badgeStyle = st==='flagged' ? 'background:#fef2f2;border:0.5px solid #fecaca;color:#991b1b'
+        : st==='skipped' ? 'background:var(--bg);border:0.5px solid var(--border);color:var(--muted)'
+        : 'background:#e1f5ee;border:0.5px solid #99f6e4;color:#085041';
+      const badgeText = st==='flagged' ? `${flagCount} flag${flagCount>1?'s':''}`
+        : st==='skipped' ? 'skipped' : 'all clear';
+      const row = document.createElement('div');
+      row.className = 'role-row';
+      row.style.cssText = 'cursor:pointer;opacity:0.65';
+      row.innerHTML = `<span class="role-name" style="flex:1">${sp.label}</span>`
+        + `<span style="font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;${badgeStyle}">${badgeText}</span>`;
+      row.onclick = () => openSpace(sp.id);
+      list.appendChild(row);
+    });
+  }
+  const doneCount = done.length;
+  const flagCount = WALK_SPACES.filter(sp=>W.spaceState[sp.id].status==='flagged').length;
+  document.getElementById('walk-ctx').textContent =
+    `${W.school} · ${doneCount} done · ${WALK_SPACES.length-doneCount} remaining${flagCount?' · '+flagCount+' flagged':''}`;
+  setProgress('walk-prog', 25 + Math.round(doneCount/WALK_SPACES.length*65));
 }
-function walkBack() {
-  const prev={role:'school',checklist:'role'};
-  if(W.step==='school'){goHome();return;}
-  showWalkStep(prev[W.step]||'school');
+
+function openSpace(spaceId) {
+  W.currentSpace = spaceId;
+  const sp = WALK_SPACES.find(s=>s.id===spaceId);
+  const state = W.spaceState[spaceId];
+  const inner = document.getElementById('walk-space-checklist-inner');
+  inner.innerHTML = '';
+  const hdr = document.createElement('div');
+  hdr.style.cssText = 'margin-bottom:12px';
+  hdr.innerHTML = `<div class="step-title" style="margin-bottom:4px">${sp.label}</div>`
+    + `<div style="font-size:12px;color:var(--muted)">${sp.items.length} items</div>`;
+  inner.appendChild(hdr);
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.cssText = 'padding:0;overflow:hidden';
+  sp.items.forEach(item => {
+    const cur = state.checks[item] || 'none';
+    const row = document.createElement('div');
+    row.className = 'check-item';
+    row.setAttribute('data-item', item);
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:0.5px solid var(--border)';
+    row.innerHTML = `<div class="check-box${cur==='ok'?' ok':cur==='issue'?' issue':''}"></div>`
+      + `<span class="check-label${cur==='ok'?' done':''}" style="flex:1;font-size:13px;line-height:1.4">${item}</span>`;
+    row.onclick = function() { checkTap(this); updateSpaceProgress(spaceId); };
+    card.appendChild(row);
+  });
+  const notesWrap = document.createElement('div');
+  notesWrap.style.cssText = 'padding:10px 14px';
+  notesWrap.innerHTML = `<button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>`
+    + `<div class="notes-body"><textarea rows="2" placeholder="Notes for ${sp.label.toLowerCase()}\u2026" onchange="W.spaceState['${spaceId}'].notes=this.value">${state.notes||''}</textarea></div>`;
+  card.appendChild(notesWrap);
+  inner.appendChild(card);
+  const footer = document.createElement('div');
+  footer.style.cssText = 'margin-top:14px';
+  footer.innerHTML = `<button class="submit-btn btn-teal" style="width:100%" onclick="doneWithSpace('${spaceId}')">Done with this space →</button>`
+    + `<button class="submit-btn btn-ghost" style="width:100%;margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--muted)" onclick="skipSpace('${spaceId}')">Skip this space</button>`;
+  inner.appendChild(footer);
+  showWalkStep('space-checklist');
+  document.getElementById('walk-submit-bar').style.display = 'none';
 }
+
+function updateSpaceProgress(spaceId) {
+  const checks = {};
+  document.querySelectorAll('#walk-space-checklist-inner .check-item').forEach(row => {
+    const item = row.getAttribute('data-item');
+    const box = row.querySelector('.check-box');
+    checks[item] = box.classList.contains('ok') ? 'checked' : box.classList.contains('issue') ? 'flagged' : 'no input';
+  });
+  W.spaceState[spaceId].checks = checks;
+}
+
+function doneWithSpace(spaceId) {
+  updateSpaceProgress(spaceId);
+  const notesEl = document.querySelector('#walk-space-checklist-inner textarea');
+  if (notesEl) W.spaceState[spaceId].notes = notesEl.value;
+  const hasFlagged = Object.values(W.spaceState[spaceId].checks).some(v=>v==='flagged');
+  W.spaceState[spaceId].status = hasFlagged ? 'flagged' : 'clear';
+  showWalkStep('spaces');
+  renderSpaceSelector();
+}
+
+function skipSpace(spaceId) {
+  W.spaceState[spaceId].status = 'skipped';
+  showWalkStep('spaces');
+  renderSpaceSelector();
+}
+
+function walkSkipRemaining() {
+  WALK_SPACES.forEach(sp => {
+    if (W.spaceState[sp.id].status === 'not-started') W.spaceState[sp.id].status = 'skipped';
+  });
+  renderSpaceSelector();
+}
+
+function walkFinish() { submitWalk(); }
 
 function submitWalk() {
-  const total = document.querySelectorAll('#wd-checklist .check-box').length;
-  const checked = document.querySelectorAll('#wd-checklist .check-box.ok').length;
-  const issues = document.querySelectorAll('#wd-checklist .check-box.issue').length;
-  const notes = Array.from(document.querySelectorAll('#wd-checklist textarea')).map(t=>t.value).filter(Boolean).join(' | ');
-  _lastFlow='walkthrough';
-  const checklist = serializeChecklist('wd-checklist');
-  const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:checked, itemsFlagged:issues, observations:checklist, notes };
+  const observations = {};
+  let totalChecked = 0, totalFlagged = 0;
+  const notesArr = [];
+  WALK_SPACES.forEach(sp => {
+    const state = W.spaceState[sp.id];
+    sp.items.forEach(item => {
+      const val = state.checks[item] || (state.status==='skipped' ? 'skipped' : 'no input');
+      observations[item] = val;
+      if (val==='checked') totalChecked++;
+      if (val==='flagged') totalFlagged++;
+    });
+    if (state.notes) notesArr.push(`${sp.label}: ${state.notes}`);
+  });
+  const notes = notesArr.join(' | ');
+  _lastFlow = 'walkthrough';
+  const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:totalChecked, itemsFlagged:totalFlagged, observations, notes };
   _lastPayload = payload;
   postToScript(payload);
-  document.getElementById('s-title').textContent='Submitted';
-  document.getElementById('s-sub').textContent='Your observations have been saved. We\'ll incorporate this into the walkthrough report along with the other observations from today.';
-  document.getElementById('s-card').innerHTML=`
-    <div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${W.school||'—'}<\/span><\/div>
-    <div class="sum-row"><span class="sum-key">Role<\/span><span class="sum-val">${W.role||'—'}<\/span><\/div>
-    <div class="sum-row"><span class="sum-key">Items checked<\/span><span class="sum-val">${checked} of ${total}<\/span><\/div>
-    ${issues?`<div class="sum-row"><span class="sum-key">Issues flagged<\/span><span class="sum-val flag">${issues} item${issues>1?'s':''}<\/span><\/div>`:''}`;
-  setProgress('walk-prog',100);
+  document.getElementById('s-title').textContent = 'Submitted';
+  document.getElementById('s-sub').textContent = 'Your observations have been saved. We\'ll incorporate this into the walkthrough report along with the other observations from today.';
+  const spaceDone = WALK_SPACES.filter(sp=>['clear','flagged'].includes(W.spaceState[sp.id].status)).length;
+  const spaceFlag = WALK_SPACES.filter(sp=>W.spaceState[sp.id].status==='flagged').length;
+  document.getElementById('s-card').innerHTML =
+    `<div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${W.school||'\u2014'}<\/span><\/div>`
+    +`<div class="sum-row"><span class="sum-key">Role<\/span><span class="sum-val">${W.role||'\u2014'}<\/span><\/div>`
+    +`<div class="sum-row"><span class="sum-key">Spaces assessed<\/span><span class="sum-val">${spaceDone} of ${WALK_SPACES.length}<\/span><\/div>`
+    +(spaceFlag?`<div class="sum-row"><span class="sum-key">Spaces with flags<\/span><span class="sum-val flag">${spaceFlag}<\/span><\/div>`:'');
+  setProgress('walk-prog', 100);
   resetEmailCapture();
   setEmailLabel('Enter your email and we\'ll send you the consolidated report:');
   showScreen('screen-success');
 }
-// ══════════════════════════════════════════════
+
+function showWalkStep(id) {
+  document.querySelectorAll('#screen-walkthrough .flow-step').forEach(s=>s.classList.remove('active'));
+  const el = document.getElementById('wd-'+id);
+  if (el) el.classList.add('active');
+  document.querySelector('#screen-walkthrough .scroll-body').scrollTop = 0;
+  W.step = id;
+  const pcts = { school:5, role:15, spaces:25, 'space-checklist':50 };
+  setProgress('walk-prog', pcts[id] || 10);
+  document.getElementById('walk-submit-bar').style.display = 'none';
+}
+
+function walkBack() {
+  if (W.step === 'school') { goHome(); return; }
+  if (W.step === 'space-checklist') { showWalkStep('spaces'); renderSpaceSelector(); return; }
+  const prev = { role:'school', spaces:'role' };
+  showWalkStep(prev[W.step] || 'school');
+}
+
+function walkNext() {}
+
+function resetWalk() {
+  W.school = ''; W.role = ''; W.step = 'school';
+  W.spaceState = walkSpaceState();
+  W.currentSpace = null;
+  document.querySelectorAll('#wd-school .role-check').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('#wd-role .role-check').forEach(c=>c.classList.remove('on'));
+  document.getElementById('walk-ctx').textContent = '';
+  const inp = document.getElementById('wrc-other-input');
+  if (inp) inp.style.display = 'none';
+  const nb = document.getElementById('walk-role-next');
+  if (nb) nb.style.display = 'none';
+  setProgress('walk-prog', 0);
+  showWalkStep('school');
+}
+
 // ARRIVAL / DISMISSAL FLOW
 // ══════════════════════════════════════════════
 const A = { school:null, role:null, type:null, rating:null, step:'school' };
