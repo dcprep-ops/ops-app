@@ -1688,7 +1688,7 @@ function renderSpaceSelector() {
   const doneCount = done.length;
   const flagCount = WALK_SPACES.filter(sp=>W.spaceState[sp.id].status==='flagged').length;
   document.getElementById('walk-ctx').textContent =
-    `${W.school} · ${doneCount} done · ${WALK_SPACES.length-doneCount} remaining${flagCount?' · '+flagCount+' flagged':''}`;
+    `${W.school} · ${doneCount} space${doneCount===1?'':'s'} complete, ${WALK_SPACES.length-doneCount} remaining${flagCount?' · '+flagCount+' flagged':''}`;
   setProgress('walk-prog', 25 + Math.round(doneCount/WALK_SPACES.length*65));
 }
 
