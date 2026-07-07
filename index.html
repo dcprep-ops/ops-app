@@ -1707,10 +1707,11 @@ function openSpace(spaceId) {
   card.className = 'card';
   card.style.cssText = 'padding:0;overflow:hidden';
   sp.items.forEach(item => {
-    const cur = state.checks[item] || 'none';
+    const fullKey = sp.label + ' — ' + item;
+    const cur = state.checks[fullKey] || 'none';
     const row = document.createElement('div');
     row.className = 'check-item';
-    row.setAttribute('data-item', item);
+    row.setAttribute('data-item', fullKey);
     row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:0.5px solid var(--border)';
     row.innerHTML = `<div class="check-box${cur==='ok'?' ok':cur==='issue'?' issue':''}"></div>`
       + `<span class="check-label${cur==='ok'?' done':''}" style="flex:1;font-size:13px;line-height:1.4">${item}</span>`;
@@ -1746,7 +1747,7 @@ function doneWithSpace(spaceId) {
   updateSpaceProgress(spaceId);
   const notesEl = document.querySelector('#walk-space-checklist-inner textarea');
   if (notesEl) W.spaceState[spaceId].notes = notesEl.value;
-  const hasFlagged = Object.values(W.spaceState[spaceId].checks).some(v=>v==='flagged');
+  const hasFlagged = Object.values(W.spaceState[spaceId].checks).some(v => v==='flagged');
   W.spaceState[spaceId].status = hasFlagged ? 'flagged' : 'clear';
   showWalkStep('spaces');
   renderSpaceSelector();
@@ -1768,14 +1769,15 @@ function walkSkipRemaining() {
 function walkFinish() { submitWalk(); }
 
 function submitWalk() {
-  const observations = {};
+  const observations = [];
   let totalChecked = 0, totalFlagged = 0;
   const notesArr = [];
   WALK_SPACES.forEach(sp => {
     const state = W.spaceState[sp.id];
     sp.items.forEach(item => {
-      const val = state.checks[item] || (state.status==='skipped' ? 'skipped' : 'no input');
-      observations[item] = val;
+      const fullKey = sp.label + ' — ' + item;
+      const val = state.checks[fullKey] || (state.status==='skipped' ? 'skipped' : 'no input');
+      observations.push(val);
       if (val==='checked') totalChecked++;
       if (val==='flagged') totalFlagged++;
     });
