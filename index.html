@@ -250,6 +250,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .preview-desc{font-size:15px;color:var(--muted);line-height:1.7;max-width:300px}
 .preview-footer{padding:0 20px calc(24px + var(--safe-bot))}
 .preview-note{background:var(--card);border-radius:12px;border:0.5px solid var(--border);padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
+
+.fac-btn { display:flex; align-items:center; background:var(--card); border:1.5px solid var(--border); border-radius:12px; padding:18px 16px; margin-bottom:12px; text-decoration:none; -webkit-tap-highlight-color:transparent; transition:border-color .15s; }
+.fac-btn:active { border-color:var(--teal); }
+.fac-btn-name { font-size:16px; font-weight:600; color:var(--navy); flex:1; }
+.fac-btn-camps { font-size:12px; color:var(--muted); margin-right:12px; }
+.fac-btn-arrow { font-size:18px; color:var(--teal); font-weight:600; }
 </style>
 </head>
 <body>
@@ -852,6 +858,34 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 </div>
 
 <!-- ══ SUCCESS ══ -->
+<!-- ══ FACILITIES REQUEST ══ -->
+<div class="screen" id="screen-facilities">
+  <div class="app-header">
+    <div class="app-header-row">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+    </div>
+    <div class="header-flow-title">Create Facilities Request</div>
+  </div>
+  <div class="scroll-body flow-body">
+    <p style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px">Use the buttons below to visit the Facilities Request Form for your campus.</p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc0gF5GrdVTF_1qZ4rECDEtVocVIikD8uuHXSiZDgL82ryaCg/viewform" target="_blank" class="fac-btn">
+      <span class="fac-btn-name">Anacostia</span>
+      <span class="fac-btn-camps">AEC · AMC</span>
+      <span class="fac-btn-arrow">→</span>
+    </a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLScIYdJfa3vQAVprNJbuHc7gvXbdTXFqbqEKOMIjyvLzXjydxA/viewform" target="_blank" class="fac-btn">
+      <span class="fac-btn-name">Benning</span>
+      <span class="fac-btn-camps">BEC · BMC</span>
+      <span class="fac-btn-arrow">→</span>
+    </a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSflUNwtpKBMYcWfKfjVpRy1-njSYHfSOe8BGZQPM6E6x9Lxmg/viewform" target="_blank" class="fac-btn">
+      <span class="fac-btn-name">Edgewood</span>
+      <span class="fac-btn-camps">EEC · EMC</span>
+      <span class="fac-btn-arrow">→</span>
+    </a>
+  </div>
+</div>
+
 <div class="screen" id="screen-success">
   <div class="scroll-body">
     <div class="success-inner">
@@ -952,7 +986,8 @@ function sendEmailCopy() {
 // ── SCREENS ─────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
 }
 function goHome() {
   stopTimer('drill');
@@ -1060,7 +1095,6 @@ const PREVIEWS = {
   techsupport: { title:'Request Tech Support', desc:'Submit a tech support request directly from the app — either by email to the support inbox or through a short survey. Coming soon.' }
 };
 function openPreview(key) {
-  if (key === 'techsupport') { showScreen('screen-techsupport'); return; }
   const p = PREVIEWS[key]; if (!p) return;
   document.getElementById('prev-title').textContent = p.title;
   document.getElementById('prev-desc').textContent = p.desc;
@@ -1079,7 +1113,7 @@ function openFlow(type) {
   if (type === 'arrival') { resetArr(); showScreen('screen-arrival'); }
   if (type === 'custodial') { resetCust(); showScreen('screen-custodial'); }
   if (type === 'facilities') { resetFac(); showScreen('screen-facilities'); }
-  if (type === 'techsupport') { showScreen('screen-techsupport'); }
+  if (type === 'techsupport') { showScreen('screen-preview'); }
   if (type === 'readiness') { resetReadiness(); showScreen('screen-readiness'); }
 }
 
@@ -1942,6 +1976,8 @@ function custBack() {
 }
 
 function custNext() {}
+
+function resetFac() { /* no state to reset */ }
 
 
 // ── CLASSROOM READINESS ──────────────────────────────────────────────────────
