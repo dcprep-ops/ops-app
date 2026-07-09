@@ -1,6 +1,6 @@
 # DC Prep Operations App
 
-A mobile web app for the DC Prep operations team. Staff use it to log drills, complete common space walkthroughs, and access other operational tools — all from a single link saved to their phone's home screen.
+A mobile web app for the DC Prep operations team. Staff use it to log drills, complete walkthroughs, submit observations, and access other operational tools — all from a single link saved to their phone's home screen.
 
 ## What's in this repo
 
@@ -31,22 +31,49 @@ They open it in their phone browser and tap **Add to Home Screen** to save it as
 
 | Tool | Who uses it | What it captures |
 |------|------------|-----------------|
-| Evacuation & Lockdown Drill | OSL (official record), all staff (observations) | Drill type, timing, observations, compliance data |
-| Common Space Walkthrough | OSL, Principal, SDO, Other | Room-by-room checklist across 11 space types |
+| Evacuation & Lockdown Drill | OSL, Principal, COO, SDO, Other | Drill type, timing, compliance data, observer notes |
+| Common Space Walkthrough | OSL, Principal, COO, SDO, Other | Space-by-space checklist across 10 spaces; flags and notes per space |
+| Arrival & Dismissal Observation | OSL, Principal, COO, SDO, Other | 10-item checklist, overall rating, period (arrival/dismissal), notes |
+| Custodial Walkthrough | Director of Facilities, Facilities Team, Custodial Vendor | Three walk types: DoF Bi-Weekly, Facilities Team Weekly (space-by-space), Monthly with Vendor |
+| Create Facilities Request | All staff | Routes to the Google Form for the selected campus cluster |
+| BOY Classroom Readiness | Principal, OSL, COO, MD of Schools, SDO, Other | Room-by-room readiness assessment with grade-band checklists |
 
 ## Tools in preview (coming soon)
 
-- Arrival & Dismissal Observation
-- Building Walkthroughs
+- Request Tech Support
 - Security Patrol Log
 - Log Daily Attendance Check
 
 ## Where data goes
 
-Currently, submissions display a confirmation screen but do not yet write to a database. To connect live data storage, a Google Apps Script Web App URL needs to be added to the `fetch()` call near the bottom of `index.html`. The script should accept a POST request and append a row to a Google Sheet.
+Submissions are sent to a Google Sheet via a Google Apps Script web app. Each flow has its own tab in the sheet:
 
-Contact the initiative owner or the DC Prep data team to set this up.
+| Sheet tab | Flow |
+|-----------|------|
+| Drill Log | Evacuation & Lockdown Drill |
+| Common Space Walkthrough | Common Space Walkthrough |
+| Arrival Dismissal | Arrival & Dismissal Observation |
+| Custodial Walkthrough | Custodial Walkthrough |
+| Classroom Readiness | BOY Classroom Readiness |
+
+The Apps Script URL is embedded in `index.html`. To update it, search for `SCRIPT_URL` near the top of the script block and replace the value.
+
+## Data structure
+
+All checklist flows use a `Space — Item` column naming convention (e.g. `Lobby — Furniture is inviting and in good condition`). This makes it easy to filter and analyze by space in Google Sheets.
+
+Items are stored as `checked`, `flagged`, `skipped`, or `no input`.
+
+## Companion tools
+
+| Tool | Purpose |
+|------|---------|
+| Ops Dashboard | Live view of drills, arrival/dismissal, and custodial data |
+| BOY Readiness Dashboard | Classroom readiness by school and status |
+| Walkthrough Triage Tool | OSL reviews flags, assigns owners, generates follow-up emails |
 
 ## Questions or issues
 
-If something in the app looks broken or needs to change, the fastest path is to open `index.html`, find the relevant section, and edit the text or logic directly. The file is organized with clearly labeled comments for each screen and flow.
+If something in the app looks broken or needs to change, the fastest path is to open `index.html`, find the relevant section (each flow has clearly labeled comments), and edit directly.
+
+For larger changes, contact the initiative owner. The app is built as a single self-contained HTML file — no build tools or dependencies required.
