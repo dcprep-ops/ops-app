@@ -149,12 +149,12 @@ html,body{height:100%;width:100%;font-family:-apple-system,BlinkMacSystemFont,'S
 /* inputs */
 input[type=text],input[type=number],input[type=time],textarea,select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;color:var(--text);background:#fff;font-family:inherit;appearance:none;-webkit-appearance:none}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber)}
-textarea{resize:none;line-height:1.5}
+textarea{resize:none;line-height:1.5;min-height:100px}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;cursor:pointer}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 /* checklist */
-.check-item{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-bottom:0.5px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.1s}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:16px 16px;border-bottom:0.5px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.1s}
 .check-item:last-child{border-bottom:none}
 .check-item:active{background:var(--light)}
 .check-box{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.12s}
@@ -162,7 +162,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .check-box.ok::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
 .check-box.issue{background:var(--red);border-color:var(--red)}
 .check-box.issue::after{content:'!';color:#fff;font-size:12px;font-weight:800;line-height:1}
-.check-label{font-size:14px;color:var(--text);line-height:1.4;flex:1}
+.check-label{font-size:15px;color:var(--text);line-height:1.5;flex:1}
 .check-label.done{color:var(--teal);text-decoration:none}
 
 /* space selector */
@@ -893,7 +893,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="success-title" id="s-title">Logged</div>
       <div class="success-sub" id="s-sub">Your record has been saved.</div>
       <div class="success-card" id="s-card"></div>
-      <div class="email-capture">
+      <div class="email-capture" id="email-capture-wrap" style="display:none">
         <label class="email-capture-label" id="email-capture-label">Want a copy of what you submitted?</label>
         <div class="email-capture-row">
           <input type="email" id="s-email" placeholder="Your email address" inputmode="email" autocomplete="email">
@@ -1458,20 +1458,22 @@ function openSpace(spaceId) {
   card.style.cssText = 'padding:0;overflow:hidden';
   sp.items.forEach(item => {
     const fullKey = sp.label + ' — ' + item;
-    const cur = state.checks[fullKey] || 'none';
+    const stored = state.checks[fullKey] || 'none';
+    const curCls = stored === 'checked' ? 'ok' : stored === 'flagged' ? 'issue' : '';
     const row = document.createElement('div');
     row.className = 'check-item';
     row.setAttribute('data-item', fullKey);
-    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:0.5px solid var(--border)';
-    row.innerHTML = `<div class="check-box${cur==='ok'?' ok':cur==='issue'?' issue':''}"></div>`
-      + `<span class="check-label${cur==='ok'?' done':''}" style="flex:1;font-size:13px;line-height:1.4">${item}</span>`;
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:14px 14px;border-bottom:0.5px solid var(--border)';
+    row.innerHTML = `<div class="check-box${curCls?' '+curCls:''}"></div>`
+      + `<span class="check-label${curCls==='ok'?' done':''}" style="flex:1;font-size:15px;line-height:1.5">${item}</span>`;
     row.onclick = function() { checkTap(this); updateSpaceProgress(spaceId); };
     card.appendChild(row);
   });
+  const hasNotes = !!(state.notes);
   const notesWrap = document.createElement('div');
   notesWrap.style.cssText = 'padding:10px 14px';
-  notesWrap.innerHTML = `<button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>`
-    + `<div class="notes-body"><textarea rows="2" placeholder="Notes for ${sp.label.toLowerCase()}\u2026" onchange="W.spaceState['${spaceId}'].notes=this.value">${state.notes||''}</textarea></div>`;
+  notesWrap.innerHTML = `<button class="notes-toggle" onclick="toggleNotes(this)">${hasNotes ? '✎ Note added' : '+ Add note'}</button>`
+    + `<div class="notes-body${hasNotes ? ' open' : ''}"><textarea placeholder="Notes for ${sp.label.toLowerCase()}\u2026" onchange="W.spaceState['${spaceId}'].notes=this.value">${state.notes||''}</textarea></div>`;
   card.appendChild(notesWrap);
   inner.appendChild(card);
   const footer = document.createElement('div');
@@ -1833,20 +1835,22 @@ function openCustSpace(spaceName) {
   card.style.cssText = 'padding:0;overflow:hidden';
   items.forEach(item => {
     const fullKey = spaceName + ' — ' + item;
-    const cur = state.checks[fullKey] || 'none';
+    const stored = state.checks[fullKey] || 'none';
+    const curCls = stored === 'checked' ? 'ok' : stored === 'flagged' ? 'issue' : '';
     const row = document.createElement('div');
     row.className = 'check-item';
     row.setAttribute('data-item', fullKey);
-    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:0.5px solid var(--border)';
-    row.innerHTML = `<div class="check-box${cur==='ok'?' ok':cur==='issue'?' issue':''}"></div>`
-      + `<span class="check-label${cur==='ok'?' done':''}" style="flex:1;font-size:13px;line-height:1.4">${item}</span>`;
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:14px 14px;border-bottom:0.5px solid var(--border)';
+    row.innerHTML = `<div class="check-box${curCls?' '+curCls:''}"></div>`
+      + `<span class="check-label${curCls==='ok'?' done':''}" style="flex:1;font-size:15px;line-height:1.5">${item}</span>`;
     row.onclick = function() { checkTap(this); updateCustSpaceProgress(spaceName); };
     card.appendChild(row);
   });
   const nw = document.createElement('div');
   nw.style.cssText = 'padding:10px 14px';
-  nw.innerHTML = `<button class="notes-toggle" onclick="toggleNotes(this)">+ Add note</button>`
-    + `<div class="notes-body"><textarea rows="2" placeholder="Notes for ${spaceName.toLowerCase()}…" onchange="C.spaceState['${spaceName}'].notes=this.value">${state.notes||''}</textarea></div>`;
+  const hasNotesC = !!(state.notes);
+  nw.innerHTML = `<button class="notes-toggle" onclick="toggleNotes(this)">${hasNotesC ? '✎ Note added' : '+ Add note'}</button>`
+    + `<div class="notes-body${hasNotesC ? ' open' : ''}"><textarea placeholder="Notes for ${spaceName.toLowerCase()}…" onchange="C.spaceState['${spaceName}'].notes=this.value">${state.notes||''}</textarea></div>`;
   card.appendChild(nw);
   inner.appendChild(card);
   const footer = document.createElement('div');
