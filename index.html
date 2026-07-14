@@ -294,19 +294,19 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="section-label">Active Tools</div>
     <div class="icon-grid">
 
+      <div class="icon-cell" onclick="openFlow('arrival')">
+        <div class="cell-icon teal-icon"><i class="ti ti-car" aria-hidden="true"></i></div>
+        <span class="cell-label">Arrival &amp; Dismissal Observation</span>
+      </div>
+
       <div class="icon-cell" onclick="openFlow('drill')">
         <div class="cell-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
         <span class="cell-label">Evacuation &amp; Lockdown Drill</span>
       </div>
 
-      <div class="icon-cell" onclick="openFlow('walkthrough')">
-        <div class="cell-icon teal-icon"><i class="ti ti-building" aria-hidden="true"></i></div>
-        <span class="cell-label">Common Space Walkthrough</span>
-      </div>
-
-      <div class="icon-cell" onclick="openFlow('arrival')">
-        <div class="cell-icon teal-icon"><i class="ti ti-car" aria-hidden="true"></i></div>
-        <span class="cell-label">Arrival &amp; Dismissal Observation</span>
+      <div class="icon-cell" onclick="openFlow('readiness')">
+        <div class="cell-icon teal-icon"><i class="ti ti-chalkboard" aria-hidden="true"></i></div>
+        <span class="cell-label">Classroom Readiness</span>
       </div>
 
       <div class="icon-cell" onclick="openFlow('custodial')">
@@ -319,16 +319,20 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <span class="cell-label">Create Facilities Request</span>
       </div>
 
-      <div class="icon-cell" onclick="openFlow('readiness')">
-        <div class="cell-icon teal-icon"><i class="ti ti-chalkboard" aria-hidden="true"></i></div>
-        <span class="cell-label">Classroom Readiness</span>
+      <div class="icon-cell" onclick="openFlow('walkthrough')">
+        <div class="cell-icon teal-icon"><i class="ti ti-building" aria-hidden="true"></i></div>
+        <span class="cell-label">Common Space Walkthrough</span>
       </div>
 
     </div>
 
     <div class="section-label">Coming Later</div>
-    <div class="tool-row" onclick="openPreview('techsupport')">
-      <div class="tool-row-left"><div class="tool-row-name">Request Tech Support</div></div>
+    <div class="tool-row" onclick="openPreview('bustriplog')">
+      <div class="tool-row-left"><div class="tool-row-name">Bus Trip Log</div></div>
+      <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
+    </div>
+    <div class="tool-row" onclick="openPreview('bustriphandoff')">
+      <div class="tool-row-left"><div class="tool-row-name">Bus Trip Handoff</div></div>
       <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
     </div>
     <div class="tool-row" onclick="openPreview('walkthroughs')">
@@ -1092,7 +1096,8 @@ const PREVIEWS = {
   walkthroughs: { title:'Facility Needs Walkthrough', desc:'A structured walkthrough for SDOs, Principals, and OSLs to identify and log facilities issues — maintenance needs, safety concerns, and repairs — by space and campus.' },
   patrol: { title:'Security Patrol Log', desc:'A checkpoint log for security guards to confirm their patrol route — scanning QR codes around the building to record timestamps and flag anything that needs attention.' },
   attendance: { title:'Log Daily Attendance Check', desc:'A one-tap confirmation that the morning attendance walkthrough happened, with a timestamp — so the ops team has a daily record of process compliance without any extra paperwork.' },
-  techsupport: { title:'Request Tech Support', desc:'Submit a tech support request directly from the app — either by email to the support inbox or through a short survey. Coming soon.' }
+  bustriplog: { title:'Bus Trip Log', desc:"For bus monitors on the DC Prep transportation pilot. Opens a trip screen that records your start time automatically, tracks ridership against the day's manifest, lets you log incidents by category, and records arrival. Submitting routes directly into the handoff checklist — no extra steps." },
+  bustriphandoff: { title:'Bus Trip Handoff', desc:"Two-sided handoff between the bus monitor and the school liaison. The monitor confirms attendance, no-shows, and observations. The school liaison gets a queue of pending handoffs and confirms receipt — creating a timestamped record for both sides." }
 };
 function openPreview(key) {
   const p = PREVIEWS[key]; if (!p) return;
@@ -1113,7 +1118,6 @@ function openFlow(type) {
   if (type === 'arrival') { resetArr(); showScreen('screen-arrival'); }
   if (type === 'custodial') { resetCust(); showScreen('screen-custodial'); }
   if (type === 'facilities') { resetFac(); showScreen('screen-facilities'); }
-  if (type === 'techsupport') { showScreen('screen-preview'); }
   if (type === 'readiness') { resetReadiness(); showScreen('screen-readiness'); }
 }
 
