@@ -119,8 +119,8 @@ html,body{height:100%;width:100%;font-family:-apple-system,BlinkMacSystemFont,'S
 .ios-dismiss{width:100%;margin-top:20px;background:rgba(255,255,255,0.08);border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit}
 
 /* ── HOME ICON GRID ── */
-.icon-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px 8px}
-.icon-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1;background:var(--card);border-radius:16px;border:1.5px solid var(--border);cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;transition:background 0.12s;gap:6px;padding:14px 10px;margin:0 auto;width:100%}
+.icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,160px));gap:10px;padding:0 16px 8px;justify-content:center}
+.icon-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1;background:var(--card);border-radius:16px;border:1.5px solid var(--border);cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;transition:background 0.12s;gap:6px;padding:14px 16px;margin:0 auto;width:100%}
 .icon-cell:active{background:var(--light)}
 .cell-icon{width:56px;height:56px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .cell-icon i{color:var(--navy);font-size:40px}
@@ -317,32 +317,32 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="icon-grid">
 
       <div class="icon-cell" onclick="openFlow('arrival')">
-        <div class="cell-icon"><i class="ti ti-car" aria-hidden="true"></i></div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v5"/><circle cx="16" cy="17" r="2"/><circle cx="7" cy="17" r="2"/><path d="M5 17H3m14 0h2m-4 0H9"/></svg>
         <span class="cell-label">Arrival &amp; Dismissal</span>
       </div>
 
       <div class="icon-cell" onclick="openFlow('drill')">
-        <div class="cell-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <span class="cell-label">Evacuation &amp; Lockdown Drill</span>
       </div>
 
       <div class="icon-cell" onclick="openFlow('readiness')">
-        <div class="cell-icon"><i class="ti ti-chalkboard" aria-hidden="true"></i></div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19h-3a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v11a1 1 0 0 1-1 1"/><path d="M11 16m0 1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1z"/></svg>
         <span class="cell-label">Classroom Readiness</span>
       </div>
 
       <div class="icon-cell" onclick="openFlow('custodial')">
-        <div class="cell-icon"><i class="ti ti-spray" aria-hidden="true"></i></div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10m0 2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z"/><path d="M6 10v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4"/><path d="M15 7h.01"/><path d="M18 9h.01"/><path d="M18 5h.01"/><path d="M21 3h.01"/><path d="M21 7h.01"/><path d="M21 11h.01"/><path d="M10 7h1"/></svg>
         <span class="cell-label">Custodial Walkthrough</span>
       </div>
 
       <div class="icon-cell" onclick="openFlow('facilities')">
-        <div class="cell-icon"><i class="ti ti-clipboard-text" aria-hidden="true"></i></div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
         <span class="cell-label">Create Facilities Request</span>
       </div>
 
       <div class="icon-cell" onclick="openFlow('walkthrough')">
-        <div class="cell-icon"><i class="ti ti-building" aria-hidden="true"></i></div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
         <span class="cell-label">Common Space Walkthrough</span>
       </div>
 
@@ -352,12 +352,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="icon-grid">
 
       <div class="icon-cell" onclick="openFlow('bustriplog')">
-        <div class="cell-icon teal-icon"><i class="ti ti-bus" aria-hidden="true"></i></div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M16 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 17h-2v-11a1 1 0 0 1 1-1h14a5 7 0 0 1 5 7v5h-2m-4 0h-8"/><path d="M16 5l1.5 7h4.5"/><line x1="2" y1="10" x2="17" y2="10"/><line x1="7" y1="5" x2="7" y2="10"/><line x1="12" y1="5" x2="12" y2="10"/></svg>
         <span class="cell-label">Bus Trip Log</span>
       </div>
 
       <div class="icon-cell" onclick="openFlow('bustriphandoff')">
-        <div class="cell-icon teal-icon"><i class="ti ti-handshake" aria-hidden="true"></i></div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10h-16l5.5-6"/><path d="M4 14h16l-5.5 6"/></svg>
         <span class="cell-label">Bus Trip Handoff</span>
       </div>
 
