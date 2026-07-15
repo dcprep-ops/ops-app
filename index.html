@@ -1209,13 +1209,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     </div>
 
     <!-- arrow -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 0 4px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:20px 0 16px">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M18 13l-6 6l-6-6"/></svg>
       <span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)">Submission form</span>
     </div>
 
     <!-- form -->
-    <div class="card">
+    <div class="card" style="padding:20px">
       <div style="font-size:16px;font-weight:700;color:var(--navy)">Log Attendance Check</div>
       <div style="background:var(--lt);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:500;color:var(--muted);text-align:center">Wednesday, July 15, 2026</div>
       <div>
@@ -1234,13 +1234,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     </div>
 
     <!-- arrow -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 0 4px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:20px 0 16px">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M18 13l-6 6l-6-6"/></svg>
       <span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)">Dashboard view</span>
     </div>
 
     <!-- dashboard -->
-    <div class="card">
+    <div class="card" style="padding:20px">
       <div style="font-size:16px;font-weight:700;color:var(--navy);margin-bottom:12px">Ops Dashboard View</div>
 
       <div style="font-size:12px;font-weight:600;color:var(--text);padding-bottom:8px;border-bottom:0.5px solid var(--border);margin-bottom:10px">Last 14 days</div>
@@ -1437,6 +1437,7 @@ const PREVIEWS = {
   bustriphandoff: { title:'Bus Trip Handoff', desc:"Two-sided handoff between the bus monitor and the school liaison. The monitor confirms attendance, no-shows, and observations. The school liaison gets a queue of pending handoffs and confirms receipt — creating a timestamped record for both sides." }
 };
 function openPreview(key) {
+  if (key === 'attendance') { showScreen('screen-attendance-preview'); return; }
   const p = PREVIEWS[key]; if (!p) return;
   document.getElementById('prev-title').textContent = p.title;
   document.getElementById('prev-desc').textContent = p.desc;
