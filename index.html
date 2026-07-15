@@ -563,6 +563,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="role-row" onclick="walkPickRole(this,'COO')"><span class="role-name">COO</span><span class="role-check" id="wrc-COO"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="wrc-SDO"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'MD of Schools')"><span class="role-name">MD of Schools</span><span class="role-check" id="wrc-MD"></span></div>
+        <div class="role-row" onclick="walkPickRole(this,'Office Manager')"><span class="role-name">Office Manager</span><span class="role-check" id="wrc-OM"></span></div>
+        <div class="role-row" onclick="walkPickRole(this,'Operations Assistant')"><span class="role-name">Operations Assistant</span><span class="role-check" id="wrc-OA"></span></div>
         <div class="role-row" onclick="walkPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="wrc-Other"></span></div>
         <div class="role-other-wrap" id="wrc-other-input" style="display:none;padding:0 16px 14px;">
           <input type="text" id="w-other-role" placeholder="Enter your role…" oninput="W.role=this.value||'Other'">
@@ -1183,6 +1185,82 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
   <div class="preview-footer">
     <div class="preview-note">This tool is in development. It will appear here when ready — no action needed on your end.</div>
+  </div>
+</div>
+
+<!-- ══ ATTENDANCE PREVIEW ══ -->
+<div class="screen" id="screen-attendance-preview">
+  <div class="app-header">
+    <div class="app-header-row">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+    </div>
+    <div class="header-flow-title">Log Daily Attendance Check</div>
+    <div class="header-sub"><span style="font-size:9px;padding:2px 8px;background:rgba(255,255,255,.2);color:#fff;border-radius:8px;font-weight:700;letter-spacing:.4px">COMING SOON</span></div>
+  </div>
+  <div class="scroll-body flow-body" style="overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))">
+
+    <!-- tile preview -->
+    <div class="section-label" style="padding:0 0 8px 0">How it appears on the home screen</div>
+    <div style="display:flex;gap:10px;padding:0 0 4px">
+      <div class="icon-cell" style="width:150px;height:150px;flex-shrink:0;cursor:default">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.5l1.5 1.5l2.5-2.5"/><path d="M3.5 11.5l1.5 1.5l2.5-2.5"/><path d="M3.5 17.5l1.5 1.5l2.5-2.5"/><path d="M11 6l9 0"/><path d="M11 12l9 0"/><path d="M11 18l9 0"/></svg>
+        <span class="cell-label">Log Daily Attendance Check</span>
+      </div>
+    </div>
+
+    <!-- arrow -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 0 4px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M18 13l-6 6l-6-6"/></svg>
+      <span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)">Submission form</span>
+    </div>
+
+    <!-- form -->
+    <div class="card">
+      <div style="font-size:16px;font-weight:700;color:var(--navy)">Log Attendance Check</div>
+      <div style="background:var(--lt);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:500;color:var(--muted);text-align:center">Wednesday, July 15, 2026</div>
+      <div>
+        <div class="field-label">Number of attendance updates made</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:6px 0">
+          <button onclick="attAdj(-1)" style="width:42px;height:42px;border-radius:10px;border:1.5px solid var(--border);background:var(--lt);color:var(--navy);font-size:22px;cursor:pointer">−</button>
+          <span id="att-count" style="font-size:32px;font-weight:700;color:var(--navy);min-width:44px;text-align:center">0</span>
+          <button onclick="attAdj(1)" style="width:42px;height:42px;border-radius:10px;border:1.5px solid var(--border);background:var(--lt);color:var(--navy);font-size:22px;cursor:pointer">+</button>
+        </div>
+      </div>
+      <div>
+        <div class="field-label">Notes</div>
+        <textarea rows="7" placeholder="Note any patterns, anomalies, or data quality issues -- anything that would help us improve." style="width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;resize:none;color:var(--text);line-height:1.5"></textarea>
+      </div>
+      <button disabled style="width:100%;padding:15px;border-radius:12px;background:var(--teal);color:#fff;font-size:15px;font-weight:600;border:none;opacity:0.45;cursor:not-allowed">Submit — coming soon</button>
+    </div>
+
+    <!-- arrow -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 0 4px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M18 13l-6 6l-6-6"/></svg>
+      <span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)">Dashboard view</span>
+    </div>
+
+    <!-- dashboard -->
+    <div class="card">
+      <div style="font-size:16px;font-weight:700;color:var(--navy);margin-bottom:12px">Ops Dashboard View</div>
+
+      <div style="font-size:12px;font-weight:600;color:var(--text);padding-bottom:8px;border-bottom:0.5px solid var(--border);margin-bottom:10px">Last 14 days</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        <div style="background:var(--lt);border-radius:10px;padding:12px"><div style="font-size:22px;font-weight:700;color:var(--teal)">11<span style="font-size:13px;font-weight:500;color:var(--muted)"> / 14</span></div><div style="font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4">Days completed</div></div>
+        <div style="background:var(--lt);border-radius:10px;padding:12px"><div style="font-size:22px;font-weight:700;color:var(--navy)">9<span style="font-size:13px;font-weight:500;color:var(--muted)"> / 14</span></div><div style="font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4">Completed before 8:30 AM</div></div>
+      </div>
+
+      <div style="font-size:12px;font-weight:600;color:var(--text);padding-bottom:8px;border-bottom:0.5px solid var(--border);margin-bottom:10px">Prior 14 days</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        <div style="background:var(--lt);border-radius:10px;padding:12px"><div style="font-size:22px;font-weight:700;color:var(--muted)">10<span style="font-size:13px;font-weight:500"> / 14</span></div><div style="font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4">Days completed</div></div>
+        <div style="background:var(--lt);border-radius:10px;padding:12px"><div style="font-size:22px;font-weight:700;color:var(--muted)">8<span style="font-size:13px;font-weight:500"> / 14</span></div><div style="font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4">Completed before 8:30 AM</div></div>
+      </div>
+
+      <div style="font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Recent notes</div>
+      <div style="padding:8px 0;border-bottom:0.5px solid var(--border);font-size:12px;color:var(--text);line-height:1.5"><div style="font-size:10px;color:var(--muted);margin-bottom:2px">Today · BEC</div>Two families in Room 204 haven't updated in 3 days — flagged for OSL follow-up.</div>
+      <div style="padding:8px 0;border-bottom:0.5px solid var(--border);font-size:12px;color:var(--text);line-height:1.5"><div style="font-size:10px;color:var(--muted);margin-bottom:2px">Yesterday · BMC</div>Roster discrepancy in 7th grade — one student appears on two rosters simultaneously.</div>
+      <div style="padding:8px 0;font-size:12px;color:var(--text);line-height:1.5"><div style="font-size:10px;color:var(--muted);margin-bottom:2px">Jul 15 · BEC</div>High absence day — 8 unexplained across 3 classrooms. No pattern identified yet.</div>
+    </div>
+
   </div>
 </div>
 
@@ -3068,6 +3146,12 @@ function bthConfirm() {
   setTimeout(()=>{ showBthScreen('queue'); bthRenderQueue(); },800);
 }
 
+
+function attAdj(d) {
+  const el = document.getElementById('att-count');
+  if (!el) return;
+  el.textContent = Math.max(0, Math.min(99, parseInt(el.textContent) + d));
+}
 
 </script>
 </body>
