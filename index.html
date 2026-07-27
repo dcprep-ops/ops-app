@@ -211,7 +211,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 /* submit bar */
 .submit-bar{flex-shrink:0;padding:14px 20px calc(14px + var(--safe-bot));background:var(--bg);border-top:0.5px solid var(--border)}
 .submit-btn{width:100%;padding:16px;border-radius:12px;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
-.btn-amber{background:var(--amber);color:#1c1003}
+.btn-amber{background:#ffd65a;color:#1c1003}
 .btn-teal{background:var(--teal);color:#fff}
 .btn-navy{background:var(--navy);color:#fff}
 .submit-btn:active{opacity:0.88}
@@ -356,11 +356,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="icon-cell" onclick="openBOY('SDO')">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/></svg>
         <span class="cell-label">Operations</span>
-      </div>
-
-      <div class="icon-cell" onclick="openBOY('DOF')">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-4a4 4 0 1 1 4 4h-4"/><path d="M21 3a16 16 0 0 0 -12.8 10.2"/><path d="M21 3a16 16 0 0 1 -10.2 12.8"/><path d="M10.6 9a9 9 0 0 1 4.4 4.4"/></svg>
-        <span class="cell-label">Facilities</span>
       </div>
 
 
@@ -856,7 +851,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div style="display:flex;flex-direction:column;gap:10px">
         <button class="sel-btn" id="rtc-MDS" onclick="readPickType(this,'MDS')">Schools</button>
         <button class="sel-btn" id="rtc-SDO" onclick="readPickType(this,'SDO')">Operations</button>
-        <button class="sel-btn" id="rtc-DOF" onclick="readPickType(this,'DOF')">Facilities</button>
         <button class="sel-btn" id="rtc-DOT" onclick="readPickType(this,'DOT')">Technology</button>
       </div>
     </div>
@@ -877,7 +871,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <!-- classroom -->
     <div class="flow-step" id="rd-classroom">
       <div class="step-title">Which classroom?</div>
-      <div class="card" id="rd-classroom-list"></div>
+      <div id="rd-classroom-list"></div>
     </div>
 
     <!-- role -->
@@ -2383,6 +2377,49 @@ const CLASSROOM_MAP = {
   ]
 };
 
+// ── Operations (SDO) space list ───────────────────────────────────────────────
+// All non-n/a spaces from the "All Spaces" tab (Classrooms, Common Spaces,
+// Offices & Conference Rooms, Outdoor) — excludes the Technology section,
+// which is infrastructure rather than a physical space to walk through.
+const OPS_SPACES = {
+  'Anacostia Elementary': [
+    {section:'Classrooms', rooms:['American', 'Gallaudet', 'George Mason', 'Johns Hopkins', 'Syracuse', 'Williams', 'Northwestern', 'UChicago', 'UMichigan', 'Gonzaga', 'UOregon', 'Pepperdine', 'Morehouse', 'Spelman', 'Xavier', 'Cornell', 'Dartmouth', 'UPenn']},
+    {section:'Common Spaces', rooms:['Lobby / front desk', 'Cafeteria', 'Gymnasium', 'Library', 'Music room', 'Art room', 'Science lab', 'Nurse suite', 'Big Chair', 'Break room', 'Kitchen', 'Staff restroom', 'Student restroom A (K/1)', 'Student restroom B (2/3)', 'Hallways', 'Stairwells']},
+    {section:'Offices & Conference Rooms', rooms:['Principal', 'OSL', 'K/1 Asst. Principal', '2/3 Asst. Principal', 'EC Asst. Principal', 'SpEd coordinator', 'Academic specialist', 'Behavioral health office', 'Behavioral specialist', 'Student support coord.', 'Licensed clinician', 'CAP', 'Frederick Douglass conf. rm', 'Teacher workroom', 'Faculty lounge', 'Intervention room 178', 'Intervention room 184', 'Intervention room 263', 'Intervention room 273', 'Intervention room 280', 'Champions']},
+    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+  ],
+  'Anacostia Middle': [
+    {section:'Classrooms', rooms:['GWU', 'Georgetown', 'Howard', 'UMD', 'UNC', 'UVA', 'FAMU', 'Hampton', 'Tuskegee', 'Princeton', 'Stanford', 'Harvard', 'Yale']},
+    {section:'Common Spaces', rooms:['Front desk', 'Cafeteria', 'Gymnasium / assembly hall', 'Library', 'Art room', 'SA science lab', 'JA science lab', 'Nurse suite', 'Staff restroom', 'Student restroom A', 'Student restroom B', 'Hallways', 'Kitchen']},
+    {section:'Offices & Conference Rooms', rooms:['Principal office', 'Acad. Asst. Principal A', 'Acad. Asst. Principal B', 'SpEd coordinator', 'Academic specialist', 'Behavioral specialist', 'Student support coach', 'HS placement coordinator', 'Licensed clinician / related svc.', 'Counselor office', 'CAP', 'Conf. room 115', 'Conf. room 244', 'Leader workroom', 'Teacher workroom', '8th grade intervention room', '6th grade intervention room', 'Intervention room 104', 'Intervention room 219', 'Music room', 'Technology', 'Engineer']},
+    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+  ],
+  'Benning Elementary': [
+    {section:'Classrooms', rooms:['American', 'Gallaudet', 'George Mason', 'Johns Hopkins', 'Syracuse', 'Williams', 'Northwestern', 'UChicago', 'UMichigan', 'Gonzaga', 'UOregon', 'Pepperdine', 'Morehouse', 'Spelman', 'Xavier', 'Cornell', 'Dartmouth', 'UPenn']},
+    {section:'Common Spaces', rooms:['Front desk A', 'Front desk B', 'Cafeteria (Prepeteria)', 'Kitchen', 'Gymnasium', 'Library', 'Art room', 'Music room', 'Science lab', 'Nurse suite', 'Staff restroom', 'Student restroom A (1st grade)', 'Student restroom B (1st grade)', 'Student restroom C (2nd grade)', 'Student restroom D (2nd grade)', 'Student restroom E (3rd grade)', 'Student restroom F (3rd grade)', 'Hallways']},
+    {section:'Offices & Conference Rooms', rooms:['Principal office', 'OSL office', 'Leader office A', 'Leader office B', 'Leader office C', 'Leader office D (CAP)', 'Leader office E (2/3 AP)', 'SPED coordinator', 'EC AP office', 'K/1 AP office', 'SS coach / behavior specialist', 'Licensed clinician', 'Large conf. room', 'Small conf. room', 'HO workspace', 'Staff lounge / copy room', 'ELA workroom', 'Math workroom', 'EC resource', 'Small group room A', 'Small group room B', 'Small group room C', 'Small group room D', 'EC resource / SPED pullout', 'Lactation room', 'Aftercare room', 'Tech room', 'Facilities']},
+    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+  ],
+  'Benning Middle': [
+    {section:'Classrooms', rooms:['GWU', 'Georgetown', 'Howard', 'UMD', 'UNC', 'UVA', 'FAMU', 'Hampton', 'Tuskegee', 'Princeton', 'Stanford', 'Harvard', 'Yale']},
+    {section:'Common Spaces', rooms:['Front desk A', 'Front desk B', 'Cafeteria (Prepeteria)', 'Gymnasium', 'Music room (PD space)', 'Art room', 'Science lab', 'Drumming room', 'Nurse suite', 'Staff restroom', 'Student restroom A (1st floor)', 'Student restroom B (1st floor)', 'Student restroom C (2nd floor)', 'Student restroom D (2nd floor)', 'Hallways']},
+    {section:'Offices & Conference Rooms', rooms:['Principal office', 'Ops office', 'AP — Math/Science', 'AP — Humanities', 'SpEd coordinator', 'Academic specialist', 'Behavioral specialist', 'Licensed clinician A', 'Licensed clinician B', 'SS coach / CAP', 'HS placement coord.', 'Counselor office', 'Science resource room', 'ELA & Math resource room', 'Conf. room', 'HO workspace', 'Teachers lounge', 'Small group room 188', 'Small group room 194', 'Small group room 198', 'Small group room 263', 'Small group room 271', 'Small group room 284']},
+    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+  ],
+  'Edgewood Elementary': [
+    {section:'Classrooms', rooms:['American', 'Gallaudet', 'George Mason', 'Johns Hopkins', 'Syracuse', 'Williams', 'Northwestern', 'UChicago', 'UMichigan', 'Gonzaga', 'UOregon', 'Pepperdine', 'Morehouse', 'Spelman', 'Xavier', 'Cornell', 'Dartmouth', 'UPenn']},
+    {section:'Common Spaces', rooms:['Front desk', 'Cafeteria (Prepeteria)', 'Kitchen', 'Gymnasium', 'Library', 'Science lab', 'Art room', 'Music room', 'Nurse suite A', 'Nurse suite B', 'Lobby', 'Staff restroom (lower level)', 'Staff restroom (upper level)', 'Student restroom A (lower level)', 'Student restroom B (upper level)', 'Lactation room', 'Hallways']},
+    {section:'Offices & Conference Rooms', rooms:['OSL office', 'Leader office A', 'Leader office B', 'Leader office C', 'Leader office D', 'AP office', 'SPED office', 'HO workspace', 'Specialist suite', 'Culture suite', 'Speech / OT', 'Licensed clinician A', 'Licensed clinician B', 'Licensed clinician C (SLP)', 'Conference room (MOCR)', 'Staff lounge / TRR', 'EC/Kinder supply room', 'EC/Kinder SpEd pullout', 'SpEd pullout room', 'Small group / pullout', 'Facilities', 'Ms. Makstein']},
+    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+  ],
+  'Edgewood Middle': [
+    {section:'Classrooms', rooms:['GWU', 'Georgetown', 'Howard', 'UMD', 'UNC', 'UVA', 'FAMU', 'Hampton', 'Tuskegee', 'Princeton', 'Stanford', 'Harvard', 'Yale']},
+    {section:'Common Spaces', rooms:['Front office', 'Cafeteria (Prepeteria)', 'Gymnasium', 'Assembly hall', 'Library', 'Science lab', 'Art room', 'Nurse suite', 'Lobby', 'Staff restroom', 'Student restroom A (JA girls)', 'Student restroom B (JA boys)', 'Student restroom C (lower)', 'Hallways']},
+    {section:'Offices & Conference Rooms', rooms:['Principal', 'SEC', 'LC office', 'Behavior Spec.', 'Asst. Principal B', 'Culture suite', 'Counseling suite', 'Behavioral support suite', 'AAP suite', 'Behavioral specialist', 'SS coach / CAP', 'SpEd coordinator', 'HS placement coord.', 'Special pops suite', 'Panther pad (staff lounge)', 'Staff lounge', 'Conference room']},
+    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+  ],
+};
+
 const CHECKLISTS = {
   'EC': [
     ['ELA Wall','Displays current unit name/theme, essential questions, vocabulary, and space for relevant unit Anchor Charts'],
@@ -2530,12 +2567,14 @@ const CHECKLISTS = {
 };
 
 const RD = {
-  type: null,      // 'MDS' | 'SDO' | 'DOF' | 'DOT'
+  type: null,      // 'MDS' | 'SDO' | 'DOT'
   school: null,
   classroom: null,
-  band: null,
+  band: null,      // grade band, used by MDS/DOT (classroom-only tracks)
+  section: null,   // space section, used by SDO (Operations, all-space track)
   role: null,
   assessment: null,
+  notes: '',       // holistic notes field (Operations track)
   checks: {},      // { itemName: { status:'checked'|'flagged'|'unchecked', note:'' } }
   deskCount: null,
   chairCount: null,
@@ -2552,12 +2591,6 @@ const BOY_ROLES = {
   SDO: [
     { val:'SDO',  label:'SDO', primary:true },
     { val:'OSL',  label:'OSL' },
-    { val:'Other',label:'Other' },
-  ],
-  DOF: [
-    { val:'Director of Facilities', label:'Director of Facilities', primary:true },
-    { val:'OSL',  label:'OSL' },
-    { val:'Other',label:'Other' },
   ],
   DOT: [
     { val:'Director of Tech', label:'Director of Tech', primary:true },
@@ -2567,8 +2600,10 @@ const BOY_ROLES = {
 
 // ── Checklist definitions ─────────────────────────────────────────────────────
 // MDS checklist = existing band-based CHECKLISTS (Schools track)
-// SDO = 8 Ops-owned items from paper form
-const BOY_SDO_ITEMS = [
+// Operations (SDO) — classrooms only — combined former Ops + Facilities items,
+// shown as a read-only "Look Fors" reference beneath the assessment/notes fields.
+// (Desk/chair counts are captured as dedicated number fields, not a look-for item.)
+const BOY_OPS_LOOKFORS = [
   ['Emergency go-kit',          'A complete emergency go-kit is in the classroom'],
   ['Emergency packet',          'A complete, up-to-date emergency packet is in the classroom and hanging on the wall (preferably near the door)'],
   ['Evacuation plan posted',    'Emergency evacuation plan is posted visibly in the classroom'],
@@ -2577,12 +2612,7 @@ const BOY_SDO_ITEMS = [
   ['Document camera',           'Document camera is in place and functional (may not apply to small group pull-out classrooms)'],
   ['Speakers',                  'Speakers are in place and functional (may not apply to small group pull-out classrooms)'],
   ['Pencil sharpener',          'Pencil sharpener is in place and functional'],
-];
-
-// DOF = 10 Facilities-owned items (desk/chair count captured separately)
-const BOY_DOF_ITEMS = [
   ['Walls painted / tape removed',  'All walls are painted, painters tape is removed, and outlet covers are in place'],
-  ['Desks and chairs — count',      'desk-chair-count'],  // special marker → number inputs
   ['Desks and chairs — condition',  'All desks and chairs are functional and in good shape (not broken or wobbly, safe for children to use)'],
   ['Clock',                         'Clock is visible, functional, and displays the appropriate time'],
   ['Door lock',                     'Classroom door is able to lock and unlock'],
@@ -2606,14 +2636,13 @@ const BOY_DOT_ITEMS = [
 // ── Titles per type ────────────────────────────────────────────────────────────
 const BOY_TITLES = {
   MDS: 'BOY Space Readiness — Schools',
-  SDO: 'BOY Space Readiness — Ops',
-  DOF: 'BOY Space Readiness — Facilities',
+  SDO: 'BOY Space Readiness — Operations',
   DOT: 'BOY Space Readiness — Tech',
 };
 
 function resetReadiness() {
-  RD.type=null; RD.school=null; RD.classroom=null; RD.band=null;
-  RD.role=null; RD.assessment=null; RD.checks={}; RD.deskCount=null; RD.chairCount=null; RD.step='type';
+  RD.type=null; RD.school=null; RD.classroom=null; RD.band=null; RD.section=null;
+  RD.role=null; RD.assessment=null; RD.notes=''; RD.checks={}; RD.deskCount=null; RD.chairCount=null; RD.step='type';
   document.querySelectorAll('#screen-readiness .role-check').forEach(c=>c.classList.remove('on'));
   document.querySelectorAll('#screen-readiness .flow-step').forEach(s=>s.classList.remove('active'));
   document.getElementById('rd-type').classList.add('active');
@@ -2639,7 +2668,7 @@ function showReadStep(id) {
   setProgress('read-prog', pcts[id]||10);
   const btn=document.getElementById('read-btn');
   const bar=btn.closest('.submit-bar');
-  const isChecklist=(id==='checklist');
+  const isChecklist=(id==='checklist') && RD.type!=='SDO';
   if(isChecklist){
     bar.style.display=''; btn.style.display='';
     btn.textContent='Submit →'; btn.className='submit-btn btn-teal';
@@ -2674,35 +2703,57 @@ function readPickSchool(row,val){
   document.querySelectorAll('#rd-school .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   RD.school=val;
-  // Build classroom list
+  // Build space list
   const list=document.getElementById('rd-classroom-list');
   list.innerHTML='';
-  const schoolData=CLASSROOM_MAP[val]||[];
-  schoolData.forEach(({band,rooms})=>{
+  const stepTitle=document.querySelector('#rd-classroom .step-title');
+
+  function appendGroup(groupLabel, rooms, onPick){
     const lbl=document.createElement('div');
-    lbl.style.cssText='padding:20px 16px 4px;font-size:11px;font-weight:400;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)';
-    lbl.textContent=band;
+    lbl.style.cssText='padding:0 4px 8px;font-size:11px;font-weight:400;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)';
+    lbl.textContent=groupLabel;
     list.appendChild(lbl);
-    const ckBand=band==='EC'?'EC':
-                 band==='KINDERGARTEN'||band==='1ST GRADE'?'K\/1':
-                 band==='2ND GRADE'||band==='3RD GRADE'?'2\/3':'Middle';
+    const groupCard=document.createElement('div');
+    groupCard.className='card';
+    groupCard.style.cssText='padding:0;overflow:hidden';
     rooms.forEach(room=>{
       const row2=document.createElement('div');
       row2.className='role-row';
       row2.innerHTML='<span class="role-name">'+room+'<\/span><span class="role-check" id="rcl-'+room.replace(/[^a-zA-Z]/g,'_')+'"><\/span>';
-      row2.onclick=()=>readPickClassroom(row2,room,ckBand);
-      list.appendChild(row2);
+      row2.onclick=()=>onPick(row2,room);
+      groupCard.appendChild(row2);
     });
-  });
+    list.appendChild(groupCard);
+  }
+
+  if (RD.type === 'SDO') {
+    // Operations: all non-n/a spaces, grouped by section
+    if (stepTitle) stepTitle.textContent = 'Which space?';
+    const schoolData = OPS_SPACES[val] || [];
+    schoolData.forEach(({section,rooms})=>{
+      appendGroup(section, rooms, (row2,room)=>readPickClassroom(row2,room,section));
+    });
+  } else {
+    // Schools / Tech: classrooms only, grouped by grade band
+    if (stepTitle) stepTitle.textContent = 'Which classroom?';
+    const schoolData=CLASSROOM_MAP[val]||[];
+    schoolData.forEach(({band,rooms})=>{
+      const ckBand=band==='EC'?'EC':
+                   band==='KINDERGARTEN'||band==='1ST GRADE'?'K\/1':
+                   band==='2ND GRADE'||band==='3RD GRADE'?'2\/3':'Middle';
+      appendGroup(band, rooms, (row2,room)=>readPickClassroom(row2,room,ckBand));
+    });
+  }
   setTimeout(()=>showReadStep('classroom'),120);
 }
 
-// ── Classroom selection ────────────────────────────────────────────────────────
-function readPickClassroom(row,val,band){
+// ── Space/classroom selection ───────────────────────────────────────────────────
+function readPickClassroom(row,val,bandOrSection){
   document.querySelectorAll('#rd-classroom-list .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   RD.classroom=val;
-  RD.band=band;
+  if (RD.type === 'SDO') { RD.section=bandOrSection; RD.band=null; }
+  else                   { RD.band=bandOrSection; RD.section=null; }
   // Build role list for this type
   const roles=BOY_ROLES[RD.type]||[];
   const roleList=document.getElementById('rd-role-list');
@@ -2727,121 +2778,9 @@ function readPickRole(row,val){
   setTimeout(()=>showReadStep('school'),120);
 }
 
-function buildBOYChecklist(){
-  RD.checks={};
-  RD.deskCount=null;
-  RD.chairCount=null;
-  const container=document.getElementById('rd-checklist-items');
-  container.innerHTML='';
-
-  let items=[];
-  if(RD.type==='MDS'){
-    // Use existing band-based checklist
-    const bandKey=RD.band;
-    items=(CHECKLISTS[bandKey]||[]).map(([name,guidance])=>({name,guidance,special:null}));
-  } else if(RD.type==='SDO'){
-    items=BOY_SDO_ITEMS.map(([name,guidance])=>({name,guidance,special:null}));
-  } else if(RD.type==='DOF'){
-    items=BOY_DOF_ITEMS.map(([name,guidance])=>({name,guidance,special:guidance==='desk-chair-count'?'desk-chair-count':null}));
-  } else if(RD.type==='DOT'){
-    items=BOY_DOT_ITEMS.map(([name,guidance])=>({name,guidance,special:null}));
-  }
-
-  const title=document.getElementById('rd-checklist-title');
-  if(title) title.textContent=BOY_TITLES[RD.type]||'Checklist';
-
-  const card=document.createElement('div');
-  card.className='card';
-  container.appendChild(card);
-
-  items.forEach(({name,guidance,special},i)=>{
-    RD.checks[name]={status:'unchecked',note:''};
-
-    const wrap=document.createElement('div');
-    wrap.style.cssText='padding:14px 16px;border-bottom:0.5px solid var(--border)';
-
-    if(special==='desk-chair-count'){
-      // Desk / chair count inputs
-      wrap.innerHTML=`
-        <div style="font-size:14px;color:var(--text);font-weight:500;line-height:1.4;margin-bottom:10px">Desks and chairs — count</div>
-        <div style="display:flex;gap:12px;margin-bottom:8px">
-          <div style="flex:1">
-            <label style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Number of desks</label>
-            <input type="number" min="0" inputmode="numeric" placeholder="0"
-              style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:16px;font-family:inherit;background:var(--card);color:var(--text)"
-              oninput="RD.deskCount=parseInt(this.value)||0">
-          </div>
-          <div style="flex:1">
-            <label style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Number of chairs</label>
-            <input type="number" min="0" inputmode="numeric" placeholder="0"
-              style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:16px;font-family:inherit;background:var(--card);color:var(--text)"
-              oninput="RD.chairCount=parseInt(this.value)||0">
-          </div>
-        </div>
-        <div style="font-size:12px;color:var(--muted);line-height:1.5">Sufficient desks and chairs for students in this classroom</div>`;
-      // No check/flag for this item — skip status tracking
-      delete RD.checks[name];
-      wrap.style.borderBottom=i===items.length-1?'none':'0.5px solid var(--border)';
-      card.appendChild(wrap);
-      return;
-    }
-
-    // Label
-    const label=document.createElement('div');
-    label.style.cssText='font-size:14px;color:var(--text);font-weight:500;line-height:1.4';
-    label.textContent=name;
-
-    // Guidance
-    const guide=document.createElement('div');
-    guide.style.cssText='font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;margin-bottom:8px';
-    guide.textContent=guidance;
-
-    // Check / Flag buttons
-    const togRow=document.createElement('div');
-    togRow.style.cssText='display:flex;gap:8px;margin-bottom:8px';
-    const btnC=document.createElement('button');
-    btnC.style.cssText='flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent';
-    btnC.textContent='✓ Ready';
-    const btnF=document.createElement('button');
-    btnF.style.cssText='flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent';
-    btnF.textContent='⚠ Flag';
-    function upd(){
-      const v=RD.checks[name].status;
-      btnC.style.background=v==='checked'?'var(--teal)':'var(--card)';
-      btnC.style.borderColor=v==='checked'?'var(--teal)':'var(--border)';
-      btnC.style.color=v==='checked'?'#fff':'var(--muted)';
-      btnF.style.background=v==='flagged'?'var(--red)':'var(--card)';
-      btnF.style.borderColor=v==='flagged'?'var(--red)':'var(--border)';
-      btnF.style.color=v==='flagged'?'#fff':'var(--muted)';
-      // Show note area when flagged
-      noteWrap.style.display=v==='flagged'?'':'none';
-    }
-    btnC.onclick=(e)=>{e.stopPropagation();RD.checks[name].status=RD.checks[name].status==='checked'?'unchecked':'checked';upd();};
-    btnF.onclick=(e)=>{e.stopPropagation();RD.checks[name].status=RD.checks[name].status==='flagged'?'unchecked':'flagged';upd();};
-    togRow.appendChild(btnC);
-    togRow.appendChild(btnF);
-
-    // Inline note (visible only when flagged)
-    const noteWrap=document.createElement('div');
-    noteWrap.style.display='none';
-    const noteTa=document.createElement('textarea');
-    noteTa.rows=2;
-    noteTa.placeholder='Note what needs attention…';
-    noteTa.style.cssText='width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--card);resize:none;box-sizing:border-box';
-    noteTa.oninput=()=>{RD.checks[name].note=noteTa.value;};
-    noteWrap.appendChild(noteTa);
-
-    wrap.appendChild(label);
-    wrap.appendChild(guide);
-    wrap.appendChild(togRow);
-    wrap.appendChild(noteWrap);
-    wrap.style.borderBottom=i===items.length-1?'none':'0.5px solid var(--border)';
-    card.appendChild(wrap);
-  });
-
-  // ── Overall assessment inline at bottom ─────────────────────────────────────
+function buildAssessmentBlock(){
   const assessDiv=document.createElement('div');
-  assessDiv.style.cssText='margin-top:20px';
+  assessDiv.style.cssText='margin-bottom:20px';
   const assessTitle=document.createElement('div');
   assessTitle.className='step-title';
   assessTitle.style.fontSize='18px';
@@ -2855,21 +2794,195 @@ function buildBOYChecklist(){
     const btn=document.createElement('button');
     btn.id=id;
     btn.style.cssText='width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;text-align:left;-webkit-tap-highlight-color:transparent;transition:all .15s;margin-bottom:8px;display:block';
-    const dotColor={'Fully ready':'#16a34a','Ready — minor items remain':'#d97706','Not ready — return visit needed':'#dc2626'}[val]||'#888';
+    const dotColor={'Fully ready':'#16a34a','Ready — minor items remain':'#ffd65a','Not ready — return visit needed':'#dc2626'}[val]||'#888';
     btn.innerHTML='<span style="color:'+dotColor+';margin-right:6px">⬤</span>'+val;
     btn.onclick=()=>readPickAssessment(val);
     assessDiv.appendChild(btn);
   });
-  container.appendChild(assessDiv);
+  return assessDiv;
+}
 
-  // Show submit bar
-  const sbtn=document.getElementById('read-btn');
-  if(sbtn){
-    const bar=sbtn.closest('.submit-bar');
-    if(bar) bar.style.display='';
-    sbtn.style.display='';
-    sbtn.textContent='Submit →';
-    sbtn.className='submit-btn btn-teal';
+function buildBOYChecklist(){
+  RD.checks={};
+  RD.deskCount=null;
+  RD.chairCount=null;
+  RD.notes='';
+  const container=document.getElementById('rd-checklist-items');
+  container.innerHTML='';
+
+  const title=document.getElementById('rd-checklist-title');
+
+  if (RD.type === 'SDO') {
+    // ── Operations: overall assessment first, then counts (classrooms only),
+    // then notes, then an inline submit button, then a reference-only Look
+    // Fors list (classrooms only — no reference content defined yet for
+    // Common Spaces / Offices & Conference Rooms / Outdoor).
+    // No redundant flow-name title here — the header already shows it.
+    if(title) title.textContent=RD.classroom||'';
+
+    const isClassroom = RD.section === 'Classrooms';
+
+    // 1. Overall assessment — top of page
+    container.appendChild(buildAssessmentBlock());
+
+    // 2. Counts (classrooms only)
+    if (isClassroom) {
+      const countsCard=document.createElement('div');
+      countsCard.className='card';
+      countsCard.style.cssText='padding:14px 16px;margin-bottom:16px';
+      countsCard.innerHTML=`
+        <div style="font-size:14px;color:var(--text);font-weight:500;line-height:1.4;margin-bottom:10px">Desks and chairs — count</div>
+        <div style="display:flex;gap:12px">
+          <div style="flex:1">
+            <label style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Number of desks</label>
+            <input type="number" min="0" inputmode="numeric" placeholder="0"
+              style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:16px;font-family:inherit;background:var(--card);color:var(--text)"
+              oninput="RD.deskCount=parseInt(this.value)||0">
+          </div>
+          <div style="flex:1">
+            <label style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Number of chairs</label>
+            <input type="number" min="0" inputmode="numeric" placeholder="0"
+              style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:16px;font-family:inherit;background:var(--card);color:var(--text)"
+              oninput="RD.chairCount=parseInt(this.value)||0">
+          </div>
+        </div>`;
+      container.appendChild(countsCard);
+    }
+
+    // 3. Notes
+    const notesCard=document.createElement('div');
+    notesCard.className='card';
+    notesCard.style.cssText='padding:14px 16px;margin-bottom:16px';
+    notesCard.innerHTML=`
+      <label style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px">Notes</label>
+      <textarea rows="4" placeholder="Issues, follow-ups, or observations…"
+        style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--card);resize:none;box-sizing:border-box"
+        oninput="RD.notes=this.value"></textarea>`;
+    container.appendChild(notesCard);
+
+    // 4. Inline submit button (replaces the fixed bottom bar for this flow)
+    const submitWrap=document.createElement('div');
+    submitWrap.style.cssText='margin:8px 0 44px';
+    const inlineBtn=document.createElement('button');
+    inlineBtn.className='submit-btn btn-teal';
+    inlineBtn.style.cssText='width:100%';
+    inlineBtn.textContent='Submit →';
+    inlineBtn.onclick=()=>{
+      if(!RD.assessment){alert('Select an overall assessment before submitting.');return;}
+      submitBOYReadiness();
+    };
+    submitWrap.appendChild(inlineBtn);
+    container.appendChild(submitWrap);
+
+    // 5. Look Fors — plain background reference, numbered, no card outline
+    if (isClassroom) {
+      const lookForsWrap=document.createElement('div');
+      lookForsWrap.style.cssText='padding:0 4px';
+      const lfTitle=document.createElement('div');
+      lfTitle.style.cssText='font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:12px';
+      lfTitle.textContent='Look Fors';
+      lookForsWrap.appendChild(lfTitle);
+      const ol=document.createElement('ol');
+      ol.style.cssText='margin:0;padding-left:20px;display:flex;flex-direction:column;gap:14px';
+      BOY_OPS_LOOKFORS.forEach(([name,guidance])=>{
+        const li=document.createElement('li');
+        li.style.cssText='font-size:13px;color:var(--text);padding-left:2px';
+        li.innerHTML='<div style="font-weight:500;line-height:1.4">'+name+'</div>'+
+          '<div style="font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5">'+guidance+'</div>';
+        ol.appendChild(li);
+      });
+      lookForsWrap.appendChild(ol);
+      container.appendChild(lookForsWrap);
+    }
+
+    // Fixed bottom bar is hidden for this flow — handled in showReadStep().
+  } else {
+    // ── Schools / Tech: existing item-by-item checklist (unchanged)
+    if(title) title.textContent=BOY_TITLES[RD.type]||'Checklist';
+
+    let items=[];
+    if(RD.type==='MDS'){
+      const bandKey=RD.band;
+      items=(CHECKLISTS[bandKey]||[]).map(([name,guidance])=>({name,guidance,special:null}));
+    } else if(RD.type==='DOT'){
+      items=BOY_DOT_ITEMS.map(([name,guidance])=>({name,guidance,special:null}));
+    }
+
+    const card=document.createElement('div');
+    card.className='card';
+    container.appendChild(card);
+
+    items.forEach(({name,guidance,special},i)=>{
+      RD.checks[name]={status:'unchecked',note:''};
+
+      const wrap=document.createElement('div');
+      wrap.style.cssText='padding:14px 16px;border-bottom:0.5px solid var(--border)';
+
+      // Label
+      const label=document.createElement('div');
+      label.style.cssText='font-size:14px;color:var(--text);font-weight:500;line-height:1.4';
+      label.textContent=name;
+
+      // Guidance
+      const guide=document.createElement('div');
+      guide.style.cssText='font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;margin-bottom:8px';
+      guide.textContent=guidance;
+
+      // Check / Flag buttons
+      const togRow=document.createElement('div');
+      togRow.style.cssText='display:flex;gap:8px;margin-bottom:8px';
+      const btnC=document.createElement('button');
+      btnC.style.cssText='flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent';
+      btnC.textContent='✓ Ready';
+      const btnF=document.createElement('button');
+      btnF.style.cssText='flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent';
+      btnF.textContent='⚠ Flag';
+      function upd(){
+        const v=RD.checks[name].status;
+        btnC.style.background=v==='checked'?'var(--teal)':'var(--card)';
+        btnC.style.borderColor=v==='checked'?'var(--teal)':'var(--border)';
+        btnC.style.color=v==='checked'?'#fff':'var(--muted)';
+        btnF.style.background=v==='flagged'?'var(--red)':'var(--card)';
+        btnF.style.borderColor=v==='flagged'?'var(--red)':'var(--border)';
+        btnF.style.color=v==='flagged'?'#fff':'var(--muted)';
+        // Show note area when flagged
+        noteWrap.style.display=v==='flagged'?'':'none';
+      }
+      btnC.onclick=(e)=>{e.stopPropagation();RD.checks[name].status=RD.checks[name].status==='checked'?'unchecked':'checked';upd();};
+      btnF.onclick=(e)=>{e.stopPropagation();RD.checks[name].status=RD.checks[name].status==='flagged'?'unchecked':'flagged';upd();};
+      togRow.appendChild(btnC);
+      togRow.appendChild(btnF);
+
+      // Inline note (visible only when flagged)
+      const noteWrap=document.createElement('div');
+      noteWrap.style.display='none';
+      const noteTa=document.createElement('textarea');
+      noteTa.rows=2;
+      noteTa.placeholder='Note what needs attention…';
+      noteTa.style.cssText='width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--card);resize:none;box-sizing:border-box';
+      noteTa.oninput=()=>{RD.checks[name].note=noteTa.value;};
+      noteWrap.appendChild(noteTa);
+
+      wrap.appendChild(label);
+      wrap.appendChild(guide);
+      wrap.appendChild(togRow);
+      wrap.appendChild(noteWrap);
+      wrap.style.borderBottom=i===items.length-1?'none':'0.5px solid var(--border)';
+      card.appendChild(wrap);
+    });
+
+    // Overall assessment at bottom (unchanged for Schools/Tech)
+    container.appendChild(buildAssessmentBlock());
+
+    // Show the fixed bottom submit bar (unchanged for Schools/Tech)
+    const sbtn=document.getElementById('read-btn');
+    if(sbtn){
+      const bar=sbtn.closest('.submit-bar');
+      if(bar) bar.style.display='';
+      sbtn.style.display='';
+      sbtn.textContent='Submit →';
+      sbtn.className='submit-btn btn-teal';
+    }
   }
 }
 
@@ -2878,7 +2991,7 @@ function readPickAssessment(val){
   const map={'Fully ready':'rab-1','Ready — minor items remain':'rab-2','Not ready — return visit needed':'rab-3'};
   const colors={
     'Fully ready':                    {bg:'#16a34a',border:'#16a34a',color:'#fff'},
-    'Ready — minor items remain':     {bg:'#d97706',border:'#d97706',color:'#fff'},
+    'Ready — minor items remain':     {bg:'#ffd65a',border:'#ffd65a',color:'#78350f'},
     'Not ready — return visit needed':{bg:'var(--red)',border:'var(--red)',color:'#fff'},
   };
   ['rab-1','rab-2','rab-3'].forEach(id=>{
@@ -2914,11 +3027,11 @@ function openBOY(type) {
   resetReadiness();
   // Pre-select the type
   RD.type=type;
-  const titleMap={MDS:'BOY Space Readiness — Schools',SDO:'BOY Space Readiness — Ops',DOF:'BOY Space Readiness — Facilities',DOT:'BOY Space Readiness — Tech'};
+  const titleMap={MDS:'BOY Space Readiness — Schools',SDO:'BOY Space Readiness — Operations',DOT:'BOY Space Readiness — Tech'};
   document.getElementById('read-flow-title').textContent=titleMap[type]||'BOY Space Readiness';
   // Highlight the right button (in case user goes back to type screen)
   document.querySelectorAll('#rd-type .sel-btn').forEach(b=>b.classList.remove('on'));
-  const typeMap={MDS:'rtc-MDS',SDO:'rtc-SDO',DOF:'rtc-DOF',DOT:'rtc-DOT'};
+  const typeMap={MDS:'rtc-MDS',SDO:'rtc-SDO',DOT:'rtc-DOT'};
   const tb=document.getElementById(typeMap[type]);
   if(tb) tb.classList.add('on');
   // Build role list for this type immediately
@@ -2952,8 +3065,10 @@ function submitBOYReadiness(){
     school:RD.school,
     classroom:RD.classroom,
     gradeBand:RD.band==='K\/1'?'K/1':RD.band==='2\/3'?'2/3':RD.band,
+    section:RD.section||'',
     role:RD.role,
     assessment:RD.assessment,
+    notes:RD.notes||'',
     itemsChecked:checkedItems.length,
     itemsTotal:totalItems,
     checkedItems:checkedItems.join(', '),
@@ -2963,12 +3078,12 @@ function submitBOYReadiness(){
     chairCount:RD.chairCount||''
   };
   setProgress('read-prog',100);
-  const typeLabel={'MDS':'Schools','SDO':'Ops','DOF':'Facilities','DOT':'Tech'}[RD.type]||RD.type;
+  const typeLabel={'MDS':'Schools','SDO':'Operations','DOT':'Tech'}[RD.type]||RD.type;
   document.getElementById('s-title').textContent='Submitted!';
   document.getElementById('s-sub').textContent=typeLabel+' readiness for '+RD.classroom+' has been saved.';
   const assessIcon={'Fully ready':'✅','Ready — minor items remain':'🟡','Not ready — return visit needed':'🔴'}[RD.assessment]||'';
   let deskRow='';
-  if(RD.type==='DOF'&&(RD.deskCount||RD.chairCount)){
+  if(RD.type==='SDO'&&RD.section==='Classrooms'&&(RD.deskCount||RD.chairCount)){
     deskRow='<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Desks / chairs<\/span><span style="font-weight:500">'+(RD.deskCount||'—')+' / '+(RD.chairCount||'—')+'<\/span><\/div>';
   }
   document.getElementById('s-card').innerHTML=
