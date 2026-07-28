@@ -2779,6 +2779,9 @@ function readPickRole(row,val){
 }
 
 function buildAssessmentBlock(){
+  const isOSLPending = RD.type === 'SDO' && RD.role === 'OSL';
+  const fullyReadyVal = isOSLPending ? 'Fully ready — pending SDO signoff' : 'Fully ready';
+
   const assessDiv=document.createElement('div');
   assessDiv.style.cssText='margin-bottom:20px';
   const assessTitle=document.createElement('div');
@@ -2786,17 +2789,22 @@ function buildAssessmentBlock(){
   assessTitle.style.fontSize='18px';
   assessTitle.textContent='Overall assessment';
   assessDiv.appendChild(assessTitle);
+
+  const hint=document.createElement('div');
+  hint.style.cssText='font-size:12px;color:var(--muted);margin:-4px 0 12px';
+  hint.textContent="Optional — skip if you're only updating counts or notes";
+  if (RD.type === 'SDO') assessDiv.appendChild(hint);
+
   [
-    {id:'rab-1',val:'Fully ready',                     label:'● Fully ready'},
-    {id:'rab-2',val:'Ready — minor items remain',      label:'⬤ Ready — minor items remain'},
-    {id:'rab-3',val:'Not ready — return visit needed', label:'⬤ Not ready — return visit needed'},
-  ].forEach(({id,val,label})=>{
+    {id:'rab-1',val:fullyReadyVal,                      color:'#16a34a'},
+    {id:'rab-2',val:'Ready — minor items remain',       color:'#ffd65a'},
+    {id:'rab-3',val:'Not ready — return visit needed',  color:'#dc2626'},
+  ].forEach(({id,val,color})=>{
     const btn=document.createElement('button');
     btn.id=id;
     btn.style.cssText='width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;text-align:left;-webkit-tap-highlight-color:transparent;transition:all .15s;margin-bottom:8px;display:block';
-    const dotColor={'Fully ready':'#16a34a','Ready — minor items remain':'#ffd65a','Not ready — return visit needed':'#dc2626'}[val]||'#888';
-    btn.innerHTML='<span style="color:'+dotColor+';margin-right:6px">⬤</span>'+val;
-    btn.onclick=()=>readPickAssessment(val);
+    btn.innerHTML='<span style="color:'+color+';margin-right:6px">⬤</span>'+val;
+    btn.onclick=()=>readPickAssessment(val,id);
     assessDiv.appendChild(btn);
   });
   return assessDiv;
@@ -2868,7 +2876,8 @@ function buildBOYChecklist(){
     inlineBtn.style.cssText='width:100%';
     inlineBtn.textContent='Submit →';
     inlineBtn.onclick=()=>{
-      if(!RD.assessment){alert('Select an overall assessment before submitting.');return;}
+      const hasSomething = RD.assessment || (RD.notes && RD.notes.trim()) || RD.deskCount || RD.chairCount;
+      if(!hasSomething){alert('Add an assessment, notes, or counts before submitting.');return;}
       submitBOYReadiness();
     };
     submitWrap.appendChild(inlineBtn);
@@ -2986,23 +2995,22 @@ function buildBOYChecklist(){
   }
 }
 
-function readPickAssessment(val){
+function readPickAssessment(val,id){
   RD.assessment=val;
-  const map={'Fully ready':'rab-1','Ready — minor items remain':'rab-2','Not ready — return visit needed':'rab-3'};
   const colors={
-    'Fully ready':                    {bg:'#16a34a',border:'#16a34a',color:'#fff'},
-    'Ready — minor items remain':     {bg:'#ffd65a',border:'#ffd65a',color:'#78350f'},
-    'Not ready — return visit needed':{bg:'var(--red)',border:'var(--red)',color:'#fff'},
+    'rab-1':{bg:'#16a34a',border:'#16a34a',color:'#fff'},
+    'rab-2':{bg:'#ffd65a',border:'#ffd65a',color:'#78350f'},
+    'rab-3':{bg:'var(--red)',border:'var(--red)',color:'#fff'},
   };
-  ['rab-1','rab-2','rab-3'].forEach(id=>{
-    const btn=document.getElementById(id);
+  ['rab-1','rab-2','rab-3'].forEach(bid=>{
+    const btn=document.getElementById(bid);
     if(!btn) return;
     btn.style.background='var(--card)';
     btn.style.borderColor='var(--border)';
     btn.style.color='var(--muted)';
   });
-  const sel=document.getElementById(map[val]);
-  const c=colors[val];
+  const sel=document.getElementById(id);
+  const c=colors[id];
   if(sel&&c){
     sel.style.background=c.bg;
     sel.style.borderColor=c.border;
@@ -3081,7 +3089,10 @@ function submitBOYReadiness(){
   const typeLabel={'MDS':'Schools','SDO':'Operations','DOT':'Tech'}[RD.type]||RD.type;
   document.getElementById('s-title').textContent='Submitted!';
   document.getElementById('s-sub').textContent=typeLabel+' readiness for '+RD.classroom+' has been saved.';
-  const assessIcon={'Fully ready':'✅','Ready — minor items remain':'🟡','Not ready — return visit needed':'🔴'}[RD.assessment]||'';
+  const assessIcon={'Fully ready':'✅','Fully ready — pending SDO signoff':'⏳','Ready — minor items remain':'🟡','Not ready — return visit needed':'🔴'}[RD.assessment]||'';
+  const assessmentRow = RD.assessment
+    ? '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Assessment<\/span><span style="font-weight:500">'+assessIcon+' '+RD.assessment+'<\/span><\/div>'
+    : '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Assessment<\/span><span style="font-weight:500;color:#94a3b8">Not updated<\/span><\/div>';
   let deskRow='';
   if(RD.type==='SDO'&&RD.section==='Classrooms'&&(RD.deskCount||RD.chairCount)){
     deskRow='<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Desks / chairs<\/span><span style="font-weight:500">'+(RD.deskCount||'—')+' / '+(RD.chairCount||'—')+'<\/span><\/div>';
@@ -3092,7 +3103,7 @@ function submitBOYReadiness(){
     '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">School<\/span><span style="font-weight:500">'+RD.school+'<\/span><\/div>'+
     '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Classroom<\/span><span style="font-weight:500">'+RD.classroom+'<\/span><\/div>'+
     deskRow+
-    '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Assessment<\/span><span style="font-weight:500">'+assessIcon+' '+RD.assessment+'<\/span><\/div>'+
+    assessmentRow+
     '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span style="color:#64748b">Items flagged<\/span><span style="font-weight:500;color:'+(flaggedItems.length?'var(--red)':'inherit')+'">'+(flaggedItems.length||'None')+'<\/span><\/div>';
   resetEmailCapture();
   setEmailLabel('Want a copy of what you submitted?');
