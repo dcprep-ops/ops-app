@@ -2843,7 +2843,6 @@ function readPickRole(row,val){
 
 function buildAssessmentBlock(){
   const isOSLPending = RD.type === 'SDO' && RD.role === 'OSL';
-  const fullyReadyVal = isOSLPending ? 'Fully ready — pending SDO signoff' : 'Fully ready';
 
   const assessDiv=document.createElement('div');
   assessDiv.style.cssText='margin-bottom:20px';
@@ -2858,11 +2857,18 @@ function buildAssessmentBlock(){
   hint.textContent="Optional — skip if you're only updating counts or notes";
   if (RD.type === 'SDO') assessDiv.appendChild(hint);
 
-  [
-    {id:'rab-1',val:fullyReadyVal,                      color:'#16a34a'},
-    {id:'rab-2',val:'Ready — minor items remain',       color:'#ffd65a'},
-    {id:'rab-3',val:'Not ready — return visit needed',  color:'#dc2626'},
-  ].forEach(({id,val,color})=>{
+  const options = isOSLPending
+    ? [
+        {id:'rab-1',val:'Fully ready — pending SDO signoff',color:'#378ADD'},
+        {id:'rab-3',val:'Not ready yet',                     color:'#dc2626'},
+      ]
+    : [
+        {id:'rab-1',val:'Fully ready',                       color:'#16a34a'},
+        {id:'rab-2',val:'Ready — minor items remain',        color:'#ffd65a'},
+        {id:'rab-3',val:'Not ready — return visit needed',   color:'#dc2626'},
+      ];
+
+  options.forEach(({id,val,color})=>{
     const btn=document.createElement('button');
     btn.id=id;
     btn.style.cssText='width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;text-align:left;-webkit-tap-highlight-color:transparent;transition:all .15s;margin-bottom:8px;display:block';
@@ -3060,11 +3066,11 @@ function buildBOYChecklist(){
 
 function readPickAssessment(val,id){
   RD.assessment=val;
-  const colors={
-    'rab-1':{bg:'#16a34a',border:'#16a34a',color:'#fff'},
-    'rab-2':{bg:'#ffd65a',border:'#ffd65a',color:'#78350f'},
-    'rab-3':{bg:'var(--red)',border:'var(--red)',color:'#fff'},
-  };
+  let c;
+  if (val.indexOf('pending SDO signoff') > -1) c={bg:'#378ADD',border:'#378ADD',color:'#fff'};
+  else if (val === 'Fully ready')                c={bg:'#16a34a',border:'#16a34a',color:'#fff'};
+  else if (val === 'Ready — minor items remain') c={bg:'#ffd65a',border:'#ffd65a',color:'#78350f'};
+  else                                            c={bg:'var(--red)',border:'var(--red)',color:'#fff'};
   ['rab-1','rab-2','rab-3'].forEach(bid=>{
     const btn=document.getElementById(bid);
     if(!btn) return;
@@ -3073,8 +3079,7 @@ function readPickAssessment(val,id){
     btn.style.color='var(--muted)';
   });
   const sel=document.getElementById(id);
-  const c=colors[id];
-  if(sel&&c){
+  if(sel){
     sel.style.background=c.bg;
     sel.style.borderColor=c.border;
     sel.style.color=c.color;
@@ -3153,7 +3158,7 @@ function submitBOYReadiness(){
   const typeLabel={'MDS':'Schools','SDO':'Operations','DOT':'Tech'}[RD.type]||RD.type;
   document.getElementById('s-title').textContent='Submitted!';
   document.getElementById('s-sub').textContent=typeLabel+' readiness for '+RD.classroom+' has been saved.';
-  const assessIcon={'Fully ready':'✅','Fully ready — pending SDO signoff':'⏳','Ready — minor items remain':'🟡','Not ready — return visit needed':'🔴'}[RD.assessment]||'';
+  const assessIcon={'Fully ready':'✅','Fully ready — pending SDO signoff':'⏳','Ready — minor items remain':'🟡','Not ready — return visit needed':'🔴','Not ready yet':'🔴'}[RD.assessment]||'';
   const assessmentRow = RD.assessment
     ? '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Assessment<\/span><span style="font-weight:500">'+assessIcon+' '+RD.assessment+'<\/span><\/div>'
     : '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Assessment<\/span><span style="font-weight:500;color:#94a3b8">Not updated<\/span><\/div>';
