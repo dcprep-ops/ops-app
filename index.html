@@ -152,18 +152,21 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber)}
 textarea{resize:none;line-height:1.5;min-height:100px}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;cursor:pointer}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-missing input[type="time"]{border-color:var(--red);background:#fef2f2}
+.field-missing-warn{display:none;font-size:11px;color:var(--red);font-weight:600;margin-top:4px}
+.field-missing .field-missing-warn{display:block}
 
 /* checklist */
 .check-item{display:flex;align-items:flex-start;gap:12px;padding:16px 16px;border-bottom:0.5px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.1s}
 .check-item:last-child{border-bottom:none}
 .check-item:active{background:var(--light)}
 .check-box{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.12s}
-.check-box.ok{background:var(--teal);border-color:var(--teal)}
+.check-box.ok{background:#16a34a;border-color:#16a34a}
 .check-box.ok::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
 .check-box.issue{background:var(--red);border-color:var(--red)}
 .check-box.issue::after{content:'!';color:#fff;font-size:12px;font-weight:800;line-height:1}
 .check-label{font-size:15px;color:var(--text);line-height:1.5;flex:1}
-.check-label.done{color:var(--teal);text-decoration:none}
+.check-label.done{color:#16a34a;text-decoration:none}
 
 /* space selector */
 .space-pill{display:inline-flex;align-items:center;padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--light);font-size:13px;font-weight:500;color:var(--text);cursor:pointer;margin:0 6px 6px 0;-webkit-tap-highlight-color:transparent;font-family:inherit}
@@ -193,7 +196,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .tog-label{font-size:14px;color:var(--text);flex:1;line-height:1.4}
 .tog-btns{display:flex;gap:6px;flex-shrink:0}
 .tog{padding:6px 12px;border-radius:7px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--light);color:var(--muted);cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
-.tog.yes.on{background:#f0fdfa;border-color:var(--teal);color:#134e4a}
+.tog.yes.on{background:#f0fdf4;border-color:#16a34a;color:#166534}
 .tog.no.on{background:#fef2f2;border-color:var(--red);color:#991b1b}
 
 .role-row{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:0.5px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.1s}
@@ -232,6 +235,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .sum-key{font-size:12px;color:var(--muted)}
 .sum-val{font-size:13px;font-weight:600;color:var(--text);text-align:right;max-width:58%}
 .sum-val.flag{color:var(--red)}
+.sum-val.good{color:#16a34a}
 .again-btn{background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:12px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
 .email-capture{width:100%;max-width:340px;margin-bottom:12px;text-align:left}
 .email-capture-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block}
@@ -461,10 +465,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="flow-step" id="dd-stop">
       <div class="step-title">Drill in progress</div>
       <div class="card">
-        <div class="card-section" style="text-align:center;padding:28px 20px 24px">
+        <div class="card-section" style="text-align:center;padding:24px 20px 20px">
           <div id="drill-elapsed" style="font-size:48px;font-weight:800;color:var(--amber);font-variant-numeric:tabular-nums;margin-bottom:8px">0:00</div>
-          <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Elapsed time</div>
-          <button onclick="drillStop()" style="width:100%;padding:20px;background:var(--navy);color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">⏹ Stop Drill</button>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:22px">Elapsed time</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5">Tap each button as it happens. Order doesn't matter — log them whenever they actually occur.</div>
+          <button id="drill-log-exit" onclick="drillLogTime('exit')" style="width:100%;padding:16px;background:var(--card);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;margin-bottom:10px">Log Exit Time</button>
+          <button id="drill-log-allclear" onclick="drillLogTime('allclear')" style="width:100%;padding:16px;background:var(--card);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;margin-bottom:16px">Log All Clear Time</button>
+          <button onclick="drillLogTime('end')" style="width:100%;padding:20px;background:var(--navy);color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:800;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">⏹ Log End Time &amp; Continue</button>
         </div>
       </div>
     </div>
@@ -488,7 +495,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <label class="field-label">Times</label>
           <div class="two-col">
             <div><label class="field-label" style="margin-bottom:5px">Alarm / start</label><input type="time" id="d-t-alarm"></div>
-            <div><label class="field-label" style="margin-bottom:5px">All clear / end</label><input type="time" id="d-t-clear"></div>
+            <div id="d-t-exit-wrap"><label class="field-label" style="margin-bottom:5px">Exit time</label><input type="time" id="d-t-exit" oninput="drillClearMissingFlag('d-t-exit-wrap')"><div class="field-missing-warn">⚠ Not yet logged — please confirm</div></div>
+          </div>
+          <div class="two-col" style="margin-top:10px">
+            <div id="d-t-allclear-wrap"><label class="field-label" style="margin-bottom:5px">All clear time</label><input type="time" id="d-t-allclear" oninput="drillClearMissingFlag('d-t-allclear-wrap')"><div class="field-missing-warn">⚠ Not yet logged — please confirm</div></div>
+            <div><label class="field-label" style="margin-bottom:5px">End / re-entry</label><input type="time" id="d-t-end"></div>
           </div>
         </div>
         <div class="card-section">
@@ -1286,6 +1297,15 @@ function serializeChecklist(containerId) {
   });
   return result;
 }
+// Nudge toward balanced feedback: if someone only flagged issues and never
+// marked anything as going well, pause before submitting. Returns true if
+// it's OK to proceed (nothing to flag, or the person confirmed anyway).
+function balancedCheckGuard(checkedCount, flaggedCount) {
+  if (checkedCount === 0 && flaggedCount > 0) {
+    return confirm("You didn't check anything as going well — only flagged issues. What went well today? Tap Cancel to go back and add at least one, or OK to submit as-is.");
+  }
+  return true;
+}
 // ── SCREENS ─────────────────────────────────
 let _lastPayload = {};
 let _lastFlow = '';
@@ -1466,8 +1486,15 @@ function openFlow(type) {
 function resetDrill() {
   Object.assign(D,{school:null,role:null,drillType:null,weather:null,assessment:null,step:'school'});
   stopTimer('drill');
+  if(D.elapsedIv){ clearInterval(D.elapsedIv); D.elapsedIv=null; }
   document.querySelectorAll('#screen-drill .sel-btn').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('#screen-drill .role-check').forEach(c=>c.classList.remove('on'));
+  ['d-t-alarm','d-t-exit','d-t-allclear','d-t-end'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['d-t-exit-wrap','d-t-allclear-wrap'].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('field-missing');});
+  const exitBtn=document.getElementById('drill-log-exit');
+  if(exitBtn){exitBtn.textContent='Log Exit Time';exitBtn.style.background='var(--card)';exitBtn.style.borderColor='var(--border)';exitBtn.style.color='var(--text)';}
+  const clearBtn=document.getElementById('drill-log-allclear');
+  if(clearBtn){clearBtn.textContent='Log All Clear Time';clearBtn.style.background='var(--card)';clearBtn.style.borderColor='var(--border)';clearBtn.style.color='var(--text)';}
   D.drillType=null;
   document.querySelectorAll('#screen-drill .tog').forEach(t=>t.classList.remove('on'));
   ['d-notes','d-ob-notes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
@@ -1508,12 +1535,11 @@ function drillPickType(row, val) {
   showChecks(val==='Evacuation'?'evac':'lock');
 }
 function drillPickRole(row, val) {
-  document.querySelectorAll('#dd-role .role-check').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('#dd-type .role-check').forEach(c=>{if(c.id.startsWith('drc-'))c.classList.remove('on')});
   row.querySelector('.role-check').classList.add('on');
   D.role = val;
   const inp = document.getElementById('drc-other-input');
   if (inp) { inp.style.display = val==='Other' ? '' : 'none'; if(val!=='Other') document.getElementById('d-other-role').value=''; }
-  if(val!=='Other') setTimeout(()=>{ D.role==='OSL'?showDrillStep('start'):showDrillStep('observer'); },120);
 }
 function drillPick(el, field, val) {
   el.closest('.sel-grid').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
@@ -1553,12 +1579,38 @@ function drillStart() {
   }, 500);
   showDrillStep('stop');
 }
-function drillStop() {
-  if(D.elapsedIv){ clearInterval(D.elapsedIv); D.elapsedIv=null; }
+function drillLogTime(kind) {
   const now=new Date();
   const ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('d-t-clear').value=ts;
-  showDrillStep('osl');
+  if (kind==='exit') {
+    document.getElementById('d-t-exit').value=ts;
+    document.getElementById('d-t-exit-wrap').classList.remove('field-missing');
+    const btn=document.getElementById('drill-log-exit');
+    btn.textContent='✓ Exit logged at '+ts;
+    btn.style.background='var(--teal-lt)'; btn.style.borderColor='var(--teal)'; btn.style.color='var(--teal)';
+  } else if (kind==='allclear') {
+    document.getElementById('d-t-allclear').value=ts;
+    document.getElementById('d-t-allclear-wrap').classList.remove('field-missing');
+    const btn=document.getElementById('drill-log-allclear');
+    btn.textContent='✓ All clear logged at '+ts;
+    btn.style.background='var(--teal-lt)'; btn.style.borderColor='var(--teal)'; btn.style.color='var(--teal)';
+  } else if (kind==='end') {
+    document.getElementById('d-t-end').value=ts;
+    if(D.elapsedIv){ clearInterval(D.elapsedIv); D.elapsedIv=null; }
+    stopTimer('drill');
+    // Flag any time not yet logged so it's obvious on the details screen
+    ['d-t-exit-wrap','d-t-allclear-wrap'].forEach(wrapId=>{
+      const wrap=document.getElementById(wrapId);
+      const input=wrap.querySelector('input[type="time"]');
+      wrap.classList.toggle('field-missing', !input.value);
+    });
+    showDrillStep('osl');
+  }
+}
+function drillClearMissingFlag(wrapId) {
+  const wrap=document.getElementById(wrapId);
+  const input=wrap.querySelector('input[type="time"]');
+  if(input.value) wrap.classList.remove('field-missing');
 }
 function drillBack() {
   const prev={type:'school',start:'type',stop:'start',osl:'stop',observer:'type'};
@@ -1588,9 +1640,10 @@ function submitDrill() {
     const lbl=el.closest('.tog-row')?.querySelector('.tog-label')?.textContent;
     if(lbl) flags.push(lbl);
   });
+  const yesCount=document.querySelectorAll('#screen-drill .tog.yes.on').length;
   const observations = {}; document.querySelectorAll('#screen-drill .tog-row').forEach(row=>{ const lbl=row.querySelector('.tog-label')?.textContent; const on=row.querySelector('.tog.on'); if(lbl&&on) observations[lbl]=on.classList.contains('yes')?'yes':'no'; });
   _lastFlow='drill';
-  const payload = { flow:'drill', campus:D.school, role:D.role, drillType:D.drillType||'', weather:D.weather||'', alarmStart:document.getElementById('d-t-alarm')?.value||'', allClear:document.getElementById('d-t-clear')?.value||'', occupants:document.getElementById('d-occupants')?.value||'', durationSecs:timerSecs('drill'), flags:flags, observations, notes:document.getElementById('d-notes')?.value||document.getElementById('d-ob-notes')?.value||'' };
+  const payload = { flow:'drill', campus:D.school, role:D.role, drillType:D.drillType||'', weather:D.weather||'', alarmStart:document.getElementById('d-t-alarm')?.value||'', exitTime:document.getElementById('d-t-exit')?.value||'', allClearTime:document.getElementById('d-t-allclear')?.value||'', endTime:document.getElementById('d-t-end')?.value||'', occupants:document.getElementById('d-occupants')?.value||'', durationSecs:timerSecs('drill'), flags:flags, observations, notes:document.getElementById('d-notes')?.value||document.getElementById('d-ob-notes')?.value||'' };
   _lastPayload = payload;
   postToScript(payload);
   document.getElementById('s-title').textContent='Drill logged';
@@ -1599,8 +1652,13 @@ function submitDrill() {
     <div class="sum-row"><span class="sum-key">Role<\/span><span class="sum-val">${D.role||'—'}<\/span><\/div>`;
   if (D.role==='OSL') {
     html+=`<div class="sum-row"><span class="sum-key">Type<\/span><span class="sum-val">${D.drillType||'—'}<\/span><\/div>
-      <div class="sum-row"><span class="sum-key">Duration<\/span><span class="sum-val">${fmtSecs(timerSecs('drill'))}<\/span><\/div>`;
-    if(flags.length) html+=`<div class="sum-row"><span class="sum-key">Issues flagged<\/span><span class="sum-val flag">${flags.length} item${flags.length>1?'s':''}<\/span><\/div>`;
+      <div class="sum-row"><span class="sum-key">Duration<\/span><span class="sum-val">${fmtSecs(timerSecs('drill'))}<\/span><\/div>
+      <div class="sum-row"><span class="sum-key">Exit time<\/span><span class="sum-val">${payload.exitTime||'—'}<\/span><\/div>
+      <div class="sum-row"><span class="sum-key">All clear time<\/span><span class="sum-val">${payload.allClearTime||'—'}<\/span><\/div>
+      <div class="sum-row"><span class="sum-key">End / re-entry<\/span><span class="sum-val">${payload.endTime||'—'}<\/span><\/div>`;
+    if(flags.length) html+=`<div class="sum-row"><span class="sum-key">Positive observations<\/span><span class="sum-val good">${yesCount}<\/span><\/div>
+      <div class="sum-row"><span class="sum-key">Issues flagged<\/span><span class="sum-val flag">${flags.length} item${flags.length>1?'s':''}<\/span><\/div>`;
+    else if(yesCount) html+=`<div class="sum-row"><span class="sum-key">Positive observations<\/span><span class="sum-val good">${yesCount}<\/span><\/div>`;
   } else if(D.assessment) {
     html+=`<div class="sum-row"><span class="sum-key">Assessment<\/span><span class="sum-val">${D.assessment}<\/span><\/div>`;
   }
@@ -1883,6 +1941,7 @@ function submitWalk() {
   });
   const notes = notesArr.join(' | ');
   _lastFlow = 'walkthrough';
+  if(!balancedCheckGuard(totalChecked,totalFlagged)) return;
   const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:totalChecked, itemsFlagged:totalFlagged, observations, notes };
   _lastPayload = payload;
   postToScript(payload);
@@ -1893,7 +1952,8 @@ function submitWalk() {
   document.getElementById('s-card').innerHTML =
     `<div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${W.school||'\u2014'}<\/span><\/div>`
     +`<div class="sum-row"><span class="sum-key">Role<\/span><span class="sum-val">${W.role||'\u2014'}<\/span><\/div>`
-    +`<div class="sum-row"><span class="sum-key">Spaces assessed<\/span><span class="sum-val">${spaceDone} of ${WALK_SPACES.length}<\/span><\/div>`
+    +`<div class="sum-row"><span class="sum-key">Spaces assessed<\/span><span class="sum-val${spaceDone?' good':''}">${spaceDone} of ${WALK_SPACES.length}<\/span><\/div>`
+    +`<div class="sum-row"><span class="sum-key">Items checked<\/span><span class="sum-val${totalChecked?' good':''}">${totalChecked}<\/span><\/div>`
     +(spaceFlag?`<div class="sum-row"><span class="sum-key">Spaces with flags<\/span><span class="sum-val flag">${spaceFlag}<\/span><\/div>`:'');
   setProgress('walk-prog', 100);
   resetEmailCapture();
@@ -2005,6 +2065,7 @@ function submitArr() {
   const total=document.querySelectorAll('#ad-checklist .check-box').length;
   const checked=document.querySelectorAll('#ad-checklist .check-box.ok').length;
   const issues=document.querySelectorAll('#ad-checklist .check-box.issue').length;
+  if(!balancedCheckGuard(checked,issues)) return;
   _lastFlow='arrival';
   const checklist = serializeChecklist('ad-checklist');
   const payload = { flow:'arrival', campus:A.school, role:A.role, itemsChecked:checked, itemsFlagged:issues, overallRating:A.rating||'', observations:checklist, notes:document.getElementById('arr-notes')?.value||'' };
@@ -2015,7 +2076,7 @@ function submitArr() {
   document.getElementById('s-card').innerHTML=`
     <div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${A.school||'—'}<\/span><\/div>
     <div class="sum-row"><span class="sum-key">Role<\/span><span class="sum-val">${A.role||'—'}<\/span><\/div>
-    <div class="sum-row"><span class="sum-key">Items checked<\/span><span class="sum-val">${checked} of ${total}<\/span><\/div>
+    <div class="sum-row"><span class="sum-key">Items checked<\/span><span class="sum-val${checked?' good':''}">${checked} of ${total}<\/span><\/div>
     ${issues?`<div class="sum-row"><span class="sum-key">Issues flagged<\/span><span class="sum-val flag">${issues} item${issues>1?'s':''}<\/span><\/div>`:''}
     ${A.rating?`<div class="sum-row"><span class="sum-key">Overall rating<\/span><span class="sum-val">${A.rating}<\/span><\/div>`:''}`;
   setProgress('arr-prog',100);
@@ -2277,6 +2338,7 @@ function submitCust() {
   }
 
   _lastFlow = 'custodial';
+  if(!balancedCheckGuard(checked,flagged)) return;
   const payload = {
     flow: 'custodial', campus: C.school, role: C.role,
     checklistType: C.checklistType || 'Weekly',
@@ -2293,7 +2355,8 @@ function submitCust() {
     `<div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${C.school||'—'}<\/span><\/div>`
     +`<div class="sum-row"><span class="sum-key">Walkthrough<\/span><span class="sum-val">${C.checklistType||'—'}<\/span><\/div>`
     +`<div class="sum-row"><span class="sum-key">Role<\/span><span class="sum-val">${C.role||'—'}<\/span><\/div>`
-    +(spaceDone!==null?`<div class="sum-row"><span class="sum-key">Spaces assessed<\/span><span class="sum-val">${spaceDone} of ${CUST_SPACES.length}<\/span><\/div>`:'')
+    +(spaceDone!==null?`<div class="sum-row"><span class="sum-key">Spaces assessed<\/span><span class="sum-val${spaceDone?' good':''}">${spaceDone} of ${CUST_SPACES.length}<\/span><\/div>`:'')
+    +`<div class="sum-row"><span class="sum-key">Items checked<\/span><span class="sum-val${checked?' good':''}">${checked}<\/span><\/div>`
     +(flagged?`<div class="sum-row"><span class="sum-key">Items flagged<\/span><span class="sum-val flag">${flagged}<\/span><\/div>`:'');
   setProgress('cust-prog', 100);
   resetEmailCapture();
@@ -2948,8 +3011,8 @@ function buildBOYChecklist(){
       btnF.textContent='⚠ Flag';
       function upd(){
         const v=RD.checks[name].status;
-        btnC.style.background=v==='checked'?'var(--teal)':'var(--card)';
-        btnC.style.borderColor=v==='checked'?'var(--teal)':'var(--border)';
+        btnC.style.background=v==='checked'?'#16a34a':'var(--card)';
+        btnC.style.borderColor=v==='checked'?'#16a34a':'var(--border)';
         btnC.style.color=v==='checked'?'#fff':'var(--muted)';
         btnF.style.background=v==='flagged'?'var(--red)':'var(--card)';
         btnF.style.borderColor=v==='flagged'?'var(--red)':'var(--border)';
@@ -3067,6 +3130,7 @@ function submitBOYReadiness(){
     .filter(([k,v])=>v.status==='flagged'&&v.note)
     .map(([k,v])=>k+': '+v.note).join(' | ');
   const totalItems=Object.keys(RD.checks).length;
+  if(!balancedCheckGuard(checkedItems.length,flaggedItems.length)) return;
   const payload={
     flow:'boy-readiness',
     checklistType:RD.type,
@@ -3097,6 +3161,10 @@ function submitBOYReadiness(){
   if(RD.type==='SDO'&&RD.section==='Classrooms'&&(RD.deskCount||RD.chairCount)){
     deskRow='<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Desks / chairs<\/span><span style="font-weight:500">'+(RD.deskCount||'—')+' / '+(RD.chairCount||'—')+'<\/span><\/div>';
   }
+  let checkedRow='';
+  if(totalItems>0){
+    checkedRow='<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Items checked<\/span><span style="font-weight:500;color:'+(checkedItems.length?'#16a34a':'inherit')+'">'+checkedItems.length+' of '+totalItems+'<\/span><\/div>';
+  }
   document.getElementById('s-card').innerHTML=
     '<div style="padding:4px 0 8px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#94a3b8">Summary<\/div>'+
     '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Track<\/span><span style="font-weight:500">'+typeLabel+'<\/span><\/div>'+
@@ -3104,6 +3172,7 @@ function submitBOYReadiness(){
     '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Classroom<\/span><span style="font-weight:500">'+RD.classroom+'<\/span><\/div>'+
     deskRow+
     assessmentRow+
+    checkedRow+
     '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span style="color:#64748b">Items flagged<\/span><span style="font-weight:500;color:'+(flaggedItems.length?'var(--red)':'inherit')+'">'+(flaggedItems.length||'None')+'<\/span><\/div>';
   resetEmailCapture();
   setEmailLabel('Want a copy of what you submitted?');
