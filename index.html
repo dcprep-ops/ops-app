@@ -347,21 +347,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <span class="cell-label">Common Space Walkthrough</span>
       </div>
 
-    </div>
-
-    <div class="section-label" style="margin-top:8px">BOY Space Readiness</div>
-    <div class="icon-grid">
-
-      <div class="icon-cell" onclick="openBOY('MDS')">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19h-3a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v11a1 1 0 0 1-1 1"/><path d="M11 16m0 1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1z"/></svg>
-        <span class="cell-label">Schools</span>
-      </div>
-
       <div class="icon-cell" onclick="openBOY('SDO')">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/></svg>
-        <span class="cell-label">Operations</span>
+        <span class="cell-label">BOY Building Readiness</span>
       </div>
-
 
     </div>
 
@@ -852,7 +841,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <button class="back-btn" onclick="readBack()">← Back</button>
       <div id="read-ctx" style="font-size:11px;color:rgba(255,255,255,.6);text-align:right;line-height:1.4"></div>
     </div>
-    <div class="header-flow-title" id="read-flow-title">BOY Space Readiness</div>
+    <div class="header-flow-title" id="read-flow-title">BOY Building Readiness</div>
   </div>
   <div class="scroll-body flow-body">
 
@@ -2699,7 +2688,7 @@ const BOY_DOT_ITEMS = [
 // ── Titles per type ────────────────────────────────────────────────────────────
 const BOY_TITLES = {
   MDS: 'BOY Space Readiness — Schools',
-  SDO: 'BOY Space Readiness — Operations',
+  SDO: 'BOY Building Readiness',
   DOT: 'BOY Space Readiness — Tech',
 };
 
@@ -2710,7 +2699,7 @@ function resetReadiness() {
   document.querySelectorAll('#screen-readiness .flow-step').forEach(s=>s.classList.remove('active'));
   document.getElementById('rd-type').classList.add('active');
   document.getElementById('read-ctx').textContent='';
-  document.getElementById('read-flow-title').textContent='BOY Space Readiness';
+  document.getElementById('read-flow-title').textContent='BOY Building Readiness';
   setProgress('read-prog',5);
   const btn=document.getElementById('read-btn');
   const bar=btn?btn.closest('.submit-bar'):null;
@@ -2757,7 +2746,7 @@ function readPickType(row, val) {
   document.querySelectorAll('#rd-type .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   RD.type=val;
-  document.getElementById('read-flow-title').textContent=BOY_TITLES[val]||'BOY Readiness';
+  document.getElementById('read-flow-title').textContent=BOY_TITLES[val]||'BOY Building Readiness';
   setTimeout(()=>showReadStep('role'),120);
 }
 
@@ -3103,8 +3092,8 @@ function openBOY(type) {
   resetReadiness();
   // Pre-select the type
   RD.type=type;
-  const titleMap={MDS:'BOY Space Readiness — Schools',SDO:'BOY Space Readiness — Operations',DOT:'BOY Space Readiness — Tech'};
-  document.getElementById('read-flow-title').textContent=titleMap[type]||'BOY Space Readiness';
+  const titleMap={MDS:'BOY Space Readiness — Schools',SDO:'BOY Building Readiness',DOT:'BOY Space Readiness — Tech'};
+  document.getElementById('read-flow-title').textContent=titleMap[type]||'BOY Building Readiness';
   // Highlight the right button (in case user goes back to type screen)
   document.querySelectorAll('#rd-type .sel-btn').forEach(b=>b.classList.remove('on'));
   const typeMap={MDS:'rtc-MDS',SDO:'rtc-SDO',DOT:'rtc-DOT'};
