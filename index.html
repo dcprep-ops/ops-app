@@ -168,6 +168,19 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .check-label{font-size:15px;color:var(--text);line-height:1.5;flex:1}
 .check-label.done{color:#16a34a;text-decoration:none}
 
+/* holistic rating */
+.rating-segmented{display:flex;border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+.rating-seg{flex:1;border:none;background:var(--card);padding:12px 4px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.rating-seg+.rating-seg{border-left:0.5px solid var(--border)}
+.rating-seg.on-good{background:var(--teal-lt);color:#0f6e56;font-weight:600}
+.rating-seg.on-upkeep{background:#fff8e6;color:#92400e;font-weight:600}
+.rating-seg.on-flag{background:#fef2f2;color:#991b1b;font-weight:600}
+.lookfor-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:none;border:none;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.lookfor-toggle span{font-size:13px;font-weight:600;color:var(--muted)}
+.lookfor-toggle i{font-size:16px;color:var(--muted);transition:transform 0.12s}
+.lookfor-body{display:none;padding:0 16px 14px;font-size:13px;color:var(--muted);line-height:1.8}
+.lookfor-body.open{display:block}
+
 /* space selector */
 .space-pill{display:inline-flex;align-items:center;padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--light);font-size:13px;font-weight:500;color:var(--text);cursor:pointer;margin:0 6px 6px 0;-webkit-tap-highlight-color:transparent;font-family:inherit}
 .space-pill.on{background:#fff8e6;border-color:var(--amber);color:#92400e}
@@ -567,24 +580,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <!-- STEP: role -->
+    <!-- STEP: name -->
     <div class="flow-step" id="wd-role">
-      <div class="step-title">What's your role?</div>
-      <div class="card">
-        <div class="role-row" onclick="walkPickRole(this,'OSL')"><span class="role-name">OSL</span><span class="role-check" id="wrc-OSL"></span></div>
-        <div class="role-row" onclick="walkPickRole(this,'Principal')"><span class="role-name">Principal</span><span class="role-check" id="wrc-Principal"></span></div>
-        <div class="role-row" onclick="walkPickRole(this,'COO')"><span class="role-name">COO</span><span class="role-check" id="wrc-COO"></span></div>
-        <div class="role-row" onclick="walkPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="wrc-SDO"></span></div>
-        <div class="role-row" onclick="walkPickRole(this,'MD of Schools')"><span class="role-name">MD of Schools</span><span class="role-check" id="wrc-MD"></span></div>
-        <div class="role-row" onclick="walkPickRole(this,'Office Manager')"><span class="role-name">Office Manager</span><span class="role-check" id="wrc-OM"></span></div>
-        <div class="role-row" onclick="walkPickRole(this,'Operations Assistant')"><span class="role-name">Operations Assistant</span><span class="role-check" id="wrc-OA"></span></div>
-        <div class="role-row" onclick="walkPickRole(this,'Other')"><span class="role-name">Other</span><span class="role-check" id="wrc-Other"></span></div>
-        <div class="role-other-wrap" id="wrc-other-input" style="display:none;padding:0 16px 14px;">
-          <input type="text" id="w-other-role" placeholder="Enter your role…" oninput="W.role=this.value||'Other'">
-        </div>
-      </div>
+      <label class="field-label">Your name</label>
+      <input type="text" id="w-name" placeholder="Enter your name" oninput="walkNameInput(this.value)">
       <div class="submit-bar" id="walk-role-next" style="display:none">
-        <button class="submit-btn btn-amber" onclick="showWalkStep('spaces')">Next →</button>
+        <button class="submit-btn btn-amber" onclick="showWalkStep('spaces');renderSpaceSelector()">Next →</button>
       </div>
     </div>
 
@@ -1458,7 +1459,7 @@ function openPreview(key) {
 // DRILL FLOW
 // ══════════════════════════════════════════════
 const D = { school:null, role:null, drillType:null, weather:null, assessment:null, step:'school', elapsedIv:null };
-const W = { school:null, role:null, step:'school', currentSpace:null, spaceState:{} };
+const W = { school:null, name:null, step:'school', currentSpace:null, spaceState:{} };
 
 
 function openFlow(type) {
@@ -1764,9 +1765,15 @@ const WALK_SPACES = [
 
 function walkSpaceState() {
   const s = {};
-  WALK_SPACES.forEach(sp => { s[sp.id] = { status:'not-started', checks:{}, notes:'' }; });
+  WALK_SPACES.forEach(sp => { s[sp.id] = { status:'not-started', notes:'' }; });
   return s;
 }
+const RATING_META = {
+  good:    { label:'Well kept',       badge:'background:var(--teal-lt);border:0.5px solid #99e6d4;color:#0f6e56' },
+  upkeep:  { label:'Needs improvement', badge:'background:#fff8e6;border:0.5px solid #fde68a;color:#92400e' },
+  flag:    { label:'Major issues',    badge:'background:#fef2f2;border:0.5px solid #fecaca;color:#991b1b' },
+  skipped: { label:'Skipped',         badge:'background:var(--bg);border:0.5px solid var(--border);color:var(--muted)' }
+};
 
 function walkPickSchool(el, val) {
   document.querySelectorAll('#wd-school .role-check').forEach(c=>c.classList.remove('on'));
@@ -1776,19 +1783,10 @@ function walkPickSchool(el, val) {
   setTimeout(()=>showWalkStep('role'), 120);
 }
 
-function walkPickRole(el, val) {
-  document.querySelectorAll('#wd-role .role-check').forEach(c=>c.classList.remove('on'));
-  el.querySelector('.role-check').classList.add('on');
-  W.role = val;
-  const inp = document.getElementById('wrc-other-input');
+function walkNameInput(val) {
+  W.name = val.trim();
   const nextBtn = document.getElementById('walk-role-next');
-  if (inp) inp.style.display = val==='Other' ? '' : 'none';
-  if (val !== 'Other') {
-    if (nextBtn) nextBtn.style.display = 'none';
-    setTimeout(()=>{ showWalkStep('spaces'); renderSpaceSelector(); }, 120);
-  } else {
-    if (nextBtn) nextBtn.style.display = '';
-  }
+  if (nextBtn) nextBtn.style.display = W.name ? '' : 'none';
 }
 
 function renderSpaceSelector() {
@@ -1796,7 +1794,7 @@ function renderSpaceSelector() {
   if (!list) return;
   list.innerHTML = '';
   const notStarted = WALK_SPACES.filter(sp => W.spaceState[sp.id].status === 'not-started');
-  const done = WALK_SPACES.filter(sp => ['clear','flagged','skipped'].includes(W.spaceState[sp.id].status));
+  const done = WALK_SPACES.filter(sp => ['good','upkeep','flag','skipped'].includes(W.spaceState[sp.id].status));
   notStarted.forEach(sp => {
     const row = document.createElement('div');
     row.className = 'role-row';
@@ -1808,28 +1806,23 @@ function renderSpaceSelector() {
   });
   if (done.length > 0) {
     const divider = document.createElement('div');
-    divider.style.cssText = 'font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:8px 16px 4px;background:var(--lt)';
+    divider.style.cssText = 'font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:8px 16px 4px;background:var(--light)';
     divider.textContent = 'Completed';
     list.appendChild(divider);
     done.forEach(sp => {
       const st = W.spaceState[sp.id].status;
-      const flagCount = Object.values(W.spaceState[sp.id].checks).filter(v=>v==='flagged').length;
-      const badgeStyle = st==='flagged' ? 'background:#fef2f2;border:0.5px solid #fecaca;color:#991b1b'
-        : st==='skipped' ? 'background:var(--bg);border:0.5px solid var(--border);color:var(--muted)'
-        : 'background:#e1f5ee;border:0.5px solid #99f6e4;color:#085041';
-      const badgeText = st==='flagged' ? `${flagCount} flag${flagCount>1?'s':''}`
-        : st==='skipped' ? 'skipped' : 'all clear';
+      const meta = RATING_META[st];
       const row = document.createElement('div');
       row.className = 'role-row';
       row.style.cssText = 'cursor:pointer;opacity:0.65';
       row.innerHTML = `<span class="role-name" style="flex:1">${sp.label}</span>`
-        + `<span style="font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;${badgeStyle}">${badgeText}</span>`;
+        + `<span style="font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;${meta.badge}">${meta.label.toLowerCase()}</span>`;
       row.onclick = () => openSpace(sp.id);
       list.appendChild(row);
     });
   }
   const doneCount = done.length;
-  const flagCount = WALK_SPACES.filter(sp=>W.spaceState[sp.id].status==='flagged').length;
+  const flagCount = WALK_SPACES.filter(sp=>W.spaceState[sp.id].status==='flag').length;
   document.getElementById('walk-ctx').textContent =
     `${W.school} · ${doneCount} space${doneCount===1?'':'s'} complete, ${WALK_SPACES.length-doneCount} remaining${flagCount?' · '+flagCount+' flagged':''}`;
   setProgress('walk-prog', 25 + Math.round(doneCount/WALK_SPACES.length*65));
@@ -1841,59 +1834,71 @@ function openSpace(spaceId) {
   const state = W.spaceState[spaceId];
   const inner = document.getElementById('walk-space-checklist-inner');
   inner.innerHTML = '';
+
   const hdr = document.createElement('div');
-  hdr.style.cssText = 'margin-bottom:12px';
-  hdr.innerHTML = `<div class="step-title" style="margin-bottom:4px">${sp.label}</div>`
-    + `<div style="font-size:12px;color:var(--muted)">${sp.items.length} items</div>`;
+  hdr.style.cssText = 'margin-bottom:16px';
+  hdr.innerHTML = `<div class="step-title" style="margin-bottom:4px">${sp.label}</div>`;
   inner.appendChild(hdr);
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.style.cssText = 'padding:0;overflow:hidden';
-  sp.items.forEach(item => {
-    const fullKey = sp.label + ' — ' + item;
-    const stored = state.checks[fullKey] || 'none';
-    const curCls = stored === 'checked' ? 'ok' : stored === 'flagged' ? 'issue' : '';
-    const row = document.createElement('div');
-    row.className = 'check-item';
-    row.setAttribute('data-item', fullKey);
-    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:14px 14px;border-bottom:0.5px solid var(--border)';
-    row.innerHTML = `<div class="check-box${curCls?' '+curCls:''}"></div>`
-      + `<span class="check-label${curCls==='ok'?' done':''}" style="flex:1;font-size:15px;line-height:1.5">${item}</span>`;
-    row.onclick = function() { checkTap(this); updateSpaceProgress(spaceId); };
-    card.appendChild(row);
-  });
-  const hasNotes = !!(state.notes);
+
   const notesWrap = document.createElement('div');
-  notesWrap.style.cssText = 'padding:10px 14px';
-  notesWrap.innerHTML = `<button class="notes-toggle" onclick="toggleNotes(this)">${hasNotes ? '✎ Note added' : '+ Add note'}</button>`
-    + `<div class="notes-body${hasNotes ? ' open' : ''}"><textarea placeholder="Notes for ${sp.label.toLowerCase()}\u2026" onchange="W.spaceState['${spaceId}'].notes=this.value">${state.notes||''}</textarea></div>`;
-  card.appendChild(notesWrap);
-  inner.appendChild(card);
+  notesWrap.style.marginBottom = '16px';
+  notesWrap.innerHTML = `<div class="field-label" style="margin-bottom:6px">Notes</div>`
+    + `<div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5">What's going well in this space? What's keeping it from being more useful?</div>`
+    + `<textarea rows="4" onchange="W.spaceState['${spaceId}'].notes=this.value">${state.notes||''}</textarea>`;
+  inner.appendChild(notesWrap);
+
+  const ratingLabel = document.createElement('div');
+  ratingLabel.style.cssText = 'font-size:13px;color:var(--muted);margin-bottom:8px';
+  ratingLabel.textContent = "How's this space?";
+  inner.appendChild(ratingLabel);
+
+  const ratingRow = document.createElement('div');
+  ratingRow.className = 'rating-segmented';
+  ratingRow.style.marginBottom = '16px';
+  ['good','upkeep','flag'].forEach(val => {
+    const btn = document.createElement('button');
+    btn.className = 'rating-seg' + (state.status===val ? ' on-'+val : '');
+    btn.textContent = RATING_META[val].label;
+    btn.onclick = () => {
+      state.status = val;
+      ratingRow.querySelectorAll('.rating-seg').forEach(b => b.className = 'rating-seg');
+      btn.className = 'rating-seg on-'+val;
+    };
+    ratingRow.appendChild(btn);
+  });
+  inner.appendChild(ratingRow);
+
+  const lookforWrap = document.createElement('div');
+  lookforWrap.style.marginBottom = '16px';
+  const lookforBody = document.createElement('ol');
+  lookforBody.className = 'lookfor-body';
+  lookforBody.style.cssText = 'padding-left:18px';
+  lookforBody.innerHTML = sp.items.map(item => `<li style="margin-bottom:6px">${item}</li>`).join('');
+  const lookforToggle = document.createElement('button');
+  lookforToggle.className = 'lookfor-toggle';
+  lookforToggle.style.cssText = 'border:none;background:none;padding-left:0;padding-right:0';
+  lookforToggle.innerHTML = `<span>Look fors</span><i class="ti ti-chevron-down"></i>`;
+  lookforToggle.onclick = () => {
+    const open = lookforBody.classList.toggle('open');
+    lookforToggle.querySelector('i').style.transform = open ? 'rotate(180deg)' : '';
+  };
+  lookforWrap.appendChild(lookforToggle);
+  lookforWrap.appendChild(lookforBody);
+  inner.appendChild(lookforWrap);
+
   const footer = document.createElement('div');
-  footer.style.cssText = 'margin-top:14px';
+  footer.style.cssText = 'margin-top:16px';
   footer.innerHTML = `<button class="submit-btn btn-teal" style="width:100%" onclick="doneWithSpace('${spaceId}')">Done with this space →</button>`
     + `<button class="submit-btn btn-ghost" style="width:100%;margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--muted)" onclick="skipSpace('${spaceId}')">Skip this space</button>`;
   inner.appendChild(footer);
+
   showWalkStep('space-checklist');
   document.getElementById('walk-submit-bar').style.display = 'none';
 }
 
-function updateSpaceProgress(spaceId) {
-  const checks = {};
-  document.querySelectorAll('#walk-space-checklist-inner .check-item').forEach(row => {
-    const item = row.getAttribute('data-item');
-    const box = row.querySelector('.check-box');
-    checks[item] = box.classList.contains('ok') ? 'checked' : box.classList.contains('issue') ? 'flagged' : 'no input';
-  });
-  W.spaceState[spaceId].checks = checks;
-}
-
 function doneWithSpace(spaceId) {
-  updateSpaceProgress(spaceId);
   const notesEl = document.querySelector('#walk-space-checklist-inner textarea');
   if (notesEl) W.spaceState[spaceId].notes = notesEl.value;
-  const hasFlagged = Object.values(W.spaceState[spaceId].checks).some(v => v==='flagged');
-  W.spaceState[spaceId].status = hasFlagged ? 'flagged' : 'clear';
   showWalkStep('spaces');
   renderSpaceSelector();
 }
@@ -1914,36 +1919,33 @@ function walkSkipRemaining() {
 function walkFinish() { submitWalk(); }
 
 function submitWalk() {
-  const observations = [];
-  let totalChecked = 0, totalFlagged = 0;
+  const ratings = {};
   const notesArr = [];
+  let spacesGood=0, spacesUpkeep=0, spacesFlagged=0, spacesSkipped=0;
   WALK_SPACES.forEach(sp => {
     const state = W.spaceState[sp.id];
-    sp.items.forEach(item => {
-      const fullKey = sp.label + ' — ' + item;
-      const val = state.checks[fullKey] || (state.status==='skipped' ? 'skipped' : 'no input');
-      observations.push(val);
-      if (val==='checked') totalChecked++;
-      if (val==='flagged') totalFlagged++;
-    });
+    ratings[sp.label] = state.status;
+    if (state.status==='good') spacesGood++;
+    if (state.status==='upkeep') spacesUpkeep++;
+    if (state.status==='flag') spacesFlagged++;
+    if (state.status==='skipped') spacesSkipped++;
     if (state.notes) notesArr.push(`${sp.label}: ${state.notes}`);
   });
   const notes = notesArr.join(' | ');
+  const spacesAssessed = spacesGood + spacesUpkeep + spacesFlagged;
   _lastFlow = 'walkthrough';
-  if(!balancedCheckGuard(totalChecked,totalFlagged)) return;
-  const payload = { flow:'walkthrough', campus:W.school, role:W.role, itemsChecked:totalChecked, itemsFlagged:totalFlagged, observations, notes };
+  if(!balancedCheckGuard(spacesGood, spacesFlagged)) return;
+  const payload = { flow:'walkthrough', campus:W.school, name:W.name, spacesAssessed, spacesGood, spacesUpkeep, spacesFlagged, spacesSkipped, ratings, notes };
   _lastPayload = payload;
   postToScript(payload);
   document.getElementById('s-title').textContent = 'Submitted';
   document.getElementById('s-sub').textContent = 'Your observations have been saved. We\'ll incorporate this into the walkthrough report along with the other observations from today.';
-  const spaceDone = WALK_SPACES.filter(sp=>['clear','flagged'].includes(W.spaceState[sp.id].status)).length;
-  const spaceFlag = WALK_SPACES.filter(sp=>W.spaceState[sp.id].status==='flagged').length;
   document.getElementById('s-card').innerHTML =
     `<div class="sum-row"><span class="sum-key">Campus<\/span><span class="sum-val">${W.school||'\u2014'}<\/span><\/div>`
-    +`<div class="sum-row"><span class="sum-key">Role<\/span><span class="sum-val">${W.role||'\u2014'}<\/span><\/div>`
-    +`<div class="sum-row"><span class="sum-key">Spaces assessed<\/span><span class="sum-val${spaceDone?' good':''}">${spaceDone} of ${WALK_SPACES.length}<\/span><\/div>`
-    +`<div class="sum-row"><span class="sum-key">Items checked<\/span><span class="sum-val${totalChecked?' good':''}">${totalChecked}<\/span><\/div>`
-    +(spaceFlag?`<div class="sum-row"><span class="sum-key">Spaces with flags<\/span><span class="sum-val flag">${spaceFlag}<\/span><\/div>`:'');
+    +`<div class="sum-row"><span class="sum-key">Name<\/span><span class="sum-val">${W.name||'\u2014'}<\/span><\/div>`
+    +`<div class="sum-row"><span class="sum-key">Spaces assessed<\/span><span class="sum-val${spacesAssessed?' good':''}">${spacesAssessed} of ${WALK_SPACES.length}<\/span><\/div>`
+    +`<div class="sum-row"><span class="sum-key">Well kept<\/span><span class="sum-val good">${spacesGood}<\/span><\/div>`
+    +(spacesFlagged?`<div class="sum-row"><span class="sum-key">Flagged<\/span><span class="sum-val flag">${spacesFlagged}<\/span><\/div>`:'');
   setProgress('walk-prog', 100);
   resetEmailCapture();
   setEmailLabel('Enter your email and we\'ll send you the consolidated report:');
@@ -1971,14 +1973,13 @@ function walkBack() {
 function walkNext() {}
 
 function resetWalk() {
-  W.school = ''; W.role = ''; W.step = 'school';
+  W.school = ''; W.name = ''; W.step = 'school';
   W.spaceState = walkSpaceState();
   W.currentSpace = null;
   document.querySelectorAll('#wd-school .role-check').forEach(c=>c.classList.remove('on'));
-  document.querySelectorAll('#wd-role .role-check').forEach(c=>c.classList.remove('on'));
+  const nameInp = document.getElementById('w-name');
+  if (nameInp) nameInp.value = '';
   document.getElementById('walk-ctx').textContent = '';
-  const inp = document.getElementById('wrc-other-input');
-  if (inp) inp.style.display = 'none';
   const nb = document.getElementById('walk-role-next');
   if (nb) nb.style.display = 'none';
   setProgress('walk-prog', 0);
