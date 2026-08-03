@@ -1612,12 +1612,14 @@ function drillBack() {
 }
 
 let _submitting = false;
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec';
+
 function postToScript(payload) {
   if (_submitting) return;
   _submitting = true;
   setTimeout(function() { _submitting = false; }, 5000);
   try {
-    fetch('https://script.google.com/macros/s/AKfycbwPbhFWpzKX6S6seb1c0QKplVM22LjZG6bkGMBnTNopry6dDr5YGtffKKR3EsFQ77n5BQ/exec', {
+    fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
@@ -2437,6 +2439,61 @@ const CLASSROOM_MAP = {
 // All non-n/a spaces from the "All Spaces" tab (Classrooms, Common Spaces,
 // Offices & Conference Rooms, Outdoor) — excludes the Technology section,
 // which is infrastructure rather than a physical space to walk through.
+const SCHOOL_CODE_MAP = {
+  'Anacostia Elementary':'AEC', 'Anacostia Middle':'AMC',
+  'Benning Elementary':'BEC',   'Benning Middle':'BMC',
+  'Edgewood Elementary':'EEC',  'Edgewood Middle':'EMC',
+};
+
+// ── Space list: fetch + cache ────────────────────────────────────────────────
+// Live source of truth is the same getBOYReadiness endpoint the dashboards use.
+// Memory cache makes repeat visits instant within a session; localStorage
+// cache survives reloads and covers spotty-WiFi situations. OPS_SPACES below
+// (the old hardcoded snapshot) is the last-resort fallback if there's no
+// network AND no prior cache at all — better than a blank list.
+const spaceListCache = {};
+
+function getCachedSpaceList(school) {
+  if (spaceListCache[school]) return spaceListCache[school];
+  try {
+    const raw = localStorage.getItem('spaceList_' + school);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      spaceListCache[school] = parsed;
+      return parsed;
+    }
+  } catch(e) {}
+  return null;
+}
+
+function setCachedSpaceList(school, data) {
+  spaceListCache[school] = data;
+  try { localStorage.setItem('spaceList_' + school, JSON.stringify(data)); } catch(e) {}
+}
+
+// Fetches live room data for a school and reshapes it into the same
+// [{section, rooms:[{name,room}]}] shape buildSpaceList already expects.
+// Technology is excluded — infrastructure items aren't physical spaces
+// someone walks through, same as the original hardcoded list.
+async function fetchSpaceListLive(school) {
+  const code = SCHOOL_CODE_MAP[school];
+  if (!code) return null;
+  const res = await fetch(SCRIPT_URL + '?view=boy&campus=' + code);
+  const data = await res.json();
+  const SECTION_ORDER = ['Classrooms','Shared Student Spaces','Restrooms','Common Spaces','Offices','Staff Common Spaces'];
+  const bySection = {};
+  (data.rooms || []).forEach(r => {
+    if (!r.space || r.section === 'Technology') return;
+    const sec = r.section || 'Other';
+    if (!bySection[sec]) bySection[sec] = [];
+    bySection[sec].push({ name: r.space, room: r.roomNumber || null });
+  });
+  const ordered = [...SECTION_ORDER, ...Object.keys(bySection).filter(s => !SECTION_ORDER.includes(s))];
+  return ordered.filter(s => bySection[s] && bySection[s].length).map(s => ({ section: s, rooms: bySection[s] }));
+}
+
+// Offline / last-resort fallback snapshot — kept in sync manually until this
+// entirely replaces the need for a hardcoded list.
 const OPS_SPACES = {
   'Anacostia Elementary': [
     {section:'Classrooms', rooms:[{name:'American',room:"185"}, {name:'Gallaudet',room:"183"}, {name:'George Mason',room:"181"}, {name:'BostonU',room:"171"}, {name:'Johns Hopkins',room:"173"}, {name:'Syracuse',room:"175"}, {name:'Williams',room:"177"}, {name:'Northwestern',room:"268"}, {name:'UChicago',room:"271"}, {name:'UMichigan',room:"269"}, {name:'Gonzaga',room:"267"}, {name:'UOregon',room:"266"}, {name:'Pepperdine',room:"265"}, {name:'Morehouse',room:"264"}, {name:'Spelman',room:"261"}, {name:'Xavier',room:"259"}, {name:'Cornell',room:"258"}, {name:'Dartmouth',room:"251"}, {name:'UPenn',room:"253"}]},
@@ -2796,9 +2853,8 @@ function readPickSchool(row,val){
 // Builds the space/classroom list for a given school into #rd-classroom-list.
 // Reusable both from the school-picker click (readPickSchool) and when
 // jumping straight back to the full list after submitting (assessAnotherSpace).
-function buildSpaceList(val){
+async function buildSpaceList(val){
   const list=document.getElementById('rd-classroom-list');
-  list.innerHTML='';
   const stepTitle=document.querySelector('#rd-classroom .step-title');
 
   function appendGroup(groupLabel, rooms, onPick){
@@ -2823,16 +2879,10 @@ function buildSpaceList(val){
     list.appendChild(groupCard);
   }
 
-  if (RD.type === 'SDO') {
-    // Operations: all non-n/a spaces, grouped by section
-    if (stepTitle) stepTitle.textContent = 'Which space?';
-    const schoolData = OPS_SPACES[val] || [];
-    schoolData.forEach(({section,rooms})=>{
-      appendGroup(section, rooms, (row2,name,roomNum)=>readPickClassroom(row2,name,section,roomNum));
-    });
-  } else {
-    // Schools / Tech: classrooms only, grouped by grade band
+  if (RD.type !== 'SDO') {
+    // Schools / Tech: classrooms only, grouped by grade band — unchanged, still hardcoded
     if (stepTitle) stepTitle.textContent = 'Which classroom?';
+    list.innerHTML='';
     const schoolData=CLASSROOM_MAP[val]||[];
     schoolData.forEach(({band,rooms})=>{
       const ckBand=band==='EC'?'EC':
@@ -2840,7 +2890,38 @@ function buildSpaceList(val){
                    band==='2ND GRADE'||band==='3RD GRADE'?'2\/3':'Middle';
       appendGroup(band, rooms, (row2,room)=>readPickClassroom(row2,room,ckBand));
     });
+    return;
   }
+
+  // Operations: all non-Technology spaces, grouped by section, fetched live
+  if (stepTitle) stepTitle.textContent = 'Which space?';
+
+  const cached = getCachedSpaceList(val);
+  if (cached && cached.length) {
+    // Show what we have immediately; refresh quietly in the background for next time
+    list.innerHTML='';
+    cached.forEach(({section,rooms})=>{
+      appendGroup(section, rooms, (row2,name,roomNum)=>readPickClassroom(row2,name,section,roomNum));
+    });
+    fetchSpaceListLive(val).then(fresh => {
+      if (fresh && fresh.length) setCachedSpaceList(val, fresh);
+    }).catch(()=>{});
+    return;
+  }
+
+  // No cache yet — this school hasn't been loaded this session or ever on this device
+  list.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px;font-size:13px">Loading spaces…</div>';
+  let schoolData = null;
+  try {
+    schoolData = await fetchSpaceListLive(val);
+    if (schoolData && schoolData.length) setCachedSpaceList(val, schoolData);
+  } catch(e) { schoolData = null; }
+  if (!schoolData || !schoolData.length) schoolData = OPS_SPACES[val] || [];
+
+  list.innerHTML='';
+  schoolData.forEach(({section,rooms})=>{
+    appendGroup(section, rooms, (row2,name,roomNum)=>readPickClassroom(row2,name,section,roomNum));
+  });
 }
 
 // ── Space/classroom selection ───────────────────────────────────────────────────
