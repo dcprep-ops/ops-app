@@ -249,7 +249,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .sum-val{font-size:13px;font-weight:600;color:var(--text);text-align:right;max-width:58%}
 .sum-val.flag{color:var(--red)}
 .sum-val.good{color:#16a34a}
-.again-btn{background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:12px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.again-btn{width:100%;background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:12px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
 .email-capture{width:100%;max-width:340px;margin-bottom:12px;text-align:left}
 .email-capture-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block}
 .email-capture-row{display:flex;gap:8px}
@@ -1168,7 +1168,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
         <div class="email-sent" id="s-email-sent">✓ Sent — check your inbox</div>
       </div>
-      <button class="again-btn" onclick="goHome()">← Return to Ops App Home Screen</button>
+      <div id="s-extra-actions"></div>
+      <button class="again-btn" id="s-home-btn" onclick="goHome()">Return to Ops App Home Screen</button>
     </div>
   </div>
 </div>
@@ -1309,6 +1310,8 @@ function resetEmailCapture() {
   const inp = document.getElementById('s-email');
   const btn = document.querySelector('.email-send-btn');
   const sent = document.getElementById('s-email-sent');
+  const extra = document.getElementById('s-extra-actions');
+  if (extra) extra.innerHTML='';
   if (inp) { inp.value=''; inp.style.display=''; }
   if (btn) { btn.textContent='Send'; btn.disabled=false; btn.style.display=''; }
   if (sent) sent.style.display='none';
@@ -2436,40 +2439,52 @@ const CLASSROOM_MAP = {
 // which is infrastructure rather than a physical space to walk through.
 const OPS_SPACES = {
   'Anacostia Elementary': [
-    {section:'Classrooms', rooms:['American', 'Gallaudet', 'George Mason', 'Johns Hopkins', 'Syracuse', 'Williams', 'Northwestern', 'UChicago', 'UMichigan', 'Gonzaga', 'UOregon', 'Pepperdine', 'Morehouse', 'Spelman', 'Xavier', 'Cornell', 'Dartmouth', 'UPenn']},
-    {section:'Common Spaces', rooms:['Lobby / front desk', 'Cafeteria', 'Gymnasium', 'Library', 'Music room', 'Art room', 'Science lab', 'Nurse suite', 'Big Chair', 'Break room', 'Kitchen', 'Staff restroom', 'Student restroom A (K/1)', 'Student restroom B (2/3)', 'Hallways', 'Stairwells']},
-    {section:'Offices & Conference Rooms', rooms:['Principal', 'OSL', 'K/1 Asst. Principal', '2/3 Asst. Principal', 'EC Asst. Principal', 'SpEd coordinator', 'Academic specialist', 'Behavioral health office', 'Behavioral specialist', 'Student support coord.', 'Licensed clinician', 'CAP', 'Frederick Douglass conf. rm', 'Teacher workroom', 'Faculty lounge', 'Intervention room 178', 'Intervention room 184', 'Intervention room 263', 'Intervention room 273', 'Intervention room 280', 'Champions']},
-    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+    {section:'Classrooms', rooms:[{name:'American',room:"185"}, {name:'Gallaudet',room:"183"}, {name:'George Mason',room:"181"}, {name:'BostonU',room:"171"}, {name:'Johns Hopkins',room:"173"}, {name:'Syracuse',room:"175"}, {name:'Williams',room:"177"}, {name:'Northwestern',room:"268"}, {name:'UChicago',room:"271"}, {name:'UMichigan',room:"269"}, {name:'Gonzaga',room:"267"}, {name:'UOregon',room:"266"}, {name:'Pepperdine',room:"265"}, {name:'Morehouse',room:"264"}, {name:'Spelman',room:"261"}, {name:'Xavier',room:"259"}, {name:'Cornell',room:"258"}, {name:'Dartmouth',room:"251"}, {name:'UPenn',room:"253"}]},
+    {section:'Shared Student Spaces', rooms:[{name:'Lobby',room:null}, {name:'Cafeteria',room:"191"}, {name:'Kitchen',room:"192"}, {name:'Gymnasium',room:"190"}, {name:'Library',room:"281"}, {name:'Music room',room:"188"}, {name:'Art room',room:"260"}, {name:'Science lab',room:"272"}, {name:'Nurse suite',room:"150"}, {name:'Intervention room',room:"178"}, {name:'Intervention room',room:"184"}, {name:'Intervention room',room:"263"}, {name:'Intervention room',room:"274"}, {name:'Intervention room',room:"275"}]},
+    {section:'Restrooms', rooms:[{name:'Boys restroom ',room:"254"}, {name:'Girls restroom ',room:"255"}, {name:'All-gender restroom',room:"163"}, {name:'All-gender restroom',room:"157"}, {name:'All-gender restroom',room:"152"}, {name:'All-gender restroom',room:"187"}, {name:'All-gender restroom',room:"278"}, {name:'All-gender restroom',room:"256"}]},
+    {section:'Common Spaces', rooms:[{name:'Main entrance / drop-off zone',room:null}, {name:'Playground - early childhood',room:null}, {name:'Playground - rest',room:null}, {name:'Hallways',room:null}, {name:'Stairwells',room:null}]},
+    {section:'Offices', rooms:[{name:'Principal',room:"158"}, {name:'OSL',room:"155"}, {name:'K/1 Asst. Principal',room:"280"}, {name:'2/3 Asst. Principal',room:"257"}, {name:'EC Asst. Principal',room:"179"}, {name:'CAP',room:"276"}, {name:'Operations',room:"156"}, {name:'Speech Language Pathologist',room:"178"}, {name:'Behavior Specialist',room:"262"}, {name:'Behavior Specialist',room:"167"}, {name:'SPED Coordinator',room:"180"}, {name:'Academic Specialist',room:"263"}, {name:'Student Support Coordinator',room:"273"}, {name:'Licensed Clinician',room:"279"}, {name:'Champions',room:"166"}]},
+    {section:'Staff Common Spaces', rooms:[{name:'Front desk',room:"151"}, {name:'Big Chair conference room',room:"161"}, {name:'Frederick Douglass conference room',room:"252"}, {name:'Teacher workroom',room:"168"}, {name:'Staff room',room:"174"}, {name:'Staff room',room:"277"}, {name:'Faculty lounge',room:"165"}, {name:'School store',room:"162"}, {name:'Lactation',room:"164"}, {name:'Uniform storage',room:"160"}, {name:'Supplies',room:"159"}]},
   ],
   'Anacostia Middle': [
-    {section:'Classrooms', rooms:['GWU', 'Georgetown', 'Howard', 'UMD', 'UNC', 'UVA', 'FAMU', 'Hampton', 'Tuskegee', 'Princeton', 'Stanford', 'Harvard', 'Yale']},
-    {section:'Common Spaces', rooms:['Front desk', 'Cafeteria', 'Gymnasium / assembly hall', 'Library', 'Art room', 'SA science lab', 'JA science lab', 'Nurse suite', 'Staff restroom', 'Student restroom A', 'Student restroom B', 'Hallways', 'Kitchen']},
-    {section:'Offices & Conference Rooms', rooms:['Principal office', 'Acad. Asst. Principal A', 'Acad. Asst. Principal B', 'SpEd coordinator', 'Academic specialist', 'Behavioral specialist', 'Student support coach', 'HS placement coordinator', 'Licensed clinician / related svc.', 'Counselor office', 'CAP', 'Conf. room 115', 'Conf. room 244', 'Leader workroom', 'Teacher workroom', '8th grade intervention room', '6th grade intervention room', 'Intervention room 104', 'Intervention room 219', 'Music room', 'Technology', 'Engineer']},
-    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+    {section:'Classrooms', rooms:[{name:'GWU',room:"224"}, {name:'Georgetown',room:"229"}, {name:'Howard',room:"231"}, {name:'UMD',room:"218"}, {name:'UNC',room:"222"}, {name:'UVA',room:"223"}, {name:'FAMU',room:"236"}, {name:'Hampton',room:"233"}, {name:'Tuskegee',room:"238"}, {name:'Princeton',room:"106"}, {name:'Stanford',room:"105"}, {name:'Harvard',room:"108"}, {name:'Yale',room:"109"}]},
+    {section:'Shared Student Spaces', rooms:[{name:'Lobby',room:null}, {name:'Cafeteria',room:"208"}, {name:'Kitchen',room:"213"}, {name:'Gymnasium',room:"103"}, {name:'Library',room:"230"}, {name:'SA science lab',room:"116"}, {name:'JA science lab',room:"237"}, {name:'Science breakout room',room:"235"}, {name:'Fort Stanton breakout room',room:"235"}, {name:'8th grade intervention room',room:"107"}, {name:'6th grade intervention room',room:"235"}, {name:'Intervention room',room:"104"}, {name:'Intervention room',room:"219"}, {name:'Art room',room:"201"}, {name:'Music room',room:"243"}, {name:'Drumming',room:"245"}, {name:'Nurse suite',room:"150"}]},
+    {section:'Restrooms', rooms:[{name:'Boys restroom ',room:"101"}, {name:'Girls restroom ',room:"102"}, {name:'Boys restroom ',room:"226"}, {name:'Girls restroom ',room:"227"}, {name:'Boys restroom ',room:"241"}, {name:'Girls restroom ',room:"242"}, {name:'All-gender restroom',room:"120"}, {name:'All-gender restroom',room:"151"}, {name:'All-gender restroom',room:"220A"}, {name:'All-gender restroom',room:"239"}]},
+    {section:'Common Spaces', rooms:[{name:'Main entrance / drop-off zone',room:null}, {name:'Interior courtyard',room:"207"}, {name:'Hallways',room:null}, {name:'Playground / blacktop',room:null}]},
+    {section:'Offices', rooms:[{name:'Principal',room:"113"}, {name:'OSL',room:"112"}, {name:'Acad. Asst. Principal',room:"215"}, {name:'Acad. Asst. Principal',room:"228"}, {name:'CAP',room:"118"}, {name:'SPED Coordinator',room:"212"}, {name:'Academic Specialist',room:"117"}, {name:'Behavioral Specialist',room:"204"}, {name:'Student Support Coach',room:"214"}, {name:'HS Placement Coordinator',room:"211"}, {name:'Licensed Clinician / Related Svc.',room:"203"}, {name:'Counselor',room:"217"}, {name:'Technology',room:"13"}, {name:'Engineer',room:"14"}]},
+    {section:'Staff Common Spaces', rooms:[{name:'Front desk',room:"110"}, {name:'Staff lounge',room:"206"}, {name:'Lounge',room:"209"}, {name:'Lounge',room:"234"}, {name:'Conference room',room:"115"}, {name:'Conference room',room:"244"}, {name:'Leader workroom',room:"216"}, {name:'Teacher workroom',room:"243"}, {name:'Lactation',room:"246"}, {name:'School store',room:"119"}, {name:'Supply closet',room:"111"}]},
   ],
   'Benning Elementary': [
-    {section:'Classrooms', rooms:['American', 'Gallaudet', 'George Mason', 'Johns Hopkins', 'Syracuse', 'Williams', 'Northwestern', 'UChicago', 'UMichigan', 'Gonzaga', 'UOregon', 'Pepperdine', 'Morehouse', 'Spelman', 'Xavier', 'Cornell', 'Dartmouth', 'UPenn']},
-    {section:'Common Spaces', rooms:['Front desk A', 'Front desk B', 'Cafeteria (Prepeteria)', 'Kitchen', 'Gymnasium', 'Library', 'Art room', 'Music room', 'Science lab', 'Nurse suite', 'Staff restroom', 'Student restroom A (1st grade)', 'Student restroom B (1st grade)', 'Student restroom C (2nd grade)', 'Student restroom D (2nd grade)', 'Student restroom E (3rd grade)', 'Student restroom F (3rd grade)', 'Hallways']},
-    {section:'Offices & Conference Rooms', rooms:['Principal office', 'OSL office', 'Leader office A', 'Leader office B', 'Leader office C', 'Leader office D (CAP)', 'Leader office E (2/3 AP)', 'SPED coordinator', 'EC AP office', 'K/1 AP office', 'SS coach / behavior specialist', 'Licensed clinician', 'Large conf. room', 'Small conf. room', 'HO workspace', 'Staff lounge / copy room', 'ELA workroom', 'Math workroom', 'EC resource', 'Small group room A', 'Small group room B', 'Small group room C', 'Small group room D', 'EC resource / SPED pullout', 'Lactation room', 'Aftercare room', 'Tech room', 'Facilities']},
-    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+    {section:'Classrooms', rooms:[{name:'American',room:"139"}, {name:'Gallaudet',room:"135"}, {name:'George Mason',room:"133"}, {name:'Johns Hopkins',room:"161"}, {name:'Syracuse',room:"148"}, {name:'Williams',room:"159"}, {name:'Northwestern',room:"218"}, {name:'UChicago',room:"216"}, {name:'UMichigan',room:"230"}, {name:'Gonzaga',room:"249"}, {name:'UOregon',room:"251"}, {name:'Pepperdine',room:"247"}, {name:'Morehouse',room:"223"}, {name:'Spelman',room:"225"}, {name:'Xavier',room:"221"}, {name:'Cornell',room:"208"}, {name:'Dartmouth',room:"207"}, {name:'UPenn',room:"209"}]},
+    {section:'Shared Student Spaces', rooms:[{name:'Lobby',room:"101"}, {name:'Cafeteria (Prepeteria)',room:"116"}, {name:'Kitchen',room:"117"}, {name:'Gymnasium',room:"260"}, {name:'Library',room:"234"}, {name:'Art room',room:"150"}, {name:'Music room',room:"164"}, {name:'Science lab',room:"163"}, {name:'Small group #1',room:"242"}, {name:'OT / Speech room',room:"154"}, {name:'Nurse suite',room:null}]},
+    {section:'Restrooms', rooms:[{name:'Staff restroom',room:"between 107 and 111"}, {name:'Girls restroom',room:"lobby"}, {name:'Boys restroom',room:"lobby"}, {name:'All-gender restroom',room:"lobby"}, {name:'Girls restroom',room:"next to Williams"}, {name:'Boys restroom',room:"next to Williams"}, {name:'All-gender restroom',room:"next to Williams"}, {name:'Girls restroom',room:"next to American"}, {name:'Boys restroom',room:"next to American"}, {name:'All-gender restroom',room:"next to American"}, {name:'Girls restroom',room:"next to Spelman"}, {name:'Boys restroom',room:"next to Spelman"}, {name:'All-gender restroom',room:"next to Spelman"}, {name:'Girls restroom',room:"next to Pepperdine"}, {name:'Boys restroom',room:"next to Pepperdine"}, {name:'All-gender restroom',room:"next to Pepperdine"}, {name:'Girls restroom',room:"across from Cornell"}, {name:'Boys restroom',room:"across from 205"}, {name:'All-gender restroom',room:"across from UChicago"}]},
+    {section:'Common Spaces', rooms:[{name:'Main entrance / drop-off zone',room:null}, {name:'Field',room:null}, {name:'Blacktop',room:null}, {name:'"Orange" playground',room:null}, {name:'"Blue" playground',room:null}, {name:'Hallways',room:null}]},
+    {section:'Offices', rooms:[{name:'Principal',room:"240"}, {name:'Assistant Principal - EC',room:"140"}, {name:'Assistant Principal - K/1',room:"226"}, {name:'Assistant Principal - 2/3',room:"246"}, {name:'Community AP',room:"224"}, {name:'SPED Coordinator',room:"153"}, {name:'OSL',room:"117"}, {name:'Licensed Clinician',room:"119"}, {name:'Licensed Clinician',room:"121"}, {name:'Academic Specialist',room:"144"}, {name:'SS coach / behavior specialist',room:"244"}, {name:'Champions',room:"129"}, {name:'Data / Tech',room:"127"}, {name:'Tech room',room:"132"}, {name:'Facilities',room:"5"}]},
+    {section:'Staff Common Spaces', rooms:[{name:'Front desk',room:"100"}, {name:'Large conference room',room:"126"}, {name:'Small conference room',room:"130"}, {name:'Parent resource room',room:"113"}, {name:'Home office workspace',room:"127"}, {name:'Copy room',room:"103"}, {name:'Staff lounge / Sunroom',room:"217"}, {name:'ELA workroom',room:"120"}, {name:'Math workroom',room:"253"}, {name:'Early child resource room',room:"136"}, {name:'Small group room #2',room:"232"}, {name:'Small group room',room:"205"}, {name:'Small group room',room:"206"}, {name:'EC resource / SPED pullout',room:"134"}, {name:'Lactation',room:"111"}, {name:'Package room',room:"107"}, {name:'Storage',room:"204"}, {name:'Storage',room:"253"}, {name:'Storage',room:"219"}, {name:'Storage',room:"124"}]},
   ],
   'Benning Middle': [
-    {section:'Classrooms', rooms:['GWU', 'Georgetown', 'Howard', 'UMD', 'UNC', 'UVA', 'FAMU', 'Hampton', 'Tuskegee', 'Princeton', 'Stanford', 'Harvard', 'Yale']},
-    {section:'Common Spaces', rooms:['Front desk A', 'Front desk B', 'Cafeteria (Prepeteria)', 'Gymnasium', 'Music room (PD space)', 'Art room', 'Science lab', 'Drumming room', 'Nurse suite', 'Staff restroom', 'Student restroom A (1st floor)', 'Student restroom B (1st floor)', 'Student restroom C (2nd floor)', 'Student restroom D (2nd floor)', 'Hallways']},
-    {section:'Offices & Conference Rooms', rooms:['Principal office', 'Ops office', 'AP — Math/Science', 'AP — Humanities', 'SpEd coordinator', 'Academic specialist', 'Behavioral specialist', 'Licensed clinician A', 'Licensed clinician B', 'SS coach / CAP', 'HS placement coord.', 'Counselor office', 'Science resource room', 'ELA & Math resource room', 'Conf. room', 'HO workspace', 'Teachers lounge', 'Small group room 188', 'Small group room 194', 'Small group room 198', 'Small group room 263', 'Small group room 271', 'Small group room 284']},
-    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+    {section:'Classrooms', rooms:[{name:'GWU',room:"189"}, {name:'Georgetown',room:"183"}, {name:'Howard',room:"187"}, {name:'UMD',room:"191"}, {name:'UNC',room:"193"}, {name:'UVA',room:"195"}, {name:'FAMU',room:"181"}, {name:'Hampton',room:"179"}, {name:'Tuskegee',room:"177"}, {name:'Princeton',room:"285"}, {name:'Stanford',room:"287"}, {name:'Harvard',room:"283"}, {name:'Yale',room:"281"}]},
+    {section:'Shared Student Spaces', rooms:[{name:'Cafeteria (Prepeteria)',room:"197"}, {name:'Gymnasium',room:"261"}, {name:'Music room (PD space)',room:"265"}, {name:'Art room',room:"267"}, {name:'Science lab',room:"279"}, {name:'Library',room:null}, {name:'Drumming room',room:"271"}, {name:'Small group room',room:"194"}, {name:'Small group room',room:"198"}, {name:'Small group room',room:"271"}, {name:'Nurse suite',room:"168"}]},
+    {section:'Restrooms', rooms:[{name:'All-gender restroom',room:"next to 194"}, {name:'All-gender restroom',room:"next to 274"}, {name:'Girls restroom',room:"1st floor"}, {name:'Boys restroom',room:"1st floor"}, {name:'Girls restroom',room:"2nd foor"}, {name:'Boys restroom',room:"2nd foor"}]},
+    {section:'Common Spaces', rooms:[{name:'Lobby',room:null}, {name:'Main entrance / drop-off zone',room:null}, {name:'Grill patio',room:null}, {name:'Hallways',room:null}]},
+    {section:'Offices', rooms:[{name:'Principal',room:"185"}, {name:'Operations',room:"182"}, {name:'AP — Math/Science',room:"171"}, {name:'AP — Humanities',room:"173"}, {name:'AP — Community',room:"169"}, {name:'SPED Coordinator',room:"167"}, {name:'Academic Specialist',room:"278"}, {name:'Behavioral Specialist',room:"186"}, {name:'Student Support Coordinator',room:"188"}, {name:'ELL Coordinator',room:"284"}, {name:'Licensed Clinician',room:"184"}, {name:'Licensed Clinician',room:"286"}, {name:'SS coach / CAP',room:"185"}, {name:'HS Placement Coordinator',room:"274"}, {name:'HS Placement Coordinator / Athletic Director',room:"263"}]},
+    {section:'Staff Common Spaces', rooms:[{name:'Front desk',room:null}, {name:'Science resource room',room:"277"}, {name:'ELA & Math resource room',room:"264"}, {name:'Conference room',room:"175"}, {name:'HO workspace',room:"280"}, {name:'Staff lounge',room:"170"}, {name:'Staff lounge',room:"269"}, {name:'Uniform closet',room:"172"}, {name:'Copy room',room:"174B"}]},
   ],
   'Edgewood Elementary': [
-    {section:'Classrooms', rooms:['American', 'Gallaudet', 'George Mason', 'Johns Hopkins', 'Syracuse', 'Williams', 'Northwestern', 'UChicago', 'UMichigan', 'Gonzaga', 'UOregon', 'Pepperdine', 'Morehouse', 'Spelman', 'Xavier', 'Cornell', 'Dartmouth', 'UPenn']},
-    {section:'Common Spaces', rooms:['Front desk', 'Cafeteria (Prepeteria)', 'Kitchen', 'Gymnasium', 'Library', 'Science lab', 'Art room', 'Music room', 'Nurse suite A', 'Nurse suite B', 'Lobby', 'Staff restroom (lower level)', 'Staff restroom (upper level)', 'Student restroom A (lower level)', 'Student restroom B (upper level)', 'Lactation room', 'Hallways']},
-    {section:'Offices & Conference Rooms', rooms:['OSL office', 'Leader office A', 'Leader office B', 'Leader office C', 'Leader office D', 'AP office', 'SPED office', 'HO workspace', 'Specialist suite', 'Culture suite', 'Speech / OT', 'Licensed clinician A', 'Licensed clinician B', 'Licensed clinician C (SLP)', 'Conference room (MOCR)', 'Staff lounge / TRR', 'EC/Kinder supply room', 'EC/Kinder SpEd pullout', 'SpEd pullout room', 'Small group / pullout', 'Facilities', 'Ms. Makstein']},
-    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+    {section:'Classrooms', rooms:[{name:'American',room:"107"}, {name:'Gallaudet',room:"106"}, {name:'George Mason',room:"108"}, {name:'Johns Hopkins',room:"110"}, {name:'Syracuse',room:"112"}, {name:'Williams',room:"111"}, {name:'Northwestern',room:"103"}, {name:'UChicago',room:"104"}, {name:'UMichigan',room:"105"}, {name:'Gonzaga',room:"208"}, {name:'UOregon',room:"206"}, {name:'Pepperdine',room:"213"}, {name:'Morehouse',room:"217"}, {name:'Spelman',room:"219"}, {name:'Xavier',room:"215"}, {name:'Cornell',room:"227"}, {name:'Dartmouth',room:"226"}, {name:'UPenn',room:"225"}]},
+    {section:'Shared Student Spaces', rooms:[{name:'Cafeteria (Prepeteria)',room:"150"}, {name:'Kitchen',room:null}, {name:'Gymnasium',room:"203"}, {name:'Library',room:"220"}, {name:'Science lab',room:"222"}, {name:'Art room',room:"223"}, {name:'Music room',room:"221"}, {name:'EC/Kinder SpEd pullout',room:"109"}, {name:'SpEd pullout room',room:"216"}, {name:'Small group / pullout',room:"212"}, {name:'Nurse suite A',room:"119"}, {name:'Nurse suite B',room:"118"}]},
+    {section:'Restrooms', rooms:[{name:'Staff restroom (lower level)',room:null}, {name:'Staff restroom (upper level)',room:null}, {name:'Student restroom A (lower level)',room:null}, {name:'Student restroom B (upper level)',room:null}]},
+    {section:'Common Spaces', rooms:[{name:'Lobby',room:null}, {name:'Main entrance / drop-off zone',room:null}, {name:'Playground / blacktop',room:null}, {name:'Hallways',room:null}]},
+    {section:'Offices', rooms:[{name:'OSL',room:"100"}, {name:'Leader office A',room:"120"}, {name:'Leader office B',room:"204"}, {name:'Leader office C',room:"224"}, {name:'Leader office D',room:"228"}, {name:'AP office',room:"214"}, {name:'SPED office',room:"216"}, {name:'Specialist suite',room:"120"}, {name:'Culture suite',room:"228"}, {name:'Speech / OT',room:"204"}, {name:'Licensed clinician A',room:"115"}, {name:'Licensed clinician B',room:"116"}, {name:'Licensed clinician C (SLP)',room:"204"}, {name:'Facilities',room:"113"}, {name:'Ms. Makstein',room:"117"}]},
+    {section:'Staff Common Spaces', rooms:[{name:'Conference room (MOCR)',room:"102"}, {name:'Staff lounge / TRR',room:"205"}, {name:'Lactation room',room:null}, {name:'HO workspace',room:"201"}, {name:'EC/Kinder supply room',room:"106"}]},
   ],
   'Edgewood Middle': [
-    {section:'Classrooms', rooms:['GWU', 'Georgetown', 'Howard', 'UMD', 'UNC', 'UVA', 'FAMU', 'Hampton', 'Tuskegee', 'Princeton', 'Stanford', 'Harvard', 'Yale']},
-    {section:'Common Spaces', rooms:['Front office', 'Cafeteria (Prepeteria)', 'Gymnasium', 'Assembly hall', 'Library', 'Science lab', 'Art room', 'Nurse suite', 'Lobby', 'Staff restroom', 'Student restroom A (JA girls)', 'Student restroom B (JA boys)', 'Student restroom C (lower)', 'Hallways']},
-    {section:'Offices & Conference Rooms', rooms:['Principal', 'SEC', 'LC office', 'Behavior Spec.', 'Asst. Principal B', 'Culture suite', 'Counseling suite', 'Behavioral support suite', 'AAP suite', 'Behavioral specialist', 'SS coach / CAP', 'SpEd coordinator', 'HS placement coord.', 'Special pops suite', 'Panther pad (staff lounge)', 'Staff lounge', 'Conference room']},
-    {section:'Outdoor', rooms:['Main entrance / drop-off zone', 'Playground / blacktop']},
+    {section:'Classrooms', rooms:[{name:'GWU',room:"219"}, {name:'Georgetown',room:"216"}, {name:'Howard',room:"218"}, {name:'UMD',room:"215"}, {name:'UNC',room:"220"}, {name:'UVA',room:"214"}, {name:'FAMU',room:"213"}, {name:'Hampton',room:"212"}, {name:'Tuskegee',room:"221"}, {name:'Princeton',room:"100"}, {name:'Stanford',room:"110"}, {name:'Harvard',room:"109"}, {name:'Yale',room:"115"}]},
+    {section:'Shared Student Spaces', rooms:[{name:'Cafeteria (Prepeteria)',room:"238"}, {name:'Gymnasium',room:"101"}, {name:'Assembly hall',room:null}, {name:'Library',room:"105"}, {name:'Science lab',room:"120"}, {name:'Art room',room:"135B"}, {name:'Nurse suite',room:"121"}]},
+    {section:'Restrooms', rooms:[{name:'Staff restroom',room:null}, {name:'Student restroom A (JA girls)',room:null}, {name:'Student restroom B (JA boys)',room:null}, {name:'Student restroom C (lower)',room:null}]},
+    {section:'Common Spaces', rooms:[{name:'Lobby',room:null}, {name:'Main entrance / drop-off zone',room:null}, {name:'Playground / blacktop',room:null}, {name:'Hallways',room:null}]},
+    {section:'Offices', rooms:[{name:'Principal',room:"208"}, {name:'SEC',room:"207"}, {name:'LC office',room:"208"}, {name:'Behavior Spec.',room:"209"}, {name:'Asst. Principal B',room:"217"}, {name:'Culture suite',room:"217"}, {name:'Counseling suite',room:"209"}, {name:'Behavioral support suite',room:"112"}, {name:'AAP suite',room:null}, {name:'Behavioral specialist',room:null}, {name:'SS coach / CAP',room:null}, {name:'SPED Coordinator',room:null}, {name:'HS Placement Coordinator',room:null}]},
+    {section:'Staff Common Spaces', rooms:[{name:'Front office',room:"201"}, {name:'Special pops suite',room:"135"}, {name:'Panther pad (staff lounge)',room:"119"}, {name:'Staff lounge',room:"205"}, {name:'Conference room',room:"203"}]},
   ],
 };
 
@@ -2623,6 +2638,7 @@ const RD = {
   type: null,      // 'MDS' | 'SDO' | 'DOT'
   school: null,
   classroom: null,
+  roomNumber: '',  // room number for the picked space, when known
   band: null,      // grade band, used by MDS/DOT (classroom-only tracks)
   section: null,   // space section, used by SDO (Operations, all-space track)
   role: null,
@@ -2694,7 +2710,7 @@ const BOY_TITLES = {
 };
 
 function resetReadiness() {
-  RD.type=null; RD.school=null; RD.classroom=null; RD.band=null; RD.section=null;
+  RD.type=null; RD.school=null; RD.classroom=null; RD.roomNumber=''; RD.band=null; RD.section=null;
   RD.role=null; RD.assessment=null; RD.notes=''; RD.checks={}; RD.deskCount=null; RD.chairCount=null; RD.step='type';
   document.querySelectorAll('#screen-readiness .role-check').forEach(c=>c.classList.remove('on'));
   document.querySelectorAll('#screen-readiness .flow-step').forEach(s=>s.classList.remove('active'));
@@ -2710,6 +2726,23 @@ function resetReadiness() {
     const b=document.getElementById(id);
     if(b){ b.style.background='var(--card)'; b.style.borderColor='var(--border)'; b.style.color='var(--muted)'; }
   });
+}
+
+// Returns to the full space list for the same school/role, after a BOY
+// Building Readiness submission — used when someone is working through a
+// building room by room and wants to immediately assess the next space,
+// rather than going all the way back to the app's home screen.
+function assessAnotherSpace(){
+  RD.classroom=null; RD.roomNumber=''; RD.section=null; RD.band=null;
+  RD.assessment=null; RD.notes=''; RD.checks={}; RD.deskCount=null; RD.chairCount=null;
+  document.querySelectorAll('#screen-readiness .role-check').forEach(c=>c.classList.remove('on'));
+  ['rab-1','rab-2','rab-3'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(b){ b.style.background='var(--card)'; b.style.borderColor='var(--border)'; b.style.color='var(--muted)'; }
+  });
+  buildSpaceList(RD.school);
+  showScreen('screen-readiness');
+  showReadStep('classroom');
 }
 
 function showReadStep(id) {
@@ -2756,7 +2789,14 @@ function readPickSchool(row,val){
   document.querySelectorAll('#rd-school .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   RD.school=val;
-  // Build space list
+  buildSpaceList(val);
+  setTimeout(()=>showReadStep('classroom'),120);
+}
+
+// Builds the space/classroom list for a given school into #rd-classroom-list.
+// Reusable both from the school-picker click (readPickSchool) and when
+// jumping straight back to the full list after submitting (assessAnotherSpace).
+function buildSpaceList(val){
   const list=document.getElementById('rd-classroom-list');
   list.innerHTML='';
   const stepTitle=document.querySelector('#rd-classroom .step-title');
@@ -2769,11 +2809,15 @@ function readPickSchool(row,val){
     const groupCard=document.createElement('div');
     groupCard.className='card';
     groupCard.style.cssText='padding:0;overflow:hidden';
-    rooms.forEach(room=>{
+    rooms.forEach(entry=>{
+      const isObj = entry && typeof entry === 'object';
+      const name = isObj ? entry.name : entry;
+      const roomNum = isObj ? entry.room : null;
       const row2=document.createElement('div');
       row2.className='role-row';
-      row2.innerHTML='<span class="role-name">'+room+'<\/span><span class="role-check" id="rcl-'+room.replace(/[^a-zA-Z]/g,'_')+'"><\/span>';
-      row2.onclick=()=>onPick(row2,room);
+      const label = roomNum ? name+' <span style="color:var(--muted);font-weight:400">('+roomNum+')</span>' : name;
+      row2.innerHTML='<span class="role-name">'+label+'<\/span><span class="role-check" id="rcl-'+name.replace(/[^a-zA-Z]/g,'_')+'"><\/span>';
+      row2.onclick=()=>onPick(row2,name,roomNum);
       groupCard.appendChild(row2);
     });
     list.appendChild(groupCard);
@@ -2784,7 +2828,7 @@ function readPickSchool(row,val){
     if (stepTitle) stepTitle.textContent = 'Which space?';
     const schoolData = OPS_SPACES[val] || [];
     schoolData.forEach(({section,rooms})=>{
-      appendGroup(section, rooms, (row2,room)=>readPickClassroom(row2,room,section));
+      appendGroup(section, rooms, (row2,name,roomNum)=>readPickClassroom(row2,name,section,roomNum));
     });
   } else {
     // Schools / Tech: classrooms only, grouped by grade band
@@ -2797,14 +2841,14 @@ function readPickSchool(row,val){
       appendGroup(band, rooms, (row2,room)=>readPickClassroom(row2,room,ckBand));
     });
   }
-  setTimeout(()=>showReadStep('classroom'),120);
 }
 
 // ── Space/classroom selection ───────────────────────────────────────────────────
-function readPickClassroom(row,val,bandOrSection){
+function readPickClassroom(row,val,bandOrSection,roomNum){
   document.querySelectorAll('#rd-classroom-list .role-check').forEach(c=>c.classList.remove('on'));
   row.querySelector('.role-check').classList.add('on');
   RD.classroom=val;
+  RD.roomNumber=roomNum||'';
   if (RD.type === 'SDO') { RD.section=bandOrSection; RD.band=null; }
   else                   { RD.band=bandOrSection; RD.section=null; }
   // Build role list for this type
@@ -3131,6 +3175,7 @@ function submitBOYReadiness(){
     checklistType:RD.type,
     school:RD.school,
     classroom:RD.classroom,
+    roomNumber:RD.roomNumber||'',
     gradeBand:RD.band==='K\/1'?'K/1':RD.band==='2\/3'?'2/3':RD.band,
     section:RD.section||'',
     role:RD.role,
@@ -3162,15 +3207,17 @@ function submitBOYReadiness(){
   }
   document.getElementById('s-card').innerHTML=
     '<div style="padding:4px 0 8px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#94a3b8">Summary<\/div>'+
-    '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Track<\/span><span style="font-weight:500">'+typeLabel+'<\/span><\/div>'+
     '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">School<\/span><span style="font-weight:500">'+RD.school+'<\/span><\/div>'+
     '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f1f5f9;font-size:13px"><span style="color:#64748b">Classroom<\/span><span style="font-weight:500">'+RD.classroom+'<\/span><\/div>'+
     deskRow+
     assessmentRow+
-    checkedRow+
-    '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span style="color:#64748b">Items flagged<\/span><span style="font-weight:500;color:'+(flaggedItems.length?'var(--red)':'inherit')+'">'+(flaggedItems.length||'None')+'<\/span><\/div>';
+    checkedRow;
   resetEmailCapture();
   setEmailLabel('Want a copy of what you submitted?');
+  if (RD.type === 'SDO') {
+    document.getElementById('s-extra-actions').innerHTML =
+      '<button class="submit-btn btn-teal" style="margin-bottom:10px" onclick="assessAnotherSpace()">Assess Another Space<\/button>';
+  }
   showScreen('screen-success');
   postToScript(payload);
 }
