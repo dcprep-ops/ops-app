@@ -365,6 +365,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <span class="cell-label">BOY Building Readiness</span>
       </div>
 
+      <div class="icon-cell" onclick="openFlow('win')">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16"/><path d="M8 3v4M16 3v4"/><path d="M9 14l1.5 1.5L14.5 12"/></svg>
+        <span class="cell-label">Daily Readiness Wins</span>
+      </div>
+
     </div>
 
     <div class="section-label" style="margin-top:8px">Transportation Pilot</div>
@@ -607,6 +612,32 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
   <div class="submit-bar" id="walk-submit-bar" style="display:none">
     <button class="submit-btn btn-amber" id="walk-btn" onclick="walkNext()">Next →</button>
+  </div>
+</div>
+
+<!-- ══ DAILY READINESS WINS ══ -->
+<div class="screen" id="screen-win">
+  <div class="app-header">
+    <div class="app-header-row">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+    </div>
+  </div>
+  <div class="scroll-body flow-body">
+    <div class="step-title">Daily Readiness Wins</div>
+
+    <label class="field-label">Role</label>
+    <div class="card" style="margin-bottom:20px">
+      <div class="role-row" onclick="winPickRole(this,'Anacostia OSL')"><span class="role-name">Anacostia OSL</span><span class="role-check" id="win-rl-Anacostia_OSL"></span></div>
+      <div class="role-row" onclick="winPickRole(this,'Benning OSL')"><span class="role-name">Benning OSL</span><span class="role-check" id="win-rl-Benning_OSL"></span></div>
+      <div class="role-row" onclick="winPickRole(this,'Edgewood OSL')"><span class="role-name">Edgewood OSL</span><span class="role-check" id="win-rl-Edgewood_OSL"></span></div>
+      <div class="role-row" onclick="winPickRole(this,'SDO')"><span class="role-name">SDO</span><span class="role-check" id="win-rl-SDO"></span></div>
+      <div class="role-row" onclick="winPickRole(this,'COO')"><span class="role-name">COO</span><span class="role-check" id="win-rl-COO"></span></div>
+    </div>
+
+    <label class="field-label">What went well today?</label>
+    <textarea id="win-text" rows="6" placeholder="Keep it short — a few sentences is plenty."></textarea>
+
+    <button class="submit-btn btn-teal" style="margin-top:24px" onclick="submitWin()">Submit</button>
   </div>
 </div>
 
@@ -1474,6 +1505,7 @@ function openFlow(type) {
   if (type === 'readiness') { resetReadiness(); showScreen('screen-readiness'); }
   if (type === 'bustriplog') { resetBtl(); showScreen('screen-bustriplog'); }
   if (type === 'bustriphandoff') { resetBth(); showScreen('screen-bustriphandoff'); }
+  if (type === 'win') { resetWin(); showScreen('screen-win'); }
 }
 
 function resetDrill() {
@@ -1976,6 +2008,36 @@ function walkBack() {
 }
 
 function walkNext() {}
+
+// ── Daily Readiness Wins ────────────────────────────────────────────────────
+const WIN = { role: null };
+
+function resetWin() {
+  WIN.role = null;
+  document.querySelectorAll('#screen-win .role-check').forEach(c => c.classList.remove('on'));
+  const t = document.getElementById('win-text');
+  if (t) t.value = '';
+}
+
+function winPickRole(row, val) {
+  document.querySelectorAll('#screen-win .role-check').forEach(c => c.classList.remove('on'));
+  row.querySelector('.role-check').classList.add('on');
+  WIN.role = val;
+}
+
+function submitWin() {
+  const text = (document.getElementById('win-text').value || '').trim();
+  if (!WIN.role) { alert('Pick a role first.'); return; }
+  if (!text) { alert('Add a few words about what went well.'); return; }
+
+  postToScript({ flow: 'daily-win', role: WIN.role, text: text });
+
+  resetEmailCapture();
+  document.getElementById('s-title').textContent = 'Posted!';
+  document.getElementById('s-sub').textContent = 'Your win for ' + WIN.role + ' is on the dashboard.';
+  document.getElementById('s-card').innerHTML = '';
+  showScreen('screen-success');
+}
 
 function resetWalk() {
   W.school = ''; W.name = ''; W.step = 'school';
