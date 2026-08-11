@@ -2786,6 +2786,7 @@ const BOY_ROLES = {
   SDO: [
     { val:'SDO',  label:'SDO', primary:true },
     { val:'OSL',  label:'OSL' },
+    { val:'COO',  label:'COO' },
   ],
   DOT: [
     { val:'Director of Tech', label:'Director of Tech', primary:true },
@@ -3026,7 +3027,7 @@ function readPickRole(row,val){
 }
 
 function buildAssessmentBlock(){
-  const isOSLPending = RD.type === 'SDO' && RD.role === 'OSL';
+  const isPendingRole = RD.type === 'SDO' && (RD.role === 'OSL' || RD.role === 'COO');
 
   const assessDiv=document.createElement('div');
   assessDiv.style.cssText='margin-bottom:20px';
@@ -3041,7 +3042,7 @@ function buildAssessmentBlock(){
   hint.textContent="Optional — skip if you're only updating counts or notes";
   if (RD.type === 'SDO') assessDiv.appendChild(hint);
 
-  const options = isOSLPending
+  const options = isPendingRole
     ? [
         {id:'rab-1',val:'Fully ready — pending SDO signoff',color:'#378ADD'},
         {id:'rab-3',val:'Not ready yet',                     color:'#dc2626'},
