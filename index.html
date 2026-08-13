@@ -2898,7 +2898,7 @@ function showReadStep(id) {
 
 function readBack() {
   const prev={role:'type',school:'role',classroom:'school',checklist:'classroom',assessment:'checklist'};
-  if(RD.step==='type'){goHome();return;}
+  if(RD.step==='type' || RD.step==='role'){goHome();return;}
   showReadStep(prev[RD.step]||'type');
 }
 
@@ -3027,7 +3027,8 @@ function readPickRole(row,val){
 }
 
 function buildAssessmentBlock(){
-  const isPendingRole = RD.type === 'SDO' && (RD.role === 'OSL' || RD.role === 'COO');
+  const isCOO = RD.type === 'SDO' && RD.role === 'COO';
+  const isOSLPending = RD.type === 'SDO' && RD.role === 'OSL';
 
   const assessDiv=document.createElement('div');
   assessDiv.style.cssText='margin-bottom:20px';
@@ -3042,7 +3043,17 @@ function buildAssessmentBlock(){
   hint.textContent="Optional — skip if you're only updating counts or notes";
   if (RD.type === 'SDO') assessDiv.appendChild(hint);
 
-  const options = isPendingRole
+  // COO gets three options combining SDO's full signoff authority with
+  // OSL's pending option — same underlying values as everywhere else
+  // (so dotClass/colors/success-screen icons all keep working unchanged),
+  // just with COO-specific display labels.
+  const options = isCOO
+    ? [
+        {id:'rab-1',val:'Fully ready',                       label:'Signoff',                          color:'#16a34a'},
+        {id:'rab-2',val:'Fully ready — pending SDO signoff',  label:'Ready — pending SDO signoff',      color:'#378ADD'},
+        {id:'rab-3',val:'Not ready yet',                      label:'Work to do',                       color:'#dc2626'},
+      ]
+    : isOSLPending
     ? [
         {id:'rab-1',val:'Fully ready — pending SDO signoff',color:'#378ADD'},
         {id:'rab-3',val:'Not ready yet',                     color:'#dc2626'},
@@ -3053,11 +3064,11 @@ function buildAssessmentBlock(){
         {id:'rab-3',val:'Not ready — return visit needed',   color:'#dc2626'},
       ];
 
-  options.forEach(({id,val,color})=>{
+  options.forEach(({id,val,label,color})=>{
     const btn=document.createElement('button');
     btn.id=id;
     btn.style.cssText='width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;text-align:left;-webkit-tap-highlight-color:transparent;transition:all .15s;margin-bottom:8px;display:block';
-    btn.innerHTML='<span style="color:'+color+';margin-right:6px">⬤</span>'+val;
+    btn.innerHTML='<span style="color:'+color+';margin-right:6px">⬤</span>'+(label||val);
     btn.onclick=()=>readPickAssessment(val,id);
     assessDiv.appendChild(btn);
   });
