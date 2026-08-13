@@ -213,6 +213,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .tog.no.on{background:#fef2f2;border-color:var(--red);color:#991b1b}
 
 .role-row{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:0.5px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.1s}
+.status-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.status-dot.dot-blank{background:#fff;border:1.5px solid #cbd5e1}
+.status-dot.dot-bad{background:#dc2626}
+.status-dot.dot-minor{background:#ffd65a}
+.status-dot.dot-pending{background:#378ADD}
+.status-dot.dot-ok{background:#16a34a}
 .role-row:last-child{border-bottom:none}
 .role-row:active{background:var(--light)}
 .role-name{font-size:16px;font-weight:500;color:var(--text)}
@@ -2538,6 +2544,23 @@ function setCachedSpaceList(school, data) {
 // [{section, rooms:[{name,room}]}] shape buildSpaceList already expects.
 // Technology is included — some tech-section items require Ops signoff,
 // so Ops/OSL need to be able to select and assess them here too.
+// Ops/SDO status only (not combined with Tech) — this screen is specifically
+// the Operations flow, so it's scoped to what Ops actually needs to act on.
+function opsDotClass(assessment) {
+  if (!assessment) return 'blank';
+  const a = String(assessment).toLowerCase();
+  if (a.indexOf('pending sdo signoff') > -1) return 'pending';
+  if (a.indexOf('fully') > -1) return 'ok';
+  if (a.indexOf('minor') > -1) return 'minor';
+  if (a.indexOf('not ready') > -1) return 'bad';
+  return 'blank';
+}
+// Action-needed priority: blank, then red, then yellow, then blue, then green.
+function opsStatusRank(assessment) {
+  const rank = { blank:0, bad:1, minor:2, pending:3, ok:4 };
+  return rank[opsDotClass(assessment)];
+}
+
 async function fetchSpaceListLive(school) {
   const code = SCHOOL_CODE_MAP[school];
   if (!code) return null;
@@ -2549,7 +2572,12 @@ async function fetchSpaceListLive(school) {
     if (!r.space) return;
     const sec = r.section || 'Other';
     if (!bySection[sec]) bySection[sec] = [];
-    bySection[sec].push({ name: r.space, room: r.roomNumber || null });
+    bySection[sec].push({ name: r.space, room: r.roomNumber || null, sdoAssessment: r.SDO ? r.SDO.assessment : null });
+  });
+  // Sort within each section by action-priority. Array.sort is stable, so
+  // rooms with the same status keep their original spreadsheet order.
+  Object.keys(bySection).forEach(sec => {
+    bySection[sec].sort((a, b) => opsStatusRank(a.sdoAssessment) - opsStatusRank(b.sdoAssessment));
   });
   const ordered = [...SECTION_ORDER, ...Object.keys(bySection).filter(s => !SECTION_ORDER.includes(s))];
   return ordered.filter(s => bySection[s] && bySection[s].length).map(s => ({ section: s, rooms: bySection[s] }));
@@ -2939,10 +2967,12 @@ async function buildSpaceList(val){
       const isObj = entry && typeof entry === 'object';
       const name = isObj ? entry.name : entry;
       const roomNum = isObj ? entry.room : null;
+      const sdoAssessment = isObj ? entry.sdoAssessment : null;
       const row2=document.createElement('div');
       row2.className='role-row';
       const label = roomNum ? name+' <span style="color:var(--muted);font-weight:400">('+roomNum+')</span>' : name;
-      row2.innerHTML='<span class="role-name">'+label+'<\/span><span class="role-check" id="rcl-'+name.replace(/[^a-zA-Z]/g,'_')+'"><\/span>';
+      const dotHtml = isObj ? '<span class="status-dot dot-'+opsDotClass(sdoAssessment)+'"></span>' : '';
+      row2.innerHTML='<span style="display:flex;align-items:center;gap:10px">'+dotHtml+'<span class="role-name">'+label+'<\/span></span><span class="role-check" id="rcl-'+name.replace(/[^a-zA-Z]/g,'_')+'"><\/span>';
       row2.onclick=()=>onPick(row2,name,roomNum);
       groupCard.appendChild(row2);
     });
