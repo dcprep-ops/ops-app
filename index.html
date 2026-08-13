@@ -2548,11 +2548,15 @@ function setCachedSpaceList(school, data) {
 // the Operations flow, so it's scoped to what Ops actually needs to act on.
 function opsDotClass(assessment) {
   if (!assessment) return 'blank';
-  const a = String(assessment).toLowerCase();
+  const a = String(assessment).toLowerCase().trim();
   if (a.indexOf('pending sdo signoff') > -1) return 'pending';
   if (a.indexOf('fully') > -1) return 'ok';
   if (a.indexOf('minor') > -1) return 'minor';
   if (a.indexOf('not ready') > -1) return 'bad';
+  if (a === 'n/a' || a === 'na') return 'blank';
+  if (a === 'ready') return 'ok';
+  if (a === 'issues') return 'bad';
+  if (a === 'resolved') return 'ok';
   return 'blank';
 }
 // Action-needed priority: blank, then red, then yellow, then blue, then green.
@@ -2570,9 +2574,15 @@ async function fetchSpaceListLive(school) {
   const bySection = {};
   (data.rooms || []).forEach(r => {
     if (!r.space) return;
+    const sdoAssessment = r.SDO ? r.SDO.assessment : null;
+    // Some spaces have an actual "n/a" assessment on record for Ops
+    // specifically — meaning Ops doesn't apply there at all (e.g. Phone
+    // system, Network/WiFi). Those shouldn't show up in this picker.
+    const sdoNA = sdoAssessment && ['n/a','na'].includes(String(sdoAssessment).toLowerCase().trim());
+    if (sdoNA) return;
     const sec = r.section || 'Other';
     if (!bySection[sec]) bySection[sec] = [];
-    bySection[sec].push({ name: r.space, room: r.roomNumber || null, sdoAssessment: r.SDO ? r.SDO.assessment : null });
+    bySection[sec].push({ name: r.space, room: r.roomNumber || null, sdoAssessment });
   });
   // Sort within each section by action-priority. Array.sort is stable, so
   // rooms with the same status keep their original spreadsheet order.
