@@ -2086,8 +2086,10 @@ function showArrStep(id) {
   setProgress('arr-prog',pcts[id]||10);
   const btn=document.getElementById('arr-btn');
   const isLast=id==='checklist';
+  const isOtherRole=id==='role' && A.role==='Other';
   const arrBar=btn?btn.closest('.submit-bar'):null;
   if(isLast){if(arrBar)arrBar.style.display='';btn.textContent='Submit observation';btn.className='submit-btn btn-teal';}
+  else if(isOtherRole){if(arrBar)arrBar.style.display='';btn.textContent='Next →';btn.className='submit-btn btn-amber';}
   else{if(arrBar)arrBar.style.display='none';}
 }
 
@@ -2103,7 +2105,15 @@ function arrPickRole(row,val) {
   A.role=val;
   const inp = document.getElementById('arc-other-input');
   if (inp) { inp.style.display = val==='Other' ? '' : 'none'; if(val!=='Other') document.getElementById('a-other-role').value=''; }
-  if(val!=='Other') setTimeout(()=>showArrStep('checklist'),120);
+  const btn=document.getElementById('arr-btn');
+  const arrBar=btn?btn.closest('.submit-bar'):null;
+  if (val==='Other') {
+    if(arrBar) arrBar.style.display='';
+    if(btn){ btn.textContent='Next →'; btn.className='submit-btn btn-amber'; }
+  } else {
+    if(arrBar) arrBar.style.display='none';
+    setTimeout(()=>showArrStep('checklist'),120);
+  }
 }
 function arrPick(el,field,val) {
   el.closest('.sel-grid').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
