@@ -2379,7 +2379,10 @@ function custFinish() { submitCust(); }
 
 function submitCust() {
   const isDoF = C.walkType === 'biweekly';
-  const observations = [];
+  // Keyed by item name (not a positional array) so item identity survives
+  // the trip to the sheet — the backend stores this as a JSON blob keyed
+  // the same way, and the dashboard reads it back by name.
+  const checks = {};
   let checked = 0, flagged = 0;
   const notesArr = [];
 
@@ -2390,7 +2393,7 @@ function submitCust() {
         const item = row.getAttribute('data-item');
         const box  = row.querySelector('.check-box');
         const val  = box.classList.contains('ok') ? 'checked' : box.classList.contains('issue') ? 'flagged' : 'no input';
-        observations.push(val);
+        checks[item] = val;
         if (val==='checked') checked++;
         if (val==='flagged') flagged++;
       });
@@ -2404,7 +2407,7 @@ function submitCust() {
       items.forEach(item => {
         const fullKey = sp + ' — ' + item;
         const val = state.checks[fullKey] || (state.status==='skipped' ? 'skipped' : 'no input');
-        observations.push(val);
+        checks[fullKey] = val;
         if (val==='checked') checked++;
         if (val==='flagged') flagged++;
       });
@@ -2418,7 +2421,7 @@ function submitCust() {
     flow: 'custodial', campus: C.school, role: C.role,
     checklistType: C.checklistType || 'Weekly',
     itemsChecked: checked, itemsFlagged: flagged,
-    observations, notes: notesArr.join(' | ')
+    checks, notes: notesArr.join(' | ')
   };
   _lastPayload = payload;
   postToScript(payload);
