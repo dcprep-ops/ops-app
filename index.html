@@ -324,7 +324,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .bg-mini-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bg-mini-count{font-size:10.5px;color:var(--muted);flex-shrink:0;margin-left:6px}
 .bg-flag{position:absolute;top:-8px;right:-6px;background:var(--green);color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:20px;letter-spacing:.3px}
-.bg-empty{margin:0 20px;border-radius:12px;border:0.5px solid var(--border);padding:24px 16px;text-align:center;color:var(--muted);font-size:13px}
 
 .bg-namepick-body{padding:18px 20px;flex:1;display:flex;flex-direction:column;min-height:0}
 .bg-name-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -506,7 +505,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
     <div class="section-label">Everyone's cards</div>
     <div id="bingo-cards-loading" style="padding:0 20px;font-size:13px;color:var(--muted)">Loading everyone's cards…</div>
-    <div id="bingo-cards-empty" class="bg-empty" style="display:none">No cards yet. Be the first to update yours.</div>
     <div class="bg-cards-grid" id="bingo-cards-grid"></div>
   </div>
 </div>
@@ -2358,9 +2356,8 @@ function openBingoHome() {
 
 async function bingoLoadAllCards() {
   const loading = document.getElementById('bingo-cards-loading');
-  const empty = document.getElementById('bingo-cards-empty');
   const grid = document.getElementById('bingo-cards-grid');
-  loading.style.display = ''; empty.style.display = 'none'; grid.innerHTML = '';
+  loading.style.display = ''; grid.innerHTML = '';
   bingoLoadPromise = (async () => {
     try {
       const res = await fetch(SCRIPT_URL + '?view=bingo');
@@ -2369,13 +2366,17 @@ async function bingoLoadAllCards() {
       bingoAllCards = {};
       cards.forEach(c => { bingoAllCards[String(c.name).trim().toLowerCase()] = c; });
       loading.style.display = 'none';
-      if (!cards.length) { empty.style.display = ''; return; }
-      cards.sort((a, b) => a.name.localeCompare(b.name));
-      grid.innerHTML = cards.map(c => {
-        const marked = c.marked || [];
+      // Show every name on the fixed roster, blank grid by default, so
+      // the overview never looks "empty" — someone who hasn't marked
+      // anything yet just shows a 0/25 card like everyone else's starting
+      // point, rather than not appearing at all.
+      const roster = BINGO_NAMES.slice().sort((a, b) => a.localeCompare(b));
+      grid.innerHTML = roster.map(name => {
+        const c = bingoAllCards[name.trim().toLowerCase()];
+        const marked = c ? (c.marked || []) : [];
         const bingo = bingoHasLine(marked);
         const sq = Array.from({length: 25}, (_, i) => `<div class="bg-mini-sq${marked.includes(i) ? ' on' : ''}"></div>`).join('');
-        return `<div class="bg-mini-card${bingo ? ' bingo' : ''}">${bingo ? '<div class="bg-flag">BINGO</div>' : ''}<div class="bg-mini-grid">${sq}</div><div class="bg-mini-foot"><span class="bg-mini-name">${c.name}</span><span class="bg-mini-count">${marked.length}/25</span></div></div>`;
+        return `<div class="bg-mini-card${bingo ? ' bingo' : ''}">${bingo ? '<div class="bg-flag">BINGO</div>' : ''}<div class="bg-mini-grid">${sq}</div><div class="bg-mini-foot"><span class="bg-mini-name">${name}</span><span class="bg-mini-count">${marked.length}/25</span></div></div>`;
       }).join('');
     } catch (e) {
       loading.textContent = "Couldn't load cards — check your connection.";
