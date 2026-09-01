@@ -310,6 +310,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .contest-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.14);color:#fff;font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:20px;margin-top:6px}
 .contest-pill i{font-size:13px}
 
+.bg-content-wrap{max-width:480px;margin:0 auto;width:100%}
 .bg-intro{padding:16px 20px 4px}
 .bg-intro-text{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:14px}
 .bg-cta{width:100%;background:var(--navy);color:#fff;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:4px;-webkit-tap-highlight-color:transparent}
@@ -325,7 +326,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .bg-mini-count{font-size:10.5px;color:var(--muted);flex-shrink:0;margin-left:6px}
 .bg-flag{position:absolute;top:-8px;right:-6px;background:var(--green);color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:20px;letter-spacing:.3px}
 
-.bg-namepick-body{padding:18px 20px;flex:1;display:flex;flex-direction:column;min-height:0}
+.bg-namepick-body{padding:18px 20px;flex:1;display:flex;flex-direction:column;min-height:0;max-width:480px;margin:0 auto;width:100%}
 .bg-name-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .bg-name-btn{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px 8px;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;text-align:center;font-family:inherit;-webkit-tap-highlight-color:transparent}
 .bg-name-btn:active{background:var(--teal-lt);border-color:var(--teal);color:var(--navy)}
@@ -335,7 +336,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .bg-board{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .bg-sq{aspect-ratio:1;border-radius:8px;border:1.5px solid var(--border);background:#fff;position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .bg-sq.on{border-color:var(--gold);border-width:2px;background:var(--gold-lt)}
-.bg-sq-label{position:absolute;left:6px;right:6px;bottom:6px;font-size:10.5px;font-weight:600;line-height:1.16;color:var(--text)}
+.bg-sq-label{position:absolute;left:6px;right:6px;bottom:6px;font-size:9.5px;font-weight:500;line-height:1.16;color:var(--text)}
 .bg-sq .bg-chk{position:absolute;top:3px;right:3px;width:13px;height:13px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;z-index:2}
 .bg-sq .bg-chk::after{content:'';width:3.5px;height:6.5px;border:1.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
 .bg-autosave-note{flex-shrink:0;padding:8px 20px 16px;text-align:center;font-size:11px;color:var(--muted)}
@@ -496,16 +497,18 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="contest-pill"><i class="ti ti-clock"></i> <span id="bingo-contest-status">21 days left · ends Sept 21</span></div>
   </div>
   <div class="scroll-body">
-    <div class="bg-intro">
-      <div class="bg-intro-text">Try a square, mark it off. No pressure to finish the board — just explore what AI can do for your work.</div>
-    </div>
-    <div style="padding:0 20px">
-      <button class="bg-cta" onclick="openBingoNamePicker()">Update my bingo card</button>
-    </div>
+    <div class="bg-content-wrap">
+      <div class="bg-intro">
+        <div class="bg-intro-text">Try a square, mark it off. No pressure to finish the board — just explore what AI can do for your work.</div>
+      </div>
+      <div style="padding:0 20px">
+        <button class="bg-cta" onclick="openBingoNamePicker()">Update my bingo card</button>
+      </div>
 
-    <div class="section-label">Everyone's cards</div>
-    <div id="bingo-cards-loading" style="padding:0 20px;font-size:13px;color:var(--muted)">Loading everyone's cards…</div>
-    <div class="bg-cards-grid" id="bingo-cards-grid"></div>
+      <div class="section-label">Everyone's cards</div>
+      <div id="bingo-cards-loading" style="padding:0 20px;font-size:13px;color:var(--muted)">Loading everyone's cards…</div>
+      <div class="bg-cards-grid" id="bingo-cards-grid"></div>
+    </div>
   </div>
 </div>
 
@@ -2201,7 +2204,7 @@ const BINGO_BOARD = [
   "Turn a spreadsheet into a chart or visual summary",
   "Ask AI to reconcile or cross-check two data sources",
   "Automate a task you normally do by hand (any tool)",
-  "Ask AI to find gaps or inconsistencies in a policy document",
+  "Teach a colleague one thing you learned about using AI (bonus: in the Learning Lab channel)",
   "Get AI to help you plan or sequence a multi-step project",
   "Share a prompt you wrote in the AI Learning Lab Teams channel",
   "Ask AI to critique or stress-test your own work",
@@ -2216,7 +2219,7 @@ const BINGO_BOARD = [
   "Build a small tool or tracker in an artifact that solves a real Ops problem",
   "Use AI to edit a parent- or staff-facing communication to make it more human and clear",
   "Use AI to troubleshoot something around the house",
-  "Use AI to write something creative just for fun",
+  "Use AI to create something just for fun \u2014 write, design, or compose",
 ];
 const BINGO_SHORT = [
   "Add your voice to AI",
@@ -2228,7 +2231,7 @@ const BINGO_SHORT = [
   "Turn data into a chart",
   "Cross-check two data sources",
   "Automate a manual task",
-  "Find gaps in a policy",
+  "Teach a colleague (A)",
   "Sequence a project plan",
   "Share a prompt in Teams",
   "Stress-test your own work",
@@ -2238,12 +2241,12 @@ const BINGO_SHORT = [
   "Clean a dataset",
   "Self-critique a plan",
   "Design a dashboard",
-  "Teach a colleague an AI tip",
+  "Teach a colleague (B)",
   "Build an \u201cAbout Me\u201d skill",
   "Build a small Ops tool",
   "Humanize a comms draft",
   "Troubleshoot something at home",
-  "Write something creative",
+  "Do something creative",
 ];
 const BINGO_PROMPT = [
   "I want to draft an email with AI and then coach it to sound more like me. Ask me who it's to and what I'm trying to say, then write a first draft. After that, help me give you good feedback on my voice \u2014 specific phrases I actually use, my usual tone, and anything that sounds off \u2014 so you can revise it until it genuinely sounds like something I'd write.",
@@ -2255,7 +2258,7 @@ const BINGO_PROMPT = [
   "I have a spreadsheet I'd like turned into a chart or visual summary. Ask me to share it, then build something that makes the key trend obvious at a glance.",
   "I have two data sources that should agree with each other but might not. Ask me to share both, then compare them and flag any discrepancies.",
   "There's a task I do by hand on a regular basis. Ask me to walk you through the steps, then help me figure out how to automate it.",
-  "I have a policy document I'd like reviewed. Ask me to share it, then look for gaps, inconsistencies, or unclear language.",
+  "No prompt needed for this one \u2014 pick one thing you've learned about using AI and teach it to a colleague (bonus: post it in the Learning Lab channel).",
   "I have a multi-step project to plan. Ask me about the deliverable and the deadline, then help me sequence the steps in order.",
   "No prompt needed for this one \u2014 post a prompt you've used successfully in the AI Learning Lab Teams channel.",
   "I have something I wrote or built that I'd like critiqued. Ask me to share it, then review it like a skeptical reviewer \u2014 what's weak, missing, or unconvincing?",
@@ -2270,7 +2273,7 @@ const BINGO_PROMPT = [
   "I have a small, repetitive problem at work I'd like a tool for. Ask me to describe it, then build me a simple tool or tracker as an artifact that solves it.",
   "I have a draft communication for families or staff that I'd like edited. Ask me to share it, then make it sound warmer, clearer, and more human without losing the key information.",
   "Something at home isn't working right. Ask me what's going on, then help me troubleshoot what might be wrong and what to try first.",
-  "Write me something creative just for fun \u2014 surprise me with the format.",
+  "Create something just for fun with AI \u2014 a poem, a short story, a piece of visual art, a tune, whatever sounds fun. Surprise me with the format.",
 ];
 
 // Bingo-line detection for the "everyone's cards" overview badge
