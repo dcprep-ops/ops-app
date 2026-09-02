@@ -311,10 +311,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .contest-pill i{font-size:13px}
 
 .bg-content-wrap{max-width:480px;margin:0 auto;width:100%}
-.bg-intro{padding:16px 20px 4px}
-.bg-intro-text{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:14px}
-.bg-cta{width:100%;background:var(--navy);color:#fff;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:4px;-webkit-tap-highlight-color:transparent}
-.bg-cta:active{opacity:0.88}
+.bg-header-cta{background:var(--gold);color:#3a2a02;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.bg-header-cta:active{opacity:0.85}
 .bg-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px 20px}
 .bg-mini-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:12px;position:relative}
 .bg-mini-card.bingo{border-color:var(--gold);border-width:2px}
@@ -491,6 +489,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="app-header">
     <div class="app-header-row">
       <button class="back-btn" onclick="goHome()">← Back</button>
+      <button class="bg-header-cta" onclick="openBingoNamePicker()">Update my card</button>
     </div>
     <div class="header-flow-title">Ops AI Bingo</div>
     <div class="header-sub">25 ways to try AI at work this month</div>
@@ -498,14 +497,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
   <div class="scroll-body">
     <div class="bg-content-wrap">
-      <div class="bg-intro">
-        <div class="bg-intro-text">Try a square, mark it off. No pressure to finish the board — just explore what AI can do for your work.</div>
-      </div>
-      <div style="padding:0 20px">
-        <button class="bg-cta" onclick="openBingoNamePicker()">Update my bingo card</button>
-      </div>
-
-      <div class="section-label">Everyone's cards</div>
+      <div class="section-label" style="padding-top:16px">Everyone's cards</div>
       <div id="bingo-cards-loading" style="padding:0 20px;font-size:13px;color:var(--muted)">Loading everyone's cards…</div>
       <div class="bg-cards-grid" id="bingo-cards-grid"></div>
     </div>
@@ -516,7 +508,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <div class="screen" id="screen-bingo-name">
   <div class="app-header">
     <div class="app-header-row">
-      <button class="back-btn" onclick="showScreen('screen-bingo-home')">← Back</button>
+      <button class="back-btn" onclick="bingoReturnToHome()">← Back</button>
     </div>
     <div class="header-flow-title">Who's this for?</div>
     <div class="header-sub">Tap your name to open your card.</div>
@@ -973,7 +965,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div style="margin-top:12px"><button class="submit-btn btn-teal" style="width:100%" onclick="custFinish()">Submit →</button></div>
     </div>
 
-    <div class="flow-step" id="cd-dof-eececmc">
+    <div class="flow-step" id="cd-dof-eecemc">
       <div class="step-title">DoF Bi-Weekly Checklist</div>
       <div class="card">
         <div class="check-item" data-item="All trash emptied and placed in designated area" onclick="checkTap(this)"><div class="check-box"></div><span class="check-label">All trash emptied and placed in designated area</span></div>
@@ -2357,10 +2349,54 @@ function openBingoHome() {
   bingoLoadAllCards();
 }
 
+// Called when returning to the bingo home screen after having already
+// loaded it once this session (e.g. backing out of the name picker after
+// saving a card). Renders instantly from whatever's already in
+// bingoAllCards — which bingoSaveCard() keeps updated optimistically, so
+// the person's own just-saved changes show immediately with no lag — then
+// kicks off a fresh fetch in the background to pick up anyone else's
+// changes too, swapping in silently once it resolves.
+function bingoReturnToHome() {
+  const status = bingoContestStatus();
+  document.getElementById('bingo-contest-status').textContent = status.label;
+  const homeBadge = document.getElementById('bingo-countdown-badge');
+  if (homeBadge) homeBadge.textContent = status.badge;
+  showScreen('screen-bingo-home');
+  document.getElementById('bingo-cards-loading').style.display = 'none';
+  bingoRenderCardsGrid();
+  bingoLoadAllCards();
+}
+
+// Renders the "everyone's cards" grid from whatever is currently in
+// bingoAllCards. Split out from bingoLoadAllCards so it can also be
+// called instantly from the local cache, without waiting on a fetch.
+function bingoRenderCardsGrid() {
+  const grid = document.getElementById('bingo-cards-grid');
+  // Show every name on the fixed roster, blank grid by default, so the
+  // overview never looks "empty" — someone who hasn't marked anything
+  // yet just shows a 0/25 card like everyone else's starting point,
+  // rather than not appearing at all.
+  const roster = BINGO_NAMES.slice().sort((a, b) => a.localeCompare(b));
+  grid.innerHTML = roster.map(name => {
+    const c = bingoAllCards[name.trim().toLowerCase()];
+    const marked = c ? (c.marked || []) : [];
+    const bingo = bingoHasLine(marked);
+    const sq = Array.from({length: 25}, (_, i) => `<div class="bg-mini-sq${marked.includes(i) ? ' on' : ''}"></div>`).join('');
+    return `<div class="bg-mini-card${bingo ? ' bingo' : ''}">${bingo ? '<div class="bg-flag">BINGO</div>' : ''}<div class="bg-mini-grid">${sq}</div><div class="bg-mini-foot"><span class="bg-mini-name">${name}</span><span class="bg-mini-count">${marked.length}/25</span></div></div>`;
+  }).join('');
+}
+
 async function bingoLoadAllCards() {
   const loading = document.getElementById('bingo-cards-loading');
-  const grid = document.getElementById('bingo-cards-grid');
-  loading.style.display = ''; grid.innerHTML = '';
+  const hadCardsAlready = Object.keys(bingoAllCards).length > 0;
+  // Only show the loading text on a true first load. On a background
+  // refresh (returning to this screen after already loading once), the
+  // grid already has content from cache, so replacing it with a loading
+  // message would be a visible step backward rather than forward.
+  if (!hadCardsAlready) {
+    loading.style.display = '';
+    document.getElementById('bingo-cards-grid').innerHTML = '';
+  }
   bingoLoadPromise = (async () => {
     try {
       const res = await fetch(SCRIPT_URL + '?view=bingo');
@@ -2369,20 +2405,12 @@ async function bingoLoadAllCards() {
       bingoAllCards = {};
       cards.forEach(c => { bingoAllCards[String(c.name).trim().toLowerCase()] = c; });
       loading.style.display = 'none';
-      // Show every name on the fixed roster, blank grid by default, so
-      // the overview never looks "empty" — someone who hasn't marked
-      // anything yet just shows a 0/25 card like everyone else's starting
-      // point, rather than not appearing at all.
-      const roster = BINGO_NAMES.slice().sort((a, b) => a.localeCompare(b));
-      grid.innerHTML = roster.map(name => {
-        const c = bingoAllCards[name.trim().toLowerCase()];
-        const marked = c ? (c.marked || []) : [];
-        const bingo = bingoHasLine(marked);
-        const sq = Array.from({length: 25}, (_, i) => `<div class="bg-mini-sq${marked.includes(i) ? ' on' : ''}"></div>`).join('');
-        return `<div class="bg-mini-card${bingo ? ' bingo' : ''}">${bingo ? '<div class="bg-flag">BINGO</div>' : ''}<div class="bg-mini-grid">${sq}</div><div class="bg-mini-foot"><span class="bg-mini-name">${name}</span><span class="bg-mini-count">${marked.length}/25</span></div></div>`;
-      }).join('');
+      bingoRenderCardsGrid();
     } catch (e) {
-      loading.textContent = "Couldn't load cards — check your connection.";
+      if (!hadCardsAlready) loading.textContent = "Couldn't load cards — check your connection.";
+      // On a background refresh, a failed fetch just leaves the existing
+      // (still-correct-enough) cached grid in place rather than erroring
+      // over content the person can already see.
     }
   })();
   await bingoLoadPromise;
