@@ -312,10 +312,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .contest-pill i{font-size:13px}
 
 .bg-content-wrap{max-width:480px;margin:0 auto;width:100%}
-.bg-header-cta{background:var(--gold);color:#3a2a02;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
-.bg-header-cta:active{opacity:0.85}
 .bg-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px 20px}
-.bg-mini-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:12px;position:relative}
+.bg-mini-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:12px;position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .bg-mini-card.bingo{border-color:var(--gold);border-width:2px}
 .bg-mini-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2.5px;margin-bottom:8px}
 .bg-mini-sq{aspect-ratio:1;border-radius:2px;background:#e4dfd2}
@@ -325,11 +323,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .bg-mini-count{font-size:10.5px;color:var(--muted);flex-shrink:0;margin-left:6px}
 .bg-flag{position:absolute;top:-8px;right:-6px;background:var(--green);color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:20px;letter-spacing:.3px}
 
-.bg-namepick-body{padding:18px 20px;flex:1;display:flex;flex-direction:column;min-height:0;max-width:480px;margin:0 auto;width:100%}
-.bg-name-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.bg-name-btn{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px 8px;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;text-align:center;font-family:inherit;-webkit-tap-highlight-color:transparent}
-.bg-name-btn:active{background:var(--teal-lt);border-color:var(--teal);color:var(--navy)}
-
 .bg-grid-outer{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:14px 16px 16px;min-height:0}
 .bg-board-wrap{width:100%;max-width:420px;margin:0 auto}
 .bg-board{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
@@ -338,10 +331,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .bg-sq-label{position:absolute;left:6px;right:6px;bottom:6px;font-size:9.5px;font-weight:500;line-height:1.16;color:var(--text)}
 .bg-sq .bg-chk{position:absolute;top:3px;right:3px;width:13px;height:13px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;z-index:2}
 .bg-sq .bg-chk::after{content:'';width:3.5px;height:6.5px;border:1.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
-.bg-autosave-note{flex-shrink:0;padding:8px 20px 16px;text-align:center;font-size:11px;color:var(--muted)}
-.bg-toast{position:fixed;left:50%;bottom:calc(24px + var(--safe-bot));transform:translateX(-50%) translateY(8px);background:var(--navy);color:#fff;font-size:12.5px;font-weight:600;padding:9px 16px;border-radius:20px;display:flex;align-items:center;gap:6px;opacity:0;pointer-events:none;transition:opacity .18s, transform .18s;z-index:60;box-shadow:0 8px 20px rgba(0,0,0,0.25)}
-.bg-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.bg-toast i{font-size:14px;color:var(--green)}
 
 .bg-sheet-backdrop{position:fixed;inset:0;background:rgba(15,34,54,0.4);display:none;align-items:flex-end;z-index:50}
 .bg-sheet-backdrop.show{display:flex}
@@ -354,9 +343,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .bg-sheet-copy i{font-size:13px}
 .bg-sheet-copy.copied{background:var(--teal-lt)}
 .bg-sheet-prompt{font-size:13.5px;color:var(--navy);background:var(--teal-lt);border-radius:10px;padding:12px 13px;line-height:1.55;margin-bottom:16px;font-style:italic}
-.bg-sheet-btn{width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
-.bg-sheet-btn.mark{background:var(--navy);color:#fff}
-.bg-sheet-btn.unmark{background:var(--gold-lt);color:#8A6100;border:1.5px solid var(--gold)}
 
 </style>
 </head>
@@ -435,21 +421,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <div class="section-label" style="margin-top:8px">Transportation Pilot</div>
-    <div class="icon-grid">
-
-      <div class="icon-cell" onclick="openFlow('bustriplog')">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#E5A810" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M16 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M4 17h-2v-11a1 1 0 0 1 1-1h14a5 7 0 0 1 5 7v5h-2m-4 0h-8"/><path d="M16 5l1.5 7h4.5"/><line x1="2" y1="10" x2="17" y2="10"/><line x1="7" y1="5" x2="7" y2="10"/><line x1="12" y1="5" x2="12" y2="10"/></svg>
-        <span class="cell-label">Bus Trip Log</span>
-      </div>
-
-      <div class="icon-cell" onclick="openFlow('bustriphandoff')">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#E5A810" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10h-16l5.5-6"/><path d="M4 14h16l-5.5 6"/></svg>
-        <span class="cell-label">Bus Trip Handoff</span>
-      </div>
-
-    </div>
-
     <div class="section-label">Summer Apps</div>
 
     <div class="tool-row" onclick="openFlow('win')">
@@ -463,6 +434,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
     <div class="section-label">Coming Later</div>
 
+    <div class="tool-row" onclick="openFlow('bustriplog')">
+      <div class="tool-row-left"><div class="tool-row-name">Bus Trip Log</div></div>
+      <div class="tool-row-right"><span class="badge-live">Live</span><span class="chevron">›</span></div>
+    </div>
+    <div class="tool-row" onclick="openFlow('bustriphandoff')">
+      <div class="tool-row-left"><div class="tool-row-name">Bus Trip Handoff</div></div>
+      <div class="tool-row-right"><span class="badge-live">Live</span><span class="chevron">›</span></div>
+    </div>
     <div class="tool-row" onclick="openPreview('walkthroughs')">
       <div class="tool-row-left"><div class="tool-row-name">Facility Needs Walkthrough</div></div>
       <div class="tool-row-right"><span class="badge-preview">Preview</span><span class="chevron">›</span></div>
@@ -488,7 +467,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="app-header">
     <div class="app-header-row">
       <button class="back-btn" onclick="goHome()">← Back</button>
-      <button class="bg-header-cta" onclick="openBingoNamePicker()">Update my card</button>
     </div>
     <div class="header-flow-title">Ops AI Bingo</div>
     <div class="header-sub">25 ways to try AI at work this month</div>
@@ -503,34 +481,18 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
 </div>
 
-<!-- ══ AI BINGO — NAME PICKER ══ -->
-<div class="screen" id="screen-bingo-name">
-  <div class="app-header">
-    <div class="app-header-row">
-      <button class="back-btn" onclick="bingoReturnToHome()">← Back</button>
-    </div>
-    <div class="header-flow-title">Who's this for?</div>
-    <div class="header-sub">Tap your name to open your card.</div>
-  </div>
-  <div class="bg-namepick-body">
-    <div class="field-label">Select your name</div>
-    <div class="bg-name-grid" id="bingo-name-grid"></div>
-  </div>
-</div>
-
 <!-- ══ AI BINGO — CARD ══ -->
 <div class="screen" id="screen-bingo-card">
   <div class="app-header">
     <div class="app-header-row">
-      <button class="back-btn" onclick="showScreen('screen-bingo-name')">← Back</button>
+      <button class="back-btn" onclick="bingoReturnToHome()">← Back</button>
     </div>
     <div class="header-flow-title" id="bingo-card-title">Card</div>
-    <div class="header-sub">Tap a square to see the prompt and mark it off.</div>
+    <div class="header-sub">Tap a square to see the prompt.</div>
   </div>
   <div class="bg-grid-outer">
     <div class="bg-board-wrap"><div class="bg-board" id="bingo-board"></div></div>
   </div>
-  <div class="bg-autosave-note">Marking a square saves automatically</div>
 </div>
 
 <div class="bg-sheet-backdrop" id="bingo-sheet-backdrop">
@@ -542,10 +504,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <button class="bg-sheet-copy" id="bingo-sheet-copy"><i class="ti ti-copy"></i> Copy</button>
     </div>
     <div class="bg-sheet-prompt" id="bingo-sheet-prompt"></div>
-    <button class="bg-sheet-btn mark" id="bingo-sheet-btn"></button>
   </div>
 </div>
-<div class="bg-toast" id="bingo-toast"><i class="ti ti-circle-check-filled"></i> Saved</div>
 
 <!-- ══ DRILL FLOW ══ -->
 <div class="screen" id="screen-drill">
@@ -2334,14 +2294,6 @@ let bingoActiveName = null;
 let bingoActiveOrder = [];
 let bingoActiveMarked = [];
 let bingoSheetPos = null;
-let bingoSaving = false;
-
-function bingoFlashSaved() {
-  const t = document.getElementById('bingo-toast');
-  t.classList.add('show');
-  clearTimeout(t._hideTimer);
-  t._hideTimer = setTimeout(() => t.classList.remove('show'), 1400);
-}
 
 function openBingoHome() {
   const status = bingoContestStatus();
@@ -2353,12 +2305,10 @@ function openBingoHome() {
 }
 
 // Called when returning to the bingo home screen after having already
-// loaded it once this session (e.g. backing out of the name picker after
-// saving a card). Renders instantly from whatever's already in
-// bingoAllCards — which bingoSaveCard() keeps updated optimistically, so
-// the person's own just-saved changes show immediately with no lag — then
-// kicks off a fresh fetch in the background to pick up anyone else's
-// changes too, swapping in silently once it resolves.
+// loaded it once this session (e.g. backing out of a card view). Renders
+// instantly from whatever's already in bingoAllCards, then kicks off a
+// fresh fetch in the background to pick up anyone else's changes too,
+// swapping in silently once it resolves.
 function bingoReturnToHome() {
   const status = bingoContestStatus();
   document.getElementById('bingo-contest-status').textContent = status.label;
@@ -2385,7 +2335,7 @@ function bingoRenderCardsGrid() {
     const marked = c ? (c.marked || []) : [];
     const bingo = bingoHasLine(marked);
     const sq = Array.from({length: 25}, (_, i) => `<div class="bg-mini-sq${marked.includes(i) ? ' on' : ''}"></div>`).join('');
-    return `<div class="bg-mini-card${bingo ? ' bingo' : ''}">${bingo ? '<div class="bg-flag">BINGO</div>' : ''}<div class="bg-mini-grid">${sq}</div><div class="bg-mini-foot"><span class="bg-mini-name">${name}</span><span class="bg-mini-count">${marked.length}/25</span></div></div>`;
+    return `<div class="bg-mini-card${bingo ? ' bingo' : ''}" onclick="bingoViewCard('${name.replace(/'/g, "\\'")}')">${bingo ? '<div class="bg-flag">BINGO</div>' : ''}<div class="bg-mini-grid">${sq}</div><div class="bg-mini-foot"><span class="bg-mini-name">${name}</span><span class="bg-mini-count">${marked.length}/25</span></div></div>`;
   }).join('');
 }
 
@@ -2419,13 +2369,11 @@ async function bingoLoadAllCards() {
   await bingoLoadPromise;
 }
 
-function openBingoNamePicker() {
-  const grid = document.getElementById('bingo-name-grid');
-  grid.innerHTML = BINGO_NAMES.map(n => `<button class="bg-name-btn" onclick="bingoPickName('${n}')">${n}</button>`).join('');
-  showScreen('screen-bingo-name');
-}
-
-async function bingoPickName(name) {
+// Opens a read-only view of one person's card from the "everyone's cards"
+// grid. The contest is over, so there's no more marking/saving here —
+// this just lets people see what someone already filled in, square by
+// square.
+async function bingoViewCard(name) {
   if (bingoLoadPromise) { try { await bingoLoadPromise; } catch (e) {} }
   bingoActiveName = name;
   bingoActiveOrder = bingoShuffledOrder(name);
@@ -2450,30 +2398,10 @@ function bingoOpenSheet(pos) {
   document.getElementById('bingo-sheet-num').textContent = 'Square ' + (pos + 1);
   document.getElementById('bingo-sheet-text').textContent = BINGO_BOARD[itemIndex];
   document.getElementById('bingo-sheet-prompt').textContent = BINGO_PROMPT[itemIndex];
-  const btn = document.getElementById('bingo-sheet-btn');
-  const on = bingoActiveMarked.includes(pos);
-  btn.textContent = on ? 'Unmark this square' : 'Mark as Completed';
-  btn.className = 'bg-sheet-btn ' + (on ? 'unmark' : 'mark');
   document.getElementById('bingo-sheet-backdrop').classList.add('show');
 }
 function bingoCloseSheet() {
   document.getElementById('bingo-sheet-backdrop').classList.remove('show');
-}
-function bingoToggleMark() {
-  if (bingoSheetPos === null) return;
-  const pos = bingoSheetPos;
-  const i = bingoActiveMarked.indexOf(pos);
-  if (i === -1) bingoActiveMarked.push(pos); else bingoActiveMarked.splice(i, 1);
-  bingoCloseSheet();
-  bingoRenderBoard();
-  bingoSaveCard();
-}
-function bingoSaveCard() {
-  bingoFlashSaved();
-  postToScript({ flow: 'bingo', name: bingoActiveName, marked: bingoActiveMarked });
-  // keep the local "everyone's cards" cache in sync so the overview is
-  // correct if the person taps back before their next full reload
-  bingoAllCards[bingoActiveName.trim().toLowerCase()] = { name: bingoActiveName, marked: bingoActiveMarked.slice() };
 }
 function bingoCopyPrompt() {
   const el = document.getElementById('bingo-sheet-copy');
@@ -2487,7 +2415,6 @@ function bingoCopyPrompt() {
 document.getElementById('bingo-sheet-backdrop').addEventListener('click', (e) => {
   if (e.target.id === 'bingo-sheet-backdrop') bingoCloseSheet();
 });
-document.getElementById('bingo-sheet-btn').addEventListener('click', bingoToggleMark);
 document.getElementById('bingo-sheet-copy').addEventListener('click', bingoCopyPrompt);
 
 function resetWalk() {
