@@ -1442,14 +1442,30 @@ function setEmailLabel(text) {
 }
 
 function resetEmailCapture() {
+  const wrap = document.getElementById('email-capture-wrap');
   const inp = document.getElementById('s-email');
   const btn = document.querySelector('.email-send-btn');
   const sent = document.getElementById('s-email-sent');
   const extra = document.getElementById('s-extra-actions');
+  if (wrap) wrap.style.display = 'none';
   if (extra) extra.innerHTML='';
   if (inp) { inp.value=''; inp.style.display=''; }
   if (btn) { btn.textContent='Send'; btn.disabled=false; btn.style.display=''; }
   if (sent) sent.style.display='none';
+}
+
+// Re-enables the "email me a copy" capture on the confirmation screen for a
+// specific flow. Only Custodial Walkthrough and Common Space Walkthrough use
+// this today — it's how the person doing the walkthrough gets a copy of
+// their own submission to follow up on flagged items. (It used to be on
+// every flow; it was pulled everywhere after emails weren't reliably
+// getting through. Bringing it back just for these two, at Charles's
+// request.)
+function showEmailCaptureFor(label) {
+  resetEmailCapture();
+  setEmailLabel(label);
+  const wrap = document.getElementById('email-capture-wrap');
+  if (wrap) wrap.style.display = '';
 }
 
 function sendEmailCopy() {
@@ -2089,8 +2105,7 @@ function submitWalk() {
     +`<div class="sum-row"><span class="sum-key">Well kept<\/span><span class="sum-val good">${spacesGood}<\/span><\/div>`
     +(spacesFlagged?`<div class="sum-row"><span class="sum-key">Flagged<\/span><span class="sum-val flag">${spacesFlagged}<\/span><\/div>`:'');
   setProgress('walk-prog', 100);
-  resetEmailCapture();
-  setEmailLabel('Enter your email and we\'ll send you the consolidated report:');
+  showEmailCaptureFor('Email me a copy of my submission');
   showScreen('screen-success');
 }
 
@@ -2807,7 +2822,7 @@ function submitCust() {
     +`<div class="sum-row"><span class="sum-key">Items checked<\/span><span class="sum-val${checked?' good':''}">${checked}<\/span><\/div>`
     +(flagged?`<div class="sum-row"><span class="sum-key">Items flagged<\/span><span class="sum-val flag">${flagged}<\/span><\/div>`:'');
   setProgress('cust-prog', 100);
-  resetEmailCapture();
+  showEmailCaptureFor('Email me a copy of my submission');
   showScreen('screen-success');
 }
 
